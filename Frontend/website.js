@@ -14,6 +14,13 @@ function uploadFile() {
     const formData = new FormData();
     formData.append("file", file);
 
+     // Check if the file type is either .wav or .mp3
+     const allowedFileTypes = ["audio/wav", "audio/mpeg"];
+     if (!allowedFileTypes.includes(file.type)) {
+         alert("Please upload a valid .wav or .mp3 file.");
+         return;
+     }
+
     // You can use a server endpoint to handle the file upload.
     // In this example, we are using the JSONPlaceholder API to simulate a file upload.
     fetch("https://jsonplaceholder.typicode.com/posts/1", {
