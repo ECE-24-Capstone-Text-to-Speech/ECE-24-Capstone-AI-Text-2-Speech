@@ -25,6 +25,13 @@ function uploadFile() {
          return;
      }
 
+    // Check file size (less than 1MB)
+    const maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
+    if (file.size > maxFileSize) {
+        alert("File size must be less than 1MB.");
+        return;
+    }
+
     // You can use a server endpoint to handle the file upload.
     // In this example, we are using the JSONPlaceholder API to simulate a file upload.
     fetch("https://jsonplaceholder.typicode.com/posts/1", {
