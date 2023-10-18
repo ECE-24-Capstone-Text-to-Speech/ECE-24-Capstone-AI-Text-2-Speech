@@ -20,7 +20,7 @@ function uploadFile() {
 
      // Check if the file type is either .wav or .mp3
      const allowedFileTypes = ["audio/wav", "audio/mpeg"];
-     if (!allowedFileTypes.includes(file.type) || !allowedFileTypes.includesfile1.type) {
+     if (!allowedFileTypes.includes(file.type) || !allowedFileTypes.includes(file1.type)) {
          alert("Please upload a valid .wav or .mp3 file.");
          return;
      }
