@@ -1,25 +1,36 @@
 // Function to handle file upload
 function uploadFile() {
     const fileInput = document.getElementById("fileInput");
+    const fileInput1 = document.getElementById("fileInput1");
     const fileNameDisplay = document.getElementById("fileName");
     const progress = document.getElementById("progress");
 
     const file = fileInput.files[0];
+    const file1 = fileInput1.files[0];
+
     
-    if (!file) {
+    if (!file || !file1) {
         alert("Please select a file to upload.");
         return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("file1", file1)
 
      // Check if the file type is either .wav or .mp3
      const allowedFileTypes = ["audio/wav", "audio/mpeg"];
-     if (!allowedFileTypes.includes(file.type)) {
+     if (!allowedFileTypes.includes(file.type) || !allowedFileTypes.includes(file1.type)) {
          alert("Please upload a valid .wav or .mp3 file.");
          return;
      }
+
+    // Check file size (less than 1MB)
+    const maxFileSize = 1 * 1024 * 1024; // 1MB in bytes
+    if (file.size > maxFileSize) {
+        alert("File size must be less than 1MB.");
+        return;
+    }
 
     // You can use a server endpoint to handle the file upload.
     // In this example, we are using the JSONPlaceholder API to simulate a file upload.
@@ -38,7 +49,7 @@ function uploadFile() {
     })
     .then(response => response.json())
     .then(data => {
-        fileNameDisplay.innerText = `File uploaded: ${file.name}`;
+        fileNameDisplay.innerText = `Files uploaded: ${file.name, file1.name}`;
         alert("File uploaded successfully.");
     })
     .catch(error => {
