@@ -11,10 +11,25 @@
 <body>
     <h1>KLPSST</h1>
     <img src="logo_image.png" alt="Image Description">
-    <input type = "text">
+    <form>
+        <!-- Text field for user input -->
+        <label for="userInput">Type a sentence:</label>
+        <input type="text" id="userInput" name="userInput" placeholder="sentence" required>
+        
+        <!-- Submission button -->
+        <input type="submit" value="Done">
+    </form>
 
     
     <!-- File input element -->
+    <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
+    <input type="file" id="fileInput">
+    
+    <!-- Button to trigger file upload -->
+    <button onclick="uploadFile()">Upload File</button>
+
+    <!-- button 2 -->
+
     <input type="file" id="fileInput">
     
     <!-- Button to trigger file upload -->
