@@ -1,11 +1,15 @@
 from fastapi import Depends, FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from internal import admin
 from routers import items, files, users
 from dependencies import get_query_token, get_token_header
 
 server = FastAPI()
 # server = FastAPI(dependencies=[Depends(get_query_token)])
+
+# allow direct access to files in temp folder (e.g. localhost/files/audio/Record1.mp3)
+# server.mount("/files/audio", StaticFiles(directory="temp"), name="audioFiles")
 
 server.include_router(items.router)
 server.include_router(files.router)
