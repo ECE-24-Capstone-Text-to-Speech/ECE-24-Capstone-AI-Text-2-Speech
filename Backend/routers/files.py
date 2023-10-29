@@ -52,21 +52,20 @@ async def audio_input(audioFile: UploadFile | None = None):
             detail="File format not supported. Supported formats are MP3 and WAV.",
         )
 
+    message: str = "Default message"
+    saved: bool = False
     # if fileSize > threshhold:
-    saved: bool = await save_audio_to_temp(audioFile)
-    if not saved:
-        return {
-            "filename": fileName,
-            "format": file_extension,
-            # "size": fileSize,
-            "success": False,
-        }
+    if fileName not in await get_list_of_audio_in_temp():
+        saved, message = await save_audio_to_temp(audioFile)
+    else:
+        message = "File already exists"
 
     return {
         "filename": fileName,
         "format": file_extension,
         # "size": fileSize,
-        "success": True,
+        "success": saved,
+        "message": message,
     }
 
 
@@ -92,7 +91,7 @@ async def get_audio_list():
 )
 async def get_audio_file(audio_name: str):
     # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
-    files = await get_list_of_audio_in_temp()
+    files = await get_list_of_audio_in_temp(fullPath=True)
     for file in files:
         if audio_name == file.split("/")[-1]:
             return FileResponse(path=file)

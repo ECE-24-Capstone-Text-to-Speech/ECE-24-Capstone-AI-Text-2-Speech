@@ -4,7 +4,7 @@ from fastapi import UploadFile
 FILE_SIZE_LIMIT = 30_000_000  # 30 Megabytes
 
 
-async def save_audio_to_temp(audioFile: UploadFile) -> bool:
+async def save_audio_to_temp(audioFile: UploadFile) -> tuple[bool, str]:
     print("Saving audio file")
     targetPath = os.path.join("temp/", audioFile.filename)
     try:
@@ -13,7 +13,7 @@ async def save_audio_to_temp(audioFile: UploadFile) -> bool:
             # print(str(content))
             targetFile.write(content)
             print("File saved")
-            return True
+            return True, "File saved"
     except Exception as e:
         print(e)
-        return False
+        return False, str(e)

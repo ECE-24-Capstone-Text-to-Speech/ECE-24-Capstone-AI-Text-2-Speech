@@ -1,11 +1,12 @@
 import os
 
 
-async def get_list_of_audio_in_temp() -> list[str]:
+async def get_list_of_audio_in_temp(fullPath: bool = False) -> list[str]:
     out = []
     for filename in os.listdir("temp/"):
-        currPath = "temp/" + filename
-        out.append(currPath)
+        basePath = "temp/" if fullPath else ""
+        target = basePath + filename
+        out.append(target)
     return out
 
 
