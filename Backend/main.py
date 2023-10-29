@@ -1,8 +1,22 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.responses import RedirectResponse
+from internal import admin
 from routers import items, files, users
+from dependencies import get_query_token, get_token_header
 
 server = FastAPI()
+# server = FastAPI(dependencies=[Depends(get_query_token)])
+
+server.include_router(items.router)
+server.include_router(files.router)
+server.include_router(users.router)
+server.include_router(
+    admin.router,
+    prefix="/admin",
+    tags=["admin"],
+    dependencies=[Depends(get_token_header)],
+    responses={418: {"description": "I'm a teapot"}},
+)
 
 
 def redirect_external(target):
@@ -11,8 +25,8 @@ def redirect_external(target):
 
 
 @server.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root_ping():
+    return {"message": "Server active"}
 
 
 @server.get("/{name}")
