@@ -23,7 +23,7 @@ preset = "fast"
 # Optionally, upload use your own voice by running the next two cells. I recommend
 # you upload at least 2 audio clips. They must be a WAV file, 6-10 seconds long.
 
-CUSTOM_VOICE_NAME = "martin"
+CUSTOM_VOICE_NAME = "martin"     ##go through custom voices and optimize this line. There's a bunch in tortoise/voices/
 custom_voice_folder = f"tortoise/voices/{CUSTOM_VOICE_NAME}"
 os.makedirs(custom_voice_folder)
 for i, file_data in enumerate(files.upload().values()):
