@@ -13,3 +13,26 @@ try:
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
+
+
+#Example of inserting objects into database
+"""
+from telnetlib import TLS
+from pymongo import MongoClient 
+import pymongo
+import datetime
+import certifi
+
+
+ca = certifi.where()
+Client = pymongo.MongoClient(uri,tlsCAFile=ca) #Connecting to 
+db = Client["users"]
+Collection1 = db["usernames"] 
+Collection1.insert()
+
+print(db.list_collection_names())
+
+Collection2 = db["passwords"]
+Collection2.insert({"username": "password"})
+Client.close()
+"""
