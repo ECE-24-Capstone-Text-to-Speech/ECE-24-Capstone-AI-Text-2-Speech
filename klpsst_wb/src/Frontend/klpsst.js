@@ -13,6 +13,9 @@ import { render } from "@testing-library/react";
 const KLPSST_Page = () => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+  const [file1, setFile1] = useState('');
+  const [file2, setFile2] = useState('');
+
 
     // Define dark mode theme
     const darkTheme = createTheme({
@@ -50,71 +53,84 @@ const KLPSST_Page = () => {
     setInputValue(event.target.value);
   };
 
-  const handleUpload = async () => {
-    const fileInput = document.getElementById("fileInput");
-    const fileInput1 = document.getElementById("fileInput1");
 
-    const uploadEndpoint = "http://localhost/files/audioInput"; // check if right
+  const handleFile1Change = (event) => {
+    setFile1(event.target.files[0]);
+  };
 
-     // Create a FormData object to append files
-     const formData = new FormData();
-     formData.append("file1", fileInput.files[0]);
-     formData.append("file2", fileInput1.files[0]);
- 
-     try {
-       const response = await fetch(uploadEndpoint, {
-         method: "POST",
-         body: formData,
-       });
- 
-       if (response.ok) {
-         // File uploaded successfully, handle success
-         alert("Files uploaded successfully.");
-       } else {
-         // Handle server-side validation errors or other issues
-         const errorData = await response.json();
-         alert(`Error: ${errorData.error}`);
-       }
-     } catch (error) {
-       // Handle network errors
-       console.error("Error uploading files:", error);
-     }
+  const handleFile2Change = (event) => {
+    setFile2(event.target.files[0]);
+  };
+
+  const handleUpload = async (event) => {
+    event.preventDefault();
+
+    await sendFilesToBackend(file1, file2);
+
+    //additional logic
+  };
+
+  const sendFilesToBackend = async (file1, file2) => {
+    // Create a FormData object to append files
+    const formData = new FormData();
+    formData.append('audioFile', file1); // Use 'audioFile' as the key for the first file
+    formData.append('audioFile', file2); // Use 'audioFile' as the key for the second file
+
+    try {
+      const response = await fetch('http://localhost:80/files/audioInput', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        // File uploaded successfully, handle success
+        alert("Files uploaded successfully.");
+      } else {
+        // Handle server-side validation errors or other issues
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error}`);
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error("Error uploading files:", error);
+    }
   };
 
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <div id="homepage" className={theme === "dark" ? "dark-mode" : ""}>
+   <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    <div id="homepage" className={theme === "dark" ? "dark-mode" : ""}>
         <Button onClick={toggleTheme} id="toggleButton">
-          {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </Button>
         <Typography variant="h1">KLPSST</Typography>
-        <img src={KLPSSTLOGO} alt="logo" style={{width: '168px', height: '168px'}}/>
-        <form>
-          {/* <label for="userInput">Type a sentence:</label>
-          <input type="text" id="userInput" name="userInput" placeholder="sentence" required> <input />
-          
-          <input type="submit" value="Done"> <input /> */}
-          <label for="userInput" style={{textAlign:"left"}}>Type a sentence:</label>
-          <input type="text" id="userInput" name="userInput" placeholder="sentence"
-              value={inputValue} // Bind the input's value to the state variable
-              onChange={handleInputChange} // Call the event handler when the input changes
-          />
-          <p>You typed: {inputValue}</p>
-          <input type="submit" value="Done"></input>
-          </form>
+        <img src={KLPSSTLOGO} alt="logo" style={{ width: '168px', height: '168px' }} />
+        <form onSubmit={handleUpload}>         
+            <label htmlFor="userInput" style={{ textAlign: "left" }}>Type a sentence:</label>
+            <input
+            type="text"
+            id="userInput"
+            name="userInput"
+            placeholder="sentence"
+            value={inputValue}
+            onChange={handleInputChange}
+            />
+            <input type="submit" value="Done" />
+            <p>You typed: {inputValue}</p>
+          <input type="file" id="fileInput" onChange={handleFile1Change} />
+          <br />
 
-          <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
+          <label htmlFor="fileInput1">Upload File 2:</label>
+          <input type="file" id="fileInput1" onChange={handleFile2Change} />
+          <br />
 
-          <input type="file" id="fileInput"/>
+            <input type="submit" value="Done" />
+        </form>
 
-          <input type="file" id="fileInput1" />
-
-          <button onClick={handleUpload}>Upload File</button> 
-      
-          <p id="fileName"></p>
-      </div>
+        <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
+        <p id="fileName"></p>
+        </div>
     </ThemeProvider>
   );
-}
+};
 
 export default KLPSST_Page;
