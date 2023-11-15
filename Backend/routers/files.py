@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.getFile import get_list_of_audio_in_temp
 from internal.saveFile import save_audio_to_temp
+
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # from models.AudioFile import AudioUploadFile
 
