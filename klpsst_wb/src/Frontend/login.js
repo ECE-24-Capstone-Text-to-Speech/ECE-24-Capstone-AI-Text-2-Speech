@@ -1,4 +1,7 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 // import styled from "styled-components";
 import "./login.css";
 import { Navigate, redirect } from "react-router-dom";
@@ -7,6 +10,37 @@ import KLPSSTLOGO from "./logo_image.png"
 import { render } from "@testing-library/react";
 
 const KLPSST_Login = ({}) => {
+    const storedTheme = localStorage.getItem("theme");
+    const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+  
+      // Define dark mode theme
+      const darkTheme = createTheme({
+        palette: {
+          mode: "dark",
+        },
+      });
+  
+      // Define light mode theme
+      const lightTheme = createTheme({
+        palette: {
+          mode: "light",
+          primary: {
+            main: "rgb(243, 180, 65)",
+          },
+        },
+      });
+  
+    // State to track theme
+    const [theme, setTheme] = useState(initialTheme);
+  
+    useEffect(() => {
+      localStorage.setItem("theme", JSON.stringify(theme));
+    }, [theme]);
+  
+    const toggleTheme = () => {
+      setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    };
+    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -22,12 +56,10 @@ const KLPSST_Login = ({}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //per god:
-        // Add your login logic here, such as sending a request to your backend
         console.log("Login submitted with:", { username, password });
 
         try {
-            const response = await fetch('http://localhost:80/register', {
+            const response = await fetch('http://localhost/register', {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -88,8 +120,12 @@ const KLPSST_Login = ({}) => {
     };
 
     return (
-        <div id = "login">
-            <h2>Login</h2>
+        <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+        <div id = "login"className= {theme === "dark" ? "dark-mode" : ""}>
+            <Button onClick={toggleTheme} id="toggleButton">
+                {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            </Button>
+            <Typography variant="h1">Login</Typography>
                 <form onSubmit={handleSubmit}>
                     <label>
                     Username:
@@ -117,7 +153,7 @@ const KLPSST_Login = ({}) => {
 
             </form> */}
         </div>
-
+        </ThemeProvider>
         // <form>
         //         {/* <label for="userInput">Type a sentence:</label>
         //         <input type="text" id="userInput" name="userInput" placeholder="sentence" required> <input />
