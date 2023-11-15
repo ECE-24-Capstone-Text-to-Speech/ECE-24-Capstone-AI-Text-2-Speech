@@ -5,6 +5,7 @@ import { Navigate, redirect } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png"
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
+//const backendURL;
 
 const KLPSST_Page = ({}) => {
 
@@ -16,6 +17,36 @@ const KLPSST_Page = ({}) => {
     setInputValue(event.target.value);
   };
 
+  const handleUpload = async () => {
+    const fileInput = document.getElementById("fileInput");
+    const fileInput1 = document.getElementById("fileInput1");
+
+    const uploadEndpoint = "http://localhost:3000/files/audioInput"; // check if right
+
+     // Create a FormData object to append files
+     const formData = new FormData();
+     formData.append("file1", fileInput.files[0]);
+     formData.append("file2", fileInput1.files[0]);
+ 
+     try {
+       const response = await fetch(uploadEndpoint, {
+         method: "POST",
+         body: formData,
+       });
+ 
+       if (response.ok) {
+         // File uploaded successfully, handle success
+         alert("Files uploaded successfully.");
+       } else {
+         // Handle server-side validation errors or other issues
+         const errorData = await response.json();
+         alert(`Error: ${errorData.error}`);
+       }
+     } catch (error) {
+       // Handle network errors
+       console.error("Error uploading files:", error);
+     }
+  };
 
     return (
         <div id = "homepage">
@@ -38,14 +69,11 @@ const KLPSST_Page = ({}) => {
             <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
 
             <input type="file" id="fileInput"/>
-    
-            <button onclick="uploadFile()">Upload File</button> 
-
 
             <input type="file" id="fileInput1" />
-    
-            <button onclick="uploadFile()">Upload File</button>
-    
+
+            <button onClick={handleUpload}>Upload File</button> 
+        
             <p id="fileName"></p>
         </div>
     );
