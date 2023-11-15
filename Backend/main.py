@@ -14,20 +14,12 @@ server = FastAPI()
 
 server.add_middleware(
     CORSMiddleware,
-<<<<<<< HEAD
-    allow_origins=["*"],  # You may want to restrict this to specific origins in production
-=======
     allow_origins=["*"],  # Add your frontend URL here
->>>>>>> b4fada54461d2232c8fc0dc2c790a7fad5748ad5
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-<<<<<<< HEAD
-=======
-
->>>>>>> b4fada54461d2232c8fc0dc2c790a7fad5748ad5
 server.include_router(items.router)
 server.include_router(files.router)
 server.include_router(users.router)
