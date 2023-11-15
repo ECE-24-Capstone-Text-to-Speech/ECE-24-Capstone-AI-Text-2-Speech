@@ -9,6 +9,7 @@ import { render } from "@testing-library/react";
 const KLPSST_Login = ({}) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
 
     const handleUsernameChange = (e) => {
         setUsername(e.target.value);
@@ -40,10 +41,13 @@ const KLPSST_Login = ({}) => {
               console.log("Login successful");
             } else {
               // Authentication failed, handle accordingly (e.g., show error message)
-              console.error("Login failed");
+            //   console.error("Login failed");
+                const errorMessage = await response.json();
+                setMessage(errorMessage.error || "Login failed");
             }
           } catch (error) {
             console.error("Error:", error);
+            setMessage("An error occurred. Please try again later.");
           }
 
         // try{
