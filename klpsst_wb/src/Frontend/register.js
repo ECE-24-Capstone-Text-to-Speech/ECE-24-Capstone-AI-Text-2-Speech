@@ -3,13 +3,13 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 // import styled from "styled-components";
-import "./login.css";
+import "./register.css";
 import { Navigate, redirect } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 
-const KLPSST_Login = ({}) => {
+const KLPSST_Register = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
@@ -43,6 +43,7 @@ const KLPSST_Login = ({}) => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleUsernameChange = (e) => {
@@ -53,8 +54,19 @@ const KLPSST_Login = ({}) => {
     setPassword(e.target.value);
   };
 
+  const handleConfirm = (e) => {
+    let confirmPw = e.target.value;
+    setConfirm(confirmPw === password);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!confirm){
+        console.log("Incorrect confirm password")
+        alert(`Error: Incorrect Confrim Password`);
+        return;
+    }
 
     console.log("Login submitted with:", { username, password });
     const formData = new FormData();
@@ -62,7 +74,7 @@ const KLPSST_Login = ({}) => {
     formData.append("password", password); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch("http://localhost:80/users/login", {
+      const response = await fetch("http://localhost:80/users/register", {
         method: "POST",
         body: formData,
       });
@@ -70,7 +82,6 @@ const KLPSST_Login = ({}) => {
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
         console.log("Login successful");
-        alert(`YAY`);
       } else {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
@@ -85,14 +96,14 @@ const KLPSST_Login = ({}) => {
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <div className={`login${theme === "dark" ? " dark-mode" : ""}`}>
+      <div className={`register${theme === "dark" ? " dark-mode" : ""}`}>
         <Button onClick={toggleTheme} id="toggleButton">
           {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </Button>
-        <Typography variant="h1">Login</Typography>
+        <Typography variant="h1">Register</Typography>
         <form onSubmit={handleSubmit}>
           <label>
-            Username:
+            Create a Username:
             <input
               type="text"
               value={username}
@@ -101,7 +112,7 @@ const KLPSST_Login = ({}) => {
             />
           </label>
           <label>
-            Password:
+            Create a Password:
             <input
               type="password"
               value={password}
@@ -109,11 +120,19 @@ const KLPSST_Login = ({}) => {
               required
             />
           </label>
-          <button type="submit">Login</button>
+          <label>
+            Confirm Password:
+            <input
+              type="password"
+              onChange={handleConfirm}
+              required
+            />
+          </label>
+          <button type="submit">Enter</button>
         </form>
       </div>
     </ThemeProvider>
   );
 };
 
-export default KLPSST_Login;
+export default KLPSST_Register;
