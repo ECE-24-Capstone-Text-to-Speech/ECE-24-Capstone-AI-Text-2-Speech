@@ -114,8 +114,9 @@ const KLPSST_Page = () => {
             value={inputValue}
             onChange={handleInputChange}
             />
-            <input type="submit" value="Done" />
             <p>You typed: {inputValue}</p>
+        
+            <label htmlFor="fileInput1">Upload File 1:</label>
           <input type="file" id="fileInput" onChange={handleFile1Change} />
           <br />
 
@@ -123,7 +124,7 @@ const KLPSST_Page = () => {
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
 
-            <input type="submit" value="Done" />
+            <input type="submit" value="Upload" />
         </form>
 
         <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
