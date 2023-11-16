@@ -43,6 +43,7 @@ const KLPSST_Register = ({}) => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleUsernameChange = (e) => {
@@ -53,8 +54,19 @@ const KLPSST_Register = ({}) => {
     setPassword(e.target.value);
   };
 
+  const handleConfirm = (e) => {
+    let confirmPw = e.target.value;
+    setConfirm(confirmPw === password);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if(!confirm){
+        console.log("Incorrect confirm password")
+        alert(`Error: Incorrect Confrim Password`);
+        return;
+    }
 
     console.log("Login submitted with:", { username, password });
     const formData = new FormData();
@@ -84,7 +96,7 @@ const KLPSST_Register = ({}) => {
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <div id="login" className={theme === "dark" ? "dark-mode" : ""}>
+      <div className={`register${theme === "dark" ? " dark-mode" : ""}`}>
         <Button onClick={toggleTheme} id="toggleButton">
           {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </Button>
@@ -105,6 +117,14 @@ const KLPSST_Register = ({}) => {
               type="password"
               value={password}
               onChange={handlePasswordChange}
+              required
+            />
+          </label>
+          <label>
+            Confirm Password:
+            <input
+              type="password"
+              onChange={handleConfirm}
               required
             />
           </label>

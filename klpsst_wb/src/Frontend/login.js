@@ -70,6 +70,7 @@ const KLPSST_Login = ({}) => {
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
         console.log("Login successful");
+        alert(`YAY`);
       } else {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
@@ -84,7 +85,7 @@ const KLPSST_Login = ({}) => {
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <div id="login" className={theme === "dark" ? "dark-mode" : ""}>
+      <div className={`login${theme === "dark" ? " dark-mode" : ""}`}>
         <Button onClick={toggleTheme} id="toggleButton">
           {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </Button>
