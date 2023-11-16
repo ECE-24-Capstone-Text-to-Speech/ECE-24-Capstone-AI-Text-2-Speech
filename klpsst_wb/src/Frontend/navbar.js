@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const KLPSST_Bar = () => {
   const page = useLocation();
-  const pages = ["Home", "Login"];
+  const pages = ["Home", "Login", "Register"];
 
   return (
     <div id="test">
