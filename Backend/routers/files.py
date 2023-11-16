@@ -43,7 +43,7 @@ async def audio_input(audioFile: UploadFile | None = None):
     """
     if not audioFile:
         raise HTTPException(
-            status_code=400, detail="No input audio file given in the request."
+            status_code=404, detail="No input audio file given in the request."
         )
 
     mime = magic.Magic()
@@ -53,13 +53,13 @@ async def audio_input(audioFile: UploadFile | None = None):
     allowed_formats = {"MPEG ADTS", "RIFF"}
     if not any(x in file_type for x in allowed_formats):
         raise HTTPException(
-            status_code=400,
+            status_code=415,
             detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
         )
     # audioFile.size    
     if audioFile.size > MAX_FILE_SIZE:
         raise HTTPException(
-            status_code=400,
+            status_code=413,
             detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
         )
 
