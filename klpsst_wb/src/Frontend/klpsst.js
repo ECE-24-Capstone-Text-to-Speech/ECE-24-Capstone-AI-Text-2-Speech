@@ -88,7 +88,7 @@ const KLPSST_Page = () => {
       } else {
         // Handle server-side validation errors or other issues
         const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
+        alert(`Error: ${errorData.detail}`);
       }
     } catch (error) {
       // Handle network errors

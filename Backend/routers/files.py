@@ -9,6 +9,8 @@ from internal.saveFile import save_audio_to_temp
 # from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
+MAX_FILE_SIZE = 1_000_000  # 1 MB
+
 
 router = APIRouter(
     prefix="/files",  # all paths in this file assumes preceed by `/files`
@@ -54,7 +56,12 @@ async def audio_input(audioFile: UploadFile | None = None):
             status_code=400,
             detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
         )
-        
+    # audioFile.size    
+    if audioFile.size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
+        )
 
     # Reset the file cursor to the beginning
     audioFile.file.seek(0)
