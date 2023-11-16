@@ -19,18 +19,17 @@ db = client["SeniorDesignProject"]
 
 @router.get("/users/", tags=["users"])
 async def read_users():
-    return [{"username": "Rick"}, {"username": "Morty"}]
-
+    return users
+@router.get("/users/checkCookie")
+async def checkCookies(request: Request):
+    cookieValue = request.cookies.get("loggedInSession", None)
+    return {"loggedInSession": cookieValue}
 
 @router.get("/users/me", tags=["users"])
 async def read_user_me():
     return {"username": "fakecurrentuser"}
 
-'''
-@router.get("/users/{username}", tags=["users"])
-async def read_user(username: str):
-    return {"username": username}
-'''
+
 
 @router.post('/users/register', tags=['users'])
 async def register(username: Annotated[str, Form()], password: Annotated[str, Form()]):
@@ -52,7 +51,7 @@ async def register(username: Annotated[str, Form()], password: Annotated[str, Fo
 
 
 @router.post("/users/login", tags=["users"])
-async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+async def login(username: Annotated[str, Form()], password: Annotated[str, Form()], response : Response):
     
     
     #user_found = users.find_one({"userid": user})
@@ -61,7 +60,7 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
         # user exists
         if password == users[username]:
             # correct password
-            #response.set_cookie(key="loggedInSession", value="username")
+            response.set_cookie(key="loggedInSession", value=username)
             message = 'Correct password'
             return message
         else:
@@ -74,17 +73,16 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
         return message
 
 
-@router.get("/users/logout", tags=["users"])
-async def logout_user(response : Response):
-    result = False
+@router.post("/users/logout", tags=["users"])
+async def logout_user(request : Request, response : Response):
     message = "Error: No user in session to logout"
+    currUser = request.cookies.get("loggedInSession", None)
 
     # if the session currently has a user, remove the user\
-    if "loggedInSession" in response.cookies.keys():
+    if currUser:
         response.delete_cookie("loggedInSession")
-        result = True
         message = "User successfully logged out"
-
+   
     return message
 
 
