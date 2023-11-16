@@ -1,69 +1,66 @@
 # TODO: all functions here have to fetch data from MongoDB
 #from dotenv import load_dotenv
-from fastapi import APIRouter, Response, Request, responses
+from fastapi import APIRouter, Response, Request, responses, Form
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
+from typing import Annotated
 
 
 router = APIRouter()
-
+users = {}
 
 #load_dotenv()
 uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
 ca = certifi.where()
 client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 db = client["SeniorDesignProject"]
-users = db["users"]
+#users = db["users"]
 
 @router.get("/users/", tags=["users"])
 async def read_users():
-    return [{"username": "Rick"}, {"username": "Morty"}]
-
+    return users
+@router.get("/users/checkCookie")
+async def checkCookies(request: Request):
+    cookieValue = request.cookies.get("loggedInSession", None)
+    return {"loggedInSession": cookieValue}
 
 @router.get("/users/me", tags=["users"])
 async def read_user_me():
     return {"username": "fakecurrentuser"}
 
-'''
-@router.get("/users/{username}", tags=["users"])
-async def read_user(username: str):
-    return {"username": username}
-'''
 
-@router.get('/users/register', tags=['users'])
-async def register(response : Response):
-    message = ""
-    json = response.get_json()
-    user = json.get("username", None)
-    if not user:
+
+@router.post('/users/register', tags=['users'])
+async def register(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    '''
+    if not username:
         message = "username cannot be empty"
         return message
-    user_found = users.find_one({"username": user})
-    if user_found:
-        message = 'username already exists'
-        return message
-
-    newUser = {
-        "username" : json.get("username"),
-        "password" : json.get("password")
-    }
-    users.insert_one(newUser)
+    '''
     
-    return newUser["username"]
-
-
-@router.get("/users/login", tags=["users"])
-async def login(response : Response):
+    #user_found = users.find_one({"username": user})
+    if username in users:
+        return {"message":'username already exists' }
     
-    user = response.get("username")
-    password = response.get("password")
-    user_found = users.find_one({"userid": user})
-    if user_found is not None:
+    
+    #users.insert_one(newUser)
+    users[username] = password
+    
+    return {"message" : "User registered"}
+
+
+@router.post("/users/login", tags=["users"])
+async def login(username: Annotated[str, Form()], password: Annotated[str, Form()], response : Response):
+    
+    
+    #user_found = users.find_one({"userid": user})
+    
+    if username in users.keys():
         # user exists
-        if password == user_found["password"]:
+        if password == users[username]:
             # correct password
-            response.set_cookie(key="loggedInSession", value="username")
+            response.set_cookie(key="loggedInSession", value=username)
             message = 'Correct password'
             return message
         else:
@@ -76,17 +73,16 @@ async def login(response : Response):
         return message
 
 
-@router.get("/users/logout", tags=["users"])
-async def logout_user(response : Response):
-    result = False
+@router.post("/users/logout", tags=["users"])
+async def logout_user(request : Request, response : Response):
     message = "Error: No user in session to logout"
+    currUser = request.cookies.get("loggedInSession", None)
 
     # if the session currently has a user, remove the user\
-    if "loggedInSession" in response.cookies.keys():
+    if currUser:
         response.delete_cookie("loggedInSession")
-        result = True
         message = "User successfully logged out"
-
+   
     return message
 
 
