@@ -47,22 +47,26 @@ async def audio_input(audioFile: UploadFile | None = None):
     mime = magic.Magic()
     file_type = mime.from_buffer(audioFile.file.read(1024))
     # fileSize = len(audioFile)
-
-    allowed_formats = {"audio/mpeg", "audio/wav"}
-    if file_type not in allowed_formats:
+    
+    allowed_formats = {"MPEG ADTS", "RIFF"}
+    if not any(x in file_type for x in allowed_formats):
         raise HTTPException(
             status_code=400,
-            detail="File format not supported. Supported formats are MP3 and WAV.",
+            detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
         )
+        
 
     # Reset the file cursor to the beginning
     audioFile.file.seek(0)
+
+    fileName = audioFile.filename
+    file_extension = fileName.split(".")[-1]
 
     message: str = "Default message"
     saved: bool = False
 
     # if fileSize > threshhold:
-    if audioFile not in await get_list_of_audio_in_temp():
+    if fileName not in await get_list_of_audio_in_temp():
         saved, message = await save_audio_to_temp(audioFile)
     else:
         message = "File already exists"

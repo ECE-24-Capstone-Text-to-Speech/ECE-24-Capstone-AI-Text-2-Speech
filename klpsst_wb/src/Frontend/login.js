@@ -57,15 +57,20 @@ const KLPSST_Login = ({}) => {
         e.preventDefault();
 
         console.log("Login submitted with:", { username, password });
+        const formData = new FormData();
+        formData.append('response', username); // Use 'audioFile' as the key for the first file
+        formData.append('response', password); // Use 'audioFile' as the key for the second file
 
         try {
-            const response = await fetch('http://localhost/register', {
+            const response = await fetch('http://localhost:80/users/register', {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ username, password }),
+              body: formData,
             });
+
+            //   const response = await fetch('http://localhost:80/files/audioInput', {
+            //     method: 'POST',
+            //     body: formData,
+            //   });
             // return response.json();
       
             if (response.ok) {

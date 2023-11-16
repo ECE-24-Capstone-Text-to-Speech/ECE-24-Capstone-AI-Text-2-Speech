@@ -31,10 +31,11 @@ async def read_user(username: str):
     return {"username": username}
 '''
 
-@router.get('/users/register', tags=['users'])
+@router.post('/users/register', tags=['users']) #changed from get go post
 async def register(response : Response):
     message = ""
-    json = response.get_json()
+    # json = response.get_json()
+    json = response.json()
     user = json.get("username", None)
     if not user:
         message = "username cannot be empty"
@@ -101,5 +102,3 @@ async def testLoginCookies(request: Request):
 
     message = request.cookies.get("loggedInSession")
     return {"Message": message}
-
-
