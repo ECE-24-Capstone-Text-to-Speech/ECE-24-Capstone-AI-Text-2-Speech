@@ -1,8 +1,9 @@
 import magic
-from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, status
 from typing import Union
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from internal.cookies import getCurrUser
 from internal.getFile import get_list_of_audio_in_temp
 from internal.saveFile import save_audio_to_temp
 
@@ -36,11 +37,18 @@ async def audio_page():
 
 
 @router.post("/audioInput")
-async def audio_input(audioFile: UploadFile | None = None):
+async def audio_input(request: Request, audioFile: UploadFile | None = None):
     """
     Grabs FormData.audioFile.
     Requires frontend to send file in as FormData, input called "audioFile"
     """
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in in order to upload files!"
+        )
+
     if not audioFile:
         raise HTTPException(
             status_code=404, detail="No input audio file given in the request."
@@ -73,8 +81,8 @@ async def audio_input(audioFile: UploadFile | None = None):
     saved: bool = False
 
     # if fileSize > threshhold:
-    if fileName not in await get_list_of_audio_in_temp():
-        saved, message = await save_audio_to_temp(audioFile)
+    if fileName not in await get_list_of_audio_in_temp(user=user):
+        saved, message = await save_audio_to_temp(audioFile, user=user)
     else:
         message = "File already exists"
 
@@ -107,8 +115,14 @@ async def get_audio_list():
     # https://github.com/tiangolo/fastapi/issues/3258
     response_class=FileResponse,
 )
-async def get_audio_file(audio_name: str):
+async def get_audio_file(request:Request, audio_name: str):
     # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in in order to upload files!"
+        )
     files = await get_list_of_audio_in_temp(fullPath=True)
     for file in files:
         if audio_name == file.split("/")[-1]:
