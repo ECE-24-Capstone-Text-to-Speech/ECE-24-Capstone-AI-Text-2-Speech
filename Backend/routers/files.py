@@ -34,6 +34,11 @@ preset = "fast"
 CUSTOM_VOICE_NAME = "martin"     ##go through custom voices and optimize this line. There's a bunch in tortoise/voices/
 custom_voice_folder = f"tortoise/voices/{CUSTOM_VOICE_NAME}"
 
+
+
+
+
+
 router = APIRouter(
     prefix="/files",  # all paths in this file assumes preceed by `/files`
     tags=["files"],
