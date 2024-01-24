@@ -20,7 +20,6 @@ server.add_middleware(
     allow_headers=["*"],
 )
 
-
 server.include_router(items.router)
 server.include_router(files.router)
 server.include_router(users.router)
