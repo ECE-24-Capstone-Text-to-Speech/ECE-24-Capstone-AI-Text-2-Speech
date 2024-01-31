@@ -9,12 +9,12 @@ import certifi
 router = APIRouter()
 
 
-#load_dotenv()
-uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
-ca = certifi.where()
-client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
-db = client["SeniorDesignProject"]
-users = db["users"]
+# #load_dotenv()
+# uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
+# ca = certifi.where()
+# client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
+# db = client["SeniorDesignProject"]
+# users = db["users"]
 
 @router.get("/users/", tags=["users"])
 async def read_users():

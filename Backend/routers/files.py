@@ -7,6 +7,7 @@ from internal.saveFile import save_audio_to_temp
 # from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
+import magic
 import torchaudio
 import torch.nn as nn
 import torch.nn.functional as F
