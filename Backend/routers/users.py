@@ -1,8 +1,8 @@
 # TODO: all functions here have to fetch data from MongoDB
 #from dotenv import load_dotenv
 from fastapi import APIRouter, Response, Request, responses, Form
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+# from pymongo.mongo_client import MongoClient
+# from pymongo.server_api import ServerApi
 import certifi
 from typing import Annotated
 
@@ -11,10 +11,10 @@ router = APIRouter()
 users = {}
 
 #load_dotenv()
-uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
-ca = certifi.where()
-client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
-db = client["SeniorDesignProject"]
+# uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
+# ca = certifi.where()
+# client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
+# db = client["SeniorDesignProject"]
 #users = db["users"]
 
 @router.get("/users/", tags=["users"])

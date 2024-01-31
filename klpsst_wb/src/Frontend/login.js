@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 // import styled from "styled-components";
 import "./login.css";
-import { Navigate, redirect } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
@@ -12,6 +12,10 @@ import { render } from "@testing-library/react";
 const KLPSST_Login = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+
+  //redirectiom code
+  const navigate = useNavigate();
+  const [redirect, setRedirect] = useState(false);
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -67,10 +71,24 @@ const KLPSST_Login = ({}) => {
         body: formData,
       });
 
+      // var mydata = JSON.parse(response.json());
+
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
-        console.log("Login successful");
-        alert(`YAY`);
+        const errorMessage = await response.json();
+
+        console.log(errorMessage);
+        if (errorMessage == "User does not exist") {
+          console.log("Login unsuccessful");
+          alert(`User does not exist`);
+        } else if (errorMessage == "Correct password") {
+          console.log("Correct");
+          setRedirect(true); //for redirection?
+          alert("Congrats! You're logged in!");
+        } else if (errorMessage == "Incorrect password") {
+          console.log("Correct Username");
+          alert("Wrong Password");
+        }
       } else {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
@@ -82,6 +100,10 @@ const KLPSST_Login = ({}) => {
       setMessage("An error occurred. Please try again later.");
     }
   };
+
+  if(redirect) {
+    return <Navigate to="/home" />;
+  }
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
