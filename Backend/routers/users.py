@@ -1,8 +1,8 @@
 # TODO: all functions here have to fetch data from MongoDB
 #from dotenv import load_dotenv
 from fastapi import APIRouter, Response, Request, responses, Form
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+# from pymongo.mongo_client import MongoClient
+# from pymongo.server_api import ServerApi
 import certifi
 from typing import Annotated
 
@@ -10,66 +10,75 @@ from typing import Annotated
 router = APIRouter()
 users = {}
 
-#load_dotenv()
 uri = "mongodb+srv://seniordesignusername:123password123@seniordesigncluster.zhtgtmr.mongodb.net/?retryWrites=true&w=majority"
-ca = certifi.where()
-client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
-db = client["SeniorDesignProject"]
-#users = db["users"]
 
-@router.get("/users/", tags=["users"])
-async def read_users():
-    return users
-@router.get("/users/checkCookie")
-async def checkCookies(request: Request):
-    cookieValue = request.cookies.get("loggedInSession", None)
-    return {"loggedInSession": cookieValue}
+#from dotenv import load_dotenv
+from fastapi import APIRouter, Response, Request, responses, Form
 
-@router.get("/users/me", tags=["users"])
-async def read_user_me():
-    return {"username": "fakecurrentuser"}
+from typing import Annotated
+from pymongo.mongo_client import MongoClient
+import certifi
 
+
+# Create a new client and connect to the server
+
+
+router = APIRouter()
 
 
 @router.post('/users/register', tags=['users'])
 async def register(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    '''
-    if not username:
-        message = "username cannot be empty"
+    ca = certifi.where()
+    client = MongoClient(uri, tlsCAFile=ca)
+    db = client["SeniorDesignDb"]
+    users = db["users"]
+    userPass = db["userPass"]
+
+    #check if username is taken:
+    if users.find_one({"username": username}):
+        message = 'username already exists'
+        client.close()
         return message
-    '''
     
-    #user_found = users.find_one({"username": user})
-    if username in users:
-        return {"message":'username already exists' }
-    
-    
-    #users.insert_one(newUser)
-    users[username] = password
-    
-    return {"message" : "User registered"}
+    newUser = {
+        "username": username,
+        "password": password
+
+    }
+    users.insert_one({"username": username})
+    userPass.insert_one(newUser)
+    message = 'user created'
+    client.close()
+    return message
 
 
 @router.post("/users/login", tags=["users"])
 async def login(username: Annotated[str, Form()], password: Annotated[str, Form()], response : Response):
-    
+    ca = certifi.where()
+    client = MongoClient(uri, tlsCAFile=ca)
+    db = client["SeniorDesignDb"]
+    users = db["users"]
+    userPass = db["userPass"]
     
     #user_found = users.find_one({"userid": user})
-    
-    if username in users.keys():
+    if users.find_one({"username": username}):
+
         # user exists
-        if password == users[username]:
+        if userPass.find_one({"username": username, "password": password}):
             # correct password
             response.set_cookie(key="loggedInSession", value=username)
             message = 'Correct password'
+            client.close()
             return message
         else:
             # incorrect password
             message = 'Incorrect password'
+            client.close()
             return message
     else:
         # user doesn't exist
         message = 'User does not exist'
+        client.close()
         return message
 
 
@@ -84,18 +93,5 @@ async def logout_user(request : Request, response : Response):
         message = "User successfully logged out"
    
     return message
-
-
-
-@router.get("/users/testLogin", tags=["users"])
-async def testLoginCookies(request: Request):
-    response = responses.JSONResponse(content={"message": "hello"})
-    print(request)
-
-    # Use `Response` to set a cookie in the request
-    response.set_cookie(key="loggedInSession", value="123123123 cookie")
-
-    message = request.cookies.get("loggedInSession")
-    return {"Message": message}
 
 
