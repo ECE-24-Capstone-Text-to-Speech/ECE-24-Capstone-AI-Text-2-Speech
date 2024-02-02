@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 // import styled from "styled-components";
 import "./klpsst.css";
 import { Navigate, redirect } from "react-router-dom";
-import KLPSSTLOGO from "./logo_image.png";
+import KLPSSTLOGO from "./logo_image.png"
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 //const backendURL;
@@ -13,25 +13,26 @@ import { render } from "@testing-library/react";
 const KLPSST_Page = () => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
-  const [file1, setFile1] = useState("");
-  const [file2, setFile2] = useState("");
+  const [file1, setFile1] = useState('');
+  const [file2, setFile2] = useState('');
 
-  // Define dark mode theme
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
 
-  // Define light mode theme
-  const lightTheme = createTheme({
-    palette: {
-      mode: "light",
-      primary: {
-        main: "rgb(243, 180, 65)",
+    // Define dark mode theme
+    const darkTheme = createTheme({
+      palette: {
+        mode: "dark",
       },
-    },
-  });
+    });
+
+    // Define light mode theme
+    const lightTheme = createTheme({
+      palette: {
+        mode: "light",
+        primary: {
+          main: "rgb(243, 180, 65)",
+        },
+      },
+    });
 
   // State to track theme
   const [theme, setTheme] = useState(initialTheme);
@@ -45,11 +46,12 @@ const KLPSST_Page = () => {
   };
 
   // Define a state variable to store the input's value
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
+
 
   const handleFile1Change = (event) => {
     setFile1(event.target.files[0]);
@@ -70,12 +72,12 @@ const KLPSST_Page = () => {
   const sendFilesToBackend = async (file1, file2) => {
     // Create a FormData object to append files
     const formData = new FormData();
-    formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
-    formData.append("audioFile", file2); // Use 'audioFile' as the key for the second file
+    formData.append('audioFile', file1); // Use 'audioFile' as the key for the first file
+    formData.append('audioFile', file2); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch("http://localhost:80/files/audioInput", {
-        method: "POST",
+      const response = await fetch('http://localhost:80/files/audioInput', {
+        method: 'POST',
         body: formData,
       });
 
@@ -94,32 +96,26 @@ const KLPSST_Page = () => {
   };
 
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <div id="homepage" className={theme === "dark" ? "dark-mode" : ""}>
+   <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    <div id="homepage" className={theme === "dark" ? "dark-mode" : ""}>
         <Button onClick={toggleTheme} id="toggleButton">
-          {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         </Button>
         <Typography variant="h1">KLPSST</Typography>
-        <img
-          src={KLPSSTLOGO}
-          alt="logo"
-          style={{ width: "168px", height: "168px" }}
-        />
-        <form onSubmit={handleUpload}>
-          <label htmlFor="userInput" style={{ textAlign: "left" }}>
-            Type a sentence:
-          </label>
-          <input
+        <img src={KLPSSTLOGO} alt="logo" style={{ width: '168px', height: '168px' }} />
+        <form onSubmit={handleUpload}>         
+            <label htmlFor="userInput" style={{ textAlign: "left" }}>Type a sentence:</label>
+            <input
             type="text"
             id="userInput"
             name="userInput"
             placeholder="sentence"
             value={inputValue}
             onChange={handleInputChange}
-          />
-          <p>You typed: {inputValue}</p>
-
-          <label htmlFor="fileInput1">Upload File 1:</label>
+            />
+            <p>You typed: {inputValue}</p>
+        
+            <label htmlFor="fileInput1">Upload File 1:</label>
           <input type="file" id="fileInput" onChange={handleFile1Change} />
           <br />
 
@@ -127,13 +123,12 @@ const KLPSST_Page = () => {
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
 
-          <input type="submit" value="Upload" />
-          <input type="submit" value="Download" />
+            <input type="submit" value="Upload" />
         </form>
 
         <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
         <p id="fileName"></p>
-      </div>
+        </div>
     </ThemeProvider>
   );
 };

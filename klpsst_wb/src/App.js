@@ -1,16 +1,10 @@
-import logo from "./logo.svg";
-import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  NavLink,
-} from "react-router-dom";
-import KLPSST_Page from "./Frontend/klpsst.js";
-import KLPSST_Login from "./Frontend/login.js";
-import KLPSST_Bar from "./Frontend/navbar.js";
-import KLPSST_Register from "./Frontend/register.js";
+import logo from './logo.svg';
+import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom'
+import KLPSST_Page from './Frontend/klpsst.js';
+import KLPSST_Login from './Frontend/login.js';
+import KLPSST_Bar from './Frontend/navbar.js';
+import KLPSST_Register from './Frontend/register.js';
 
 const App = () => {
   return (
@@ -29,7 +23,7 @@ const App = () => {
         </nav> */}
 
         <Routes>
-          <Route path="/" element={<KLPSST_Login />} />
+          <Route path="/" element={<KLPSST_Page />} />
           <Route path="/home" element={<KLPSST_Page />} />
           <Route path="/login" element={<KLPSST_Login />} />
           <Route path="/register" element={<KLPSST_Register />} />
@@ -40,3 +34,5 @@ const App = () => {
 };
 
 export default App;
+
+
