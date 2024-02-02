@@ -47,7 +47,6 @@ const KLPSST_Page = () => {
   // Define a state variable to store the input's value
   const [inputValue, setInputValue] = useState("");
 
-  // Create an event handler function to update the input value
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
