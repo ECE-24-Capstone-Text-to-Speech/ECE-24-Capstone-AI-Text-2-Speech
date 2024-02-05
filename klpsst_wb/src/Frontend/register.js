@@ -4,8 +4,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 // import styled from "styled-components";
 import "./register.css";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
-
+import { Navigate, redirect } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
@@ -64,15 +63,15 @@ const KLPSST_Register = ({}) => {
   const handleConfirm = (e) => {
     let confirmPw = e.target.value;
     setConfirm(confirmPw === password);
-  };
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!confirm) {
-      console.log("Incorrect confirm password");
-      alert(`Error: Incorrect Confrim Password`);
-      return;
+    if(!confirm){
+        console.log("Incorrect confirm password")
+        alert(`Error: Incorrect Confrim Password`);
+        return;
     }
 
     console.log("Login submitted with:", { username, password });
@@ -88,17 +87,7 @@ const KLPSST_Register = ({}) => {
 
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
-        const errorMessage = await response.json();
-
-        console.log(errorMessage);
-        if (errorMessage == "username already exists") {
-          console.log("Registration unsuccessful");
-          alert(`Username is taken`);
-        } else if (errorMessage == "user created") {
-          console.log("Correct");
-          setRedirect(true); //for redirection?
-          alert("Congrats! You're registered!");
-        }
+        console.log("Login successful");
       } else {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
@@ -143,7 +132,11 @@ const KLPSST_Register = ({}) => {
           </label>
           <label>
             Confirm Password:
-            <input type="password" onChange={handleConfirm} required />
+            <input
+              type="password"
+              onChange={handleConfirm}
+              required
+            />
           </label>
           <button type="submit">Enter</button>
         </form>

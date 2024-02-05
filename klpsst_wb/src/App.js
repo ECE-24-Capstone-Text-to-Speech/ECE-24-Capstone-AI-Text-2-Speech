@@ -28,7 +28,7 @@ const App = () => {
         </nav> */}
 
         <Routes>
-          <Route path="/" element={<KLPSST_Login />} />
+          <Route path="/" element={<KLPSST_Page />} />
           <Route path="/home" element={<KLPSST_Page />} />
           <Route path="/login" element={<KLPSST_Login />} />
           <Route path="/register" element={<KLPSST_Register />} />

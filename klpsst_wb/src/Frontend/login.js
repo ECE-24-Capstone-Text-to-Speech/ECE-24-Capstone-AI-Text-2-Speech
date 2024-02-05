@@ -13,7 +13,7 @@ const KLPSST_Login = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
-  //redirection code
+  //redirectiom code
   const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
 
