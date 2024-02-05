@@ -9,9 +9,15 @@ import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 
+//sdiugfyuv
+
 const KLPSST_Register = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+
+  //redirection code
+  const navigate = useNavigate();
+  const [redirect, setRedirect] = useState(false);
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -93,6 +99,10 @@ const KLPSST_Register = ({}) => {
       setMessage("An error occurred. Please try again later.");
     }
   };
+
+  if (redirect) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
