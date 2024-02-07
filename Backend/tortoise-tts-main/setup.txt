@@ -1,0 +1,26 @@
+NOTES FROM LUCY (EVERYTHING I HAD TO DO TO SET IT UP AGAIN):
+
+conda create --name tortoise python=3.9 numba inflect
+conda update -all #(not needed if your conda is up to date)
+conda activate tortoise
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install transformers=4.29.2
+python setup.py install
+conda install packaging
+python -m pip install beartype
+conda install lazy_loader
+conda install decoratory
+python -m pip install msgpack 
+
+# MESSAGE AFTER INSTALLING MSGPACK
+librosa 0.10.1 requires audioread>=2.1.9, which is not installed.
+librosa 0.10.1 requires pooch>=1.0, which is not installed.
+librosa 0.10.1 requires scikit-learn>=0.20.0, which is not installed.
+librosa 0.10.1 requires soundfile>=0.12.1, which is not installed.
+librosa 0.10.1 requires soxr>=0.3.2, which is not installed.
+
+HAVE TO RUN EACH TIME BEFORE RUNNING:
+conda activate tortoise
+
+CHECK IF TORTOISE CONDA ENV ACTIVATED:
+conda info --envs
