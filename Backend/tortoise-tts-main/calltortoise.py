@@ -27,7 +27,7 @@ def generate_voice_tortoise(custom_voice_name_backend, sentence_string):
 
   # Generate speech with the custotm voice.
   voice_samples, conditioning_latents = load_voice(CUSTOM_VOICE_NAME)
-  gen = tts.tts_with_preset(sentence_string, preset=preset, voice_samples=voice_samples, 
+  gen = tts.tts_with_preset(sentence_string, CUSTOM_VOICE_NAME, preset=preset, voice_samples=voice_samples, 
                             conditioning_latents=conditioning_latents)
   
   torchaudio.save(f'generated-{CUSTOM_VOICE_NAME}.wav', gen.squeeze(0).cpu(), 24000)

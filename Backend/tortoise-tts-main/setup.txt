@@ -11,8 +11,9 @@ python -m pip install beartype
 conda install lazy_loader
 conda install decoratory
 python -m pip install msgpack 
+python -m pip install soundfile
 
-# MESSAGE AFTER INSTALLING MSGPACK
+# MESSAGE AFTER INSTALLING MSGPACK (IGNORED AND WAS ABLE TO RUN):
 librosa 0.10.1 requires audioread>=2.1.9, which is not installed.
 librosa 0.10.1 requires pooch>=1.0, which is not installed.
 librosa 0.10.1 requires scikit-learn>=0.20.0, which is not installed.
