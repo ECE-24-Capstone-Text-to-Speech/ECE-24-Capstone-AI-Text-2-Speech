@@ -1,15 +1,27 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Request,
+    Response,
+    UploadFile,
+    status,
+)
 from typing import Union
 import os
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.cookies import getCurrUser
-from internal.getFile import get_list_of_audio_in_temp
+from internal.getFile import (
+    get_list_of_audio_in_temp,
+    get_list_of_audio_in_tortoise_out,
+)
 from internal.saveFile import save_audio_to_temp
 
 # from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
+
 MAX_FILE_SIZE = 1_000_000  # 1 MB
 
 
@@ -35,6 +47,7 @@ async def audio_page():
     """
     return HTMLResponse(content=content)
 
+
 @router.post("/audioInput")
 async def audio_input(request: Request, audioFile: UploadFile | None = None):
     """
@@ -45,7 +58,7 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload or download files!"
+            detail="Please log in in order to upload or download files!",
         )
 
     if not audioFile:
@@ -92,6 +105,7 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
         "message": message,
     }
 
+
 @router.get("/download")
 async def download_file(request: Request):
     # user = getCurrUser(request)
@@ -100,13 +114,12 @@ async def download_file(request: Request):
     #         status_code=status.HTTP_401_UNAUTHORIZED,
     #         detail="Please log in in order to upload or download files!"
     #     )
-    file_dir = os.path.dirname(os.path.abspath(__file__))  # Directory of the current file
-    relative_path = "tortoise_generations"  # Relative path from the current file to the directory containing the file
-    file_path = os.path.join(file_dir, relative_path, "tortoise_generation.mp3")  # Construct the full file path
-    if os.path.exists(file_path):
-        return FileResponse(path=file_path)
+    files = await get_list_of_audio_in_tortoise_out()
+    for file in files:
+        return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")
+
 
 @router.get("/audios")
 async def get_audio_list():
@@ -128,13 +141,13 @@ async def get_audio_list():
     # https://github.com/tiangolo/fastapi/issues/3258
     response_class=FileResponse,
 )
-async def get_audio_file(request:Request, audio_name: str):
+async def get_audio_file(request: Request, audio_name: str):
     # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
     user = getCurrUser(request)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload or download files!"
+            detail="Please log in in order to upload or download files!",
         )
     files = await get_list_of_audio_in_temp(fullPath=True)
     for file in files:
