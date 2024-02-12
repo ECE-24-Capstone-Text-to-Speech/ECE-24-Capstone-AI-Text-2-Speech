@@ -16,6 +16,10 @@ const KLPSST_Page = () => {
   const [file1, setFile1] = useState('');
   const [file2, setFile2] = useState('');
 
+  // console.log("dsfyyus");
+  // console.log(localStorage.getItem("loggedIn"));
+
+
 
     // Define dark mode theme
     const darkTheme = createTheme({
@@ -71,16 +75,29 @@ const KLPSST_Page = () => {
   };
 
   const sendFilesToBackend = async (file1, file2) => {
+    const formData1 = new FormData();
+    formData1.append("username", localStorage.getItem("username")); // Use 'audioFile' as the key for the first file
+    formData1.append("password", localStorage.getItem("password")); // Use 'audioFile' as the key for the second file
+    
+    
     // Create a FormData object to append files
     const formData = new FormData();
     formData.append('audioFile', file1); // Use 'audioFile' as the key for the first file
     formData.append('audioFile', file2); // Use 'audioFile' as the key for the second file
+
+    console.log(localStorage.getItem("username"));
+    console.log(localStorage.getItem("password"));
+    console.log(localStorage.getItem("loggedIn"));
+
 
     try {
       const response = await fetch('http://localhost:80/files/audioInput', {
         method: 'POST',
         body: formData,
       });
+
+      const responseData = await response.json();
+      console.log(responseData);
 
       if (response.ok) {
         // File uploaded successfully, handle success

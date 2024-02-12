@@ -73,16 +73,23 @@ const KLPSST_Login = ({}) => {
 
       // var mydata = JSON.parse(response.json());
 
+      console.log(response);
+
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
         const errorMessage = await response.json();
+        localStorage.setItem("username", username);
+        localStorage.setItem("password", password);
+        // localStorage.setItem("loggedIn", loggedIn);
 
         console.log(errorMessage);
         if (errorMessage == "User does not exist") {
           console.log("Login unsuccessful");
+
           alert(`User does not exist`);
         } else if (errorMessage == "Correct password") {
           console.log("Correct");
+          localStorage.setItem("loggedIn", true);
           setRedirect(true); //for redirection?
           alert("Congrats! You're logged in!");
         } else if (errorMessage == "Incorrect password") {
@@ -101,16 +108,19 @@ const KLPSST_Login = ({}) => {
     }
   };
 
-  if(redirect) {
+  if (redirect) {
+    console.log(localStorage.getItem("loggedIn"));
     return <Navigate to="/home" />;
   }
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <div className={`login${theme === "dark" ? " dark-mode" : ""}`}>
-        <Button onClick={toggleTheme} id="toggleButton">
-          {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        </Button>
+        <div id="buttons">
+          <Button onClick={toggleTheme} id="toggleButton">
+            {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          </Button>
+        </div>
         <Typography variant="h1">Login</Typography>
         <form onSubmit={handleSubmit}>
           <label>
