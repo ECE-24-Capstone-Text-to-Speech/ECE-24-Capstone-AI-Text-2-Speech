@@ -68,6 +68,33 @@ const KLPSST_Page = () => {
     //additional logic
   };
 
+  const handleDownload = async (event) => {
+    try {
+      // Adjust the URL to match the endpoint for downloading files
+      const response = await fetch(`http://localhost:80/files/download`, {
+        method: "GET",
+      });
+      if (response.ok) {
+        // File downloaded successfully, handle success
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "tortoisegeneration.mp3");
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } else {
+        // Handle server-side errors or other issues
+        console.error("Failed to download file:", response.statusText);
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error("Error downloading file:", error);
+    }
+  };
+  
+
   const sendFilesToBackend = async (file1, file2) => {
     // Create a FormData object to append files
     const formData = new FormData();
@@ -129,6 +156,8 @@ const KLPSST_Page = () => {
           <br />
 
           <input type="submit" value="Upload" />
+          <button type="download" onClick={handleDownload}>Download</button>
+
         </form>
 
         <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>

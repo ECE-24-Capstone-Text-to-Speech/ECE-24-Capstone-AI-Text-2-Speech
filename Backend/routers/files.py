@@ -1,6 +1,6 @@
-import magic
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, status
 from typing import Union
+import os
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.cookies import getCurrUser
@@ -35,7 +35,6 @@ async def audio_page():
     """
     return HTMLResponse(content=content)
 
-
 @router.post("/audioInput")
 async def audio_input(request: Request, audioFile: UploadFile | None = None):
     """
@@ -46,7 +45,7 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload files!"
+            detail="Please log in in order to upload or download files!"
         )
 
     if not audioFile:
@@ -54,17 +53,18 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
             status_code=404, detail="No input audio file given in the request."
         )
 
-    mime = magic.Magic()
-    file_type = mime.from_buffer(audioFile.file.read(1024))
-    # fileSize = len(audioFile)
-    
-    allowed_formats = {"MPEG ADTS", "RIFF"}
-    if not any(x in file_type for x in allowed_formats):
+    # Extract file extension from the filename
+    file_extension = audioFile.filename.split(".")[-1].lower()
+
+    # Check if the file extension is one of the allowed formats
+    allowed_formats = {"mp3", "wav"}
+    if file_extension not in allowed_formats:
         raise HTTPException(
             status_code=415,
-            detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+            detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
         )
-    # audioFile.size    
+
+    # Check file size
     if audioFile.size > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=413,
@@ -75,25 +75,38 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     audioFile.file.seek(0)
 
     fileName = audioFile.filename
-    file_extension = fileName.split(".")[-1]
 
     message: str = "Default message"
     saved: bool = False
 
-    # if fileSize > threshhold:
+    # Check if the file already exists in the temporary directory
     if fileName not in await get_list_of_audio_in_temp(user=user):
         saved, message = await save_audio_to_temp(audioFile, user=user)
     else:
         message = "File already exists"
 
     return {
-        "filename": audioFile,
+        "filename": fileName,
         "format": file_extension,
-        # "size": fileSize,
         "success": saved,
         "message": message,
     }
 
+@router.get("/download")
+async def download_file(request: Request):
+    # user = getCurrUser(request)
+    # if not user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Please log in in order to upload or download files!"
+    #     )
+    file_dir = os.path.dirname(os.path.abspath(__file__))  # Directory of the current file
+    relative_path = "tortoise_generations"  # Relative path from the current file to the directory containing the file
+    file_path = os.path.join(file_dir, relative_path, "tortoise_generation.mp3")  # Construct the full file path
+    if os.path.exists(file_path):
+        return FileResponse(path=file_path)
+    else:
+        raise HTTPException(status_code=404, detail="File not found")
 
 @router.get("/audios")
 async def get_audio_list():
@@ -121,7 +134,7 @@ async def get_audio_file(request:Request, audio_name: str):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload files!"
+            detail="Please log in in order to upload or download files!"
         )
     files = await get_list_of_audio_in_temp(fullPath=True)
     for file in files:
@@ -129,106 +142,3 @@ async def get_audio_file(request:Request, audio_name: str):
             return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")
-
-# from fastapi import FastAPI, APIRouter, Depends, HTTPException, Response, UploadFile
-# from fastapi.responses import FileResponse, HTMLResponse
-# from fastapi.staticfiles import StaticFiles
-# from internal.getFile import get_list_of_audio_in_temp
-# from internal.saveFile import save_audio_to_temp
-
-# from fastapi.middleware.cors import CORSMiddleware
-
-
-# # from models.AudioFile import AudioUploadFile
-
-# from dependencies import get_token_header
-
-# router = APIRouter(
-#     prefix="/files",  # all paths in this file assumes preceed by `/files`
-#     tags=["files"],
-#     # dependencies=[Depends(get_token_header)],
-#     responses={404: {"description": "files path needs functions name appended"}},
-# )
-
-# # router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
-
-
-# @router.get("/")
-# async def audio_page():
-#     content = """
-#         <body>
-#             <form action="/files/audioInput" enctype="multipart/form-data" method="post">
-#                 <input name="audioFile" type="file">
-#                 <input type="submit">
-#             </form>
-#         </body>
-#     """
-#     return HTMLResponse(content=content)
-
-
-# @router.post("/audioInput")
-# async def audio_input(audioFile: UploadFile | None = None):
-#     """
-#     Grabs FormData.audioFile.
-#     Requires frontend to send file in as FormData, input called "audioFile"
-#     """
-#     if not audioFile:
-#         raise HTTPException(
-#             status_code=400, detail="No input audio file given in the request."
-#         )
-#     fileName = audioFile.filename
-#     # fileSize = len(audioFile)
-
-#     allowed_formats = {"mp3", "wav"}
-#     file_extension = fileName[-3:]  # last three letters of file name
-#     if file_extension not in allowed_formats:
-#         raise HTTPException(
-#             status_code=400,
-#             detail="File format not supported. Supported formats are MP3 and WAV.",
-#         )
-
-#     message: str = "Default message"
-#     saved: bool = False
-#     # if fileSize > threshhold:
-#     if fileName not in await get_list_of_audio_in_temp():
-#         saved, message = await save_audio_to_temp(audioFile)
-#     else:
-#         message = "File already exists"
-
-#     return {
-#         "filename": fileName,
-#         "format": file_extension,
-#         # "size": fileSize,
-#         "success": saved,
-#         "message": message,
-#     }
-
-
-# @router.get("/audios")
-# async def get_audio_list():
-#     audioList = await get_list_of_audio_in_temp()
-#     print(audioList)
-#     return audioList
-
-
-# @router.get(
-#     "/audios/{audio_name}",
-#     # Set what the media type will be in the autogenerated OpenAPI specification.
-#     # fastapi.tiangolo.com/advanced/additional-responses/#additional-media-types-for-the-main-response
-#     responses={
-#         200: {"content": {"multipart/form-data": {}}},
-#         404: {"detail": "File not found"},
-#     },
-#     # Prevent FastAPI from adding "application/json" as an additional
-#     # response media type in the autogenerated OpenAPI specification.
-#     # https://github.com/tiangolo/fastapi/issues/3258
-#     response_class=FileResponse,
-# )
-# async def get_audio_file(audio_name: str):
-#     # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
-#     files = await get_list_of_audio_in_temp(fullPath=True)
-#     for file in files:
-#         if audio_name == file.split("/")[-1]:
-#             return FileResponse(path=file)
-#     else:
-#         raise HTTPException(status_code=404, detail="File not found")
