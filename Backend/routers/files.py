@@ -54,12 +54,12 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     Grabs FormData.audioFile.
     Requires frontend to send file in as FormData, input called "audioFile"
     """
-    user = getCurrUser(request)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload or download files!",
-        )
+    # user = getCurrUser(request)
+    # if not user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Please log in order to upload or download files!",
+    #     )
 
     if not audioFile:
         raise HTTPException(
@@ -112,7 +112,7 @@ async def download_file(request: Request):
     # if not user:
     #     raise HTTPException(
     #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Please log in in order to upload or download files!"
+    #         detail="Please log in order to upload or download files!"
     #     )
     files = await get_list_of_audio_in_tortoise_out()
     for file in files:
@@ -143,12 +143,12 @@ async def get_audio_list():
 )
 async def get_audio_file(request: Request, audio_name: str):
     # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
-    user = getCurrUser(request)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload or download files!",
-        )
+    # user = getCurrUser(request)
+    # if not user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Please log in order to upload or download files!",
+    #     )
     files = await get_list_of_audio_in_temp(fullPath=True)
     for file in files:
         if audio_name == file.split("/")[-1]:
