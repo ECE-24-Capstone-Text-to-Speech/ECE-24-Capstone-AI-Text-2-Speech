@@ -156,10 +156,10 @@ const KLPSST_Page = () => {
           <br />
 
           <input type="submit" value="Upload" />
-          <button type="download" onClick={handleDownload}>Download</button>
-
         </form>
-
+        <form>
+          <button type="download" onClick={handleDownload}>Download</button>
+        </form>
         <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
         <p id="fileName"></p>
       </div>
