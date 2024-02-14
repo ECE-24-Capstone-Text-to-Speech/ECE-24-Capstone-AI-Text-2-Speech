@@ -13,12 +13,9 @@ from tortoise.utils.audio import load_audio, load_voice, load_voices
 # LC: need custom_voice_name_backend to be potentially unique, dependent on source
 # we want that folder to be deleted whenever users get off our server
   
-def generate_voice_tortoise(custom_voice_name_backend, sentence_string):
-  # This will download all the models used by Tortoise from the HuggingFace hub.
-  tts = TextToSpeech()
+def generate_voice_tortoise(custom_voice_name_backend, sentence_string, tts, preset="fast"):
 
   # Pick a "preset mode" to determine quality. Options: {"ultra_fast", "fast" (default), "standard", "high_quality"}. See docs in api.py
-  preset = "fast"
 
   # Optionally, upload use your own voice by running the next two cells. I recommend
   # you upload at least 2 audio clips. They must be a WAV file, 6-10 seconds long.

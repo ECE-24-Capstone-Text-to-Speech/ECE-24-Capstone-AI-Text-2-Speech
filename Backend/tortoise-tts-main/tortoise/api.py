@@ -312,6 +312,7 @@ class TextToSpeech:
                     'cond_free_k': 2.0, 'diffusion_temperature': 1.0}
         # Presets are defined here.
         presets = {
+            'ultra_ultra_fast': {'num_autoregressive_samples': 2, 'diffusion_iterations': 10, 'cond_free': False},
             'ultra_fast': {'num_autoregressive_samples': 16, 'diffusion_iterations': 30, 'cond_free': False},
             'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
             'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
@@ -399,46 +400,46 @@ class TextToSpeech:
             calm_token = 83  # This is the token for coding silence, which is fixed in place with "fix_autoregressive_output"
 
             # LC: (first checkpoint)
-            path = "tortoise/autoreg_samples/" + speaker + "."
+            # path = "tortoise/autoreg_samples/" + speaker + "."
 
-            if (not os.path.isfile(path)):
-                if verbose:
-                    print("Generating autoregressive samples..")
-                if not torch.backends.mps.is_available():
-                    with self.temporary_cuda(self.autoregressive
-                    ) as autoregressive, torch.autocast(device_type="cuda", dtype=torch.float16, enabled=self.half):
-                        for b in tqdm(range(num_batches), disable=not verbose):
-                            codes = autoregressive.inference_speech(auto_conditioning, text_tokens,
-                                                                        do_sample=True,
-                                                                        top_p=top_p,
-                                                                        temperature=temperature,
-                                                                        num_return_sequences=self.autoregressive_batch_size,
-                                                                        length_penalty=length_penalty,
-                                                                        repetition_penalty=repetition_penalty,
-                                                                        max_generate_length=max_mel_tokens,
-                                                                        **hf_generate_kwargs)
-                            padding_needed = max_mel_tokens - codes.shape[1]
-                            codes = F.pad(codes, (0, padding_needed), value=stop_mel_token)
-                            samples.append(codes)
-                    torch.save(samples, path)
-                else:
-                    with self.temporary_cuda(self.autoregressive) as autoregressive:
-                        for b in tqdm(range(num_batches), disable=not verbose):
-                            codes = autoregressive.inference_speech(auto_conditioning, text_tokens,
-                                                                        do_sample=True,
-                                                                        top_p=top_p,
-                                                                        temperature=temperature,
-                                                                        num_return_sequences=self.autoregressive_batch_size,
-                                                                        length_penalty=length_penalty,
-                                                                        repetition_penalty=repetition_penalty,
-                                                                        max_generate_length=max_mel_tokens,
-                                                                        **hf_generate_kwargs)
-                            padding_needed = max_mel_tokens - codes.shape[1]
-                            codes = F.pad(codes, (0, padding_needed), value=stop_mel_token)
-                            samples.append(codes)
-                    torch.save(samples, path)
+            # if (not os.path.isfile(path)):
+            if verbose:
+                print("Generating autoregressive samples..")
+            if not torch.backends.mps.is_available():
+                with self.temporary_cuda(self.autoregressive
+                ) as autoregressive, torch.autocast(device_type="cuda", dtype=torch.float16, enabled=self.half):
+                    for b in tqdm(range(num_batches), disable=not verbose):
+                        codes = autoregressive.inference_speech(auto_conditioning, text_tokens,
+                                                                    do_sample=True,
+                                                                    top_p=top_p,
+                                                                    temperature=temperature,
+                                                                    num_return_sequences=self.autoregressive_batch_size,
+                                                                    length_penalty=length_penalty,
+                                                                    repetition_penalty=repetition_penalty,
+                                                                    max_generate_length=max_mel_tokens,
+                                                                    **hf_generate_kwargs)
+                        padding_needed = max_mel_tokens - codes.shape[1]
+                        codes = F.pad(codes, (0, padding_needed), value=stop_mel_token)
+                        samples.append(codes)
+                # torch.save(samples, path)
             else:
-                samples = torch.load(path)
+                with self.temporary_cuda(self.autoregressive) as autoregressive:
+                    for b in tqdm(range(num_batches), disable=not verbose):
+                        codes = autoregressive.inference_speech(auto_conditioning, text_tokens,
+                                                                    do_sample=True,
+                                                                    top_p=top_p,
+                                                                    temperature=temperature,
+                                                                    num_return_sequences=self.autoregressive_batch_size,
+                                                                    length_penalty=length_penalty,
+                                                                    repetition_penalty=repetition_penalty,
+                                                                    max_generate_length=max_mel_tokens,
+                                                                    **hf_generate_kwargs)
+                        padding_needed = max_mel_tokens - codes.shape[1]
+                        codes = F.pad(codes, (0, padding_needed), value=stop_mel_token)
+                        samples.append(codes)
+                    # torch.save(samples, path)
+            # else:
+            #     samples = torch.load(path)
 
             clip_results = []
             
