@@ -5,6 +5,7 @@ import KLPSST_Page from './Frontend/klpsst.js';
 import KLPSST_Login from './Frontend/login.js';
 import KLPSST_Bar from './Frontend/navbar.js';
 import KLPSST_Register from './Frontend/register.js';
+import KLPSST_Test from './Frontend/test.js';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/home" element={<KLPSST_Page />} />
           <Route path="/login" element={<KLPSST_Login />} />
           <Route path="/register" element={<KLPSST_Register />} />
+          <Route path="/test" element={<KLPSST_Test/>} />
         </Routes>
       </div>
     </Router>

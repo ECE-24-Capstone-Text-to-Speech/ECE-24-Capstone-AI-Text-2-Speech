@@ -7,8 +7,8 @@ import os
 
 # import IPython
 
-from tortoise.api import TextToSpeech
-from tortoise.utils.audio import load_audio, load_voice, load_voices
+from tortoise_tts.tortoise.api import TextToSpeech
+from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voices
 
 # LC: need custom_voice_name_backend to be potentially unique, dependent on source
 # we want that folder to be deleted whenever users get off our server

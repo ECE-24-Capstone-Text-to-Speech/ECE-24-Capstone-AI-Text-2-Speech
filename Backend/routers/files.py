@@ -1,4 +1,3 @@
-import magic
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, status
 from typing import Union
 from fastapi.responses import FileResponse, HTMLResponse
@@ -10,6 +9,9 @@ from internal.saveFile import save_audio_to_temp
 # from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
+from tortoise_tts.calltortoise import generate_voice_tortoise
+
+##generate_voice_tortoise("angie", "Hello. THis is Angie's second A.I. voice. Nice to meet you!")
 MAX_FILE_SIZE = 1_000_000  # 1 MB
 
 
@@ -54,8 +56,7 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
             status_code=404, detail="No input audio file given in the request."
         )
 
-    mime = magic.Magic()
-    file_type = mime.from_buffer(audioFile.file.read(1024))
+    file_type = (audioFile.file.read(1024))
     # fileSize = len(audioFile)
     
     allowed_formats = {"MPEG ADTS", "RIFF"}

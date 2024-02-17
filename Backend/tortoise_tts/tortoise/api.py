@@ -9,19 +9,19 @@ import torch.nn.functional as F
 import progressbar
 import torchaudio
 
-from tortoise.models.classifier import AudioMiniEncoderWithClassifierHead
-from tortoise.models.diffusion_decoder import DiffusionTts
-from tortoise.models.autoregressive import UnifiedVoice
+from tortoise_tts.tortoise.models.classifier import AudioMiniEncoderWithClassifierHead
+from tortoise_tts.tortoise.models.diffusion_decoder import DiffusionTts
+from tortoise_tts.tortoise.models.autoregressive import UnifiedVoice
 from tqdm import tqdm
-from tortoise.models.arch_util import TorchMelSpectrogram
-from tortoise.models.clvp import CLVP
-from tortoise.models.cvvp import CVVP
-from tortoise.models.random_latent_generator import RandomLatentConverter
-from tortoise.models.vocoder import UnivNetGenerator
-from tortoise.utils.audio import wav_to_univnet_mel, denormalize_tacotron_mel
-from tortoise.utils.diffusion import SpacedDiffusion, space_timesteps, get_named_beta_schedule
-from tortoise.utils.tokenizer import VoiceBpeTokenizer
-from tortoise.utils.wav2vec_alignment import Wav2VecAlignment
+from tortoise_tts.tortoise.models.arch_util import TorchMelSpectrogram
+from tortoise_tts.tortoise.models.clvp import CLVP
+from tortoise_tts.tortoise.models.cvvp import CVVP
+from tortoise_tts.tortoise.models.random_latent_generator import RandomLatentConverter
+from tortoise_tts.tortoise.models.vocoder import UnivNetGenerator
+from tortoise_tts.tortoise.utils.audio import wav_to_univnet_mel, denormalize_tacotron_mel, TacotronSTFT
+from tortoise_tts.tortoise.utils.diffusion import SpacedDiffusion, space_timesteps, get_named_beta_schedule
+from tortoise_tts.tortoise.utils.tokenizer import VoiceBpeTokenizer
+from tortoise_tts.tortoise.utils.wav2vec_alignment import Wav2VecAlignment
 from contextlib import contextmanager
 from huggingface_hub import hf_hub_download
 pbar = None
@@ -232,6 +232,8 @@ class TextToSpeech:
         self.vocoder = UnivNetGenerator().cpu()
         self.vocoder.load_state_dict(torch.load(get_model_path('vocoder.pth', models_dir), map_location=torch.device('cpu'))['model_g'])
         self.vocoder.eval(inference=True)
+        
+        self.stft = None # TacotronSTFT is only loaded if used.
 
         # Random latent generators (RLGs) are loaded lazily.
         self.rlg_auto = None
@@ -269,12 +271,17 @@ class TextToSpeech:
             auto_latent = self.autoregressive.get_conditioning(auto_conds)
             self.autoregressive = self.autoregressive.cpu()
 
+            if self.stft is None:
+                # Initialize STFT
+                self.stft = TacotronSTFT(1024, 256, 1024, 100, 24000, 0, 12000).to(self.device)
+
             diffusion_conds = []
             for sample in voice_samples:
                 # The diffuser operates at a sample rate of 24000 (except for the latent inputs)
                 sample = torchaudio.functional.resample(sample, 22050, 24000)
                 sample = pad_or_truncate(sample, 102400)
-                cond_mel = wav_to_univnet_mel(sample.to(self.device), do_normalization=False, device=self.device)
+                cond_mel = wav_to_univnet_mel(sample.to(self.device), do_normalization=False,
+                                              device=self.device, stft=self.stft)
                 diffusion_conds.append(cond_mel)
             diffusion_conds = torch.stack(diffusion_conds, dim=1)
 
@@ -305,7 +312,6 @@ class TextToSpeech:
             'standard': Very good quality. This is generally about as good as you are going to get.
             'high_quality': Use if you want the absolute best. This is not really worth the compute, though.
         """
-
         # Use generally found best tuning knobs for generation.
         settings = {'temperature': .8, 'length_penalty': 1.0, 'repetition_penalty': 2.0,
                     'top_p': .8,

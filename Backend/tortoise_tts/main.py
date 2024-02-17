@@ -1,4 +1,4 @@
-import calltortoise
+from tortoise_tts.calltortoise import generate_voice_tortoise
 import os
 import shutil
 
@@ -10,6 +10,6 @@ import shutil
     
     # shutil.move(folder_name + file, "C:/SeniorDesign/ECE-24-Capstone-AI-Text-2-Speech/Backend/tortoise/voices/otherorigin_audio_clips")
     
-calltortoise.generate_voice_tortoise("angie", "Hello. THis is Angie's second A.I. voice. Nice to meet you!")
+generate_voice_tortoise("angie", "Hello. THis is Angie's second A.I. voice. Nice to meet you!")
     
     # shutil.move("C:/SeniorDesign/ECE-24-Capstone-AI-Text-2-Speech/Backend/tortoise/voices/otherorigin_audio_clips", folder_name + file)
