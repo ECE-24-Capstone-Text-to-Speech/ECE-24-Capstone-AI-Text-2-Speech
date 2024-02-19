@@ -10,6 +10,8 @@ import KLPSSTLOGO from "./logo_image.png";
 import { render } from "@testing-library/react";
 
 const KLPSST_Login = ({}) => {
+  const { setAuth } = useAuth();
+
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
