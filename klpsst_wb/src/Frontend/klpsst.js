@@ -10,8 +10,11 @@ import KLPSST_Login from "./login";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 //const backendURL;
+import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Page = () => {
+  const { setAuth, user } = useAuth();
+
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
   const [file1, setFile1] = useState("");
@@ -158,6 +161,7 @@ const KLPSST_Page = () => {
             console.log("Naur");
             alert(`Logout unsucessful`);
           } else if (errorMessage == "User successfully logged out") {
+            setAuth(false);
             console.log("Yer");
             localStorage.setItem("loggedIn", false);
             setRedirect(true); //for redirection?
