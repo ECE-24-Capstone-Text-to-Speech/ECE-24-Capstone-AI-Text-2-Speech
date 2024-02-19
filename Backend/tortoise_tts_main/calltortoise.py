@@ -13,7 +13,7 @@ from tortoise.utils.audio import load_audio, load_voice, load_voices
 # LC: need custom_voice_name_backend to be potentially unique, dependent on source
 # we want that folder to be deleted whenever users get off our server
   
-def generate_voice_tortoise(custom_voice_name_backend, sentence_string, tts, preset="fast"):
+def generate_voice_tortoise(custom_voice_name_backend, sentence_string, tts, savepath, preset="fast"):
 
   # Pick a "preset mode" to determine quality. Options: {"ultra_fast", "fast" (default), "standard", "high_quality"}. See docs in api.py
 
@@ -27,5 +27,5 @@ def generate_voice_tortoise(custom_voice_name_backend, sentence_string, tts, pre
   gen = tts.tts_with_preset(sentence_string, CUSTOM_VOICE_NAME, preset=preset, voice_samples=voice_samples, 
                             conditioning_latents=conditioning_latents)
   
-  torchaudio.save(f'generated-{CUSTOM_VOICE_NAME}.wav', gen.squeeze(0).cpu(), 24000)
+  torchaudio.save(savepath, gen.squeeze(0).cpu(), 24000)
   # IPython.display.Audio(f'generated-{CUSTOM_VOICE_NAME}.wav')

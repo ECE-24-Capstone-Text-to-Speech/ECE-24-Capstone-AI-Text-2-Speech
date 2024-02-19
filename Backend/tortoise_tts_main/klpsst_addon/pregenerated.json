@@ -1,0 +1,402 @@
+{
+    "work": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/work.wav"
+    },
+    "then": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/then.wav"
+    },
+    "from": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/from.wav"
+    },
+    "see": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/see.wav"
+    },
+    "this": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/this.wav"
+    },
+    "all": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/all.wav"
+    },
+    "to": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/to.wav"
+    },
+    "like": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/like.wav"
+    },
+    "time": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/time.wav"
+    },
+    "could": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/could.wav"
+    },
+    "so": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/so.wav"
+    },
+    "an": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/an.wav"
+    },
+    "which": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/which.wav"
+    },
+    "than": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/than.wav"
+    },
+    "give": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/give.wav"
+    },
+    "think": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/think.wav"
+    },
+    "her": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/her.wav"
+    },
+    "want": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/want.wav"
+    },
+    "go": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/go.wav"
+    },
+    "back": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/back.wav"
+    },
+    "its": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/its.wav"
+    },
+    "be": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/be.wav"
+    },
+    "year": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/year.wav"
+    },
+    "how": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/how.wav"
+    },
+    "when": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/when.wav"
+    },
+    "even": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/even.wav"
+    },
+    "say": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/say.wav"
+    },
+    "after": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/after.wav"
+    },
+    "one": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/one.wav"
+    },
+    "new": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/new.wav"
+    },
+    "only": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/only.wav"
+    },
+    "look": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/look.wav"
+    },
+    "you": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/you.wav"
+    },
+    "will": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/will.wav"
+    },
+    "on": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/on.wav"
+    },
+    "us": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/us.wav"
+    },
+    "get": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/get.wav"
+    },
+    "because": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/because.wav"
+    },
+    "his": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/his.wav"
+    },
+    "she": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/she.wav"
+    },
+    "come": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/come.wav"
+    },
+    "it": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/it.wav"
+    },
+    "in": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/in.wav"
+    },
+    "that": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/that.wav"
+    },
+    "of": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/of.wav"
+    },
+    "into": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/into.wav"
+    },
+    "just": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/just.wav"
+    },
+    "not": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/not.wav"
+    },
+    "their": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/their.wav"
+    },
+    "well": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/well.wav"
+    },
+    "about": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/about.wav"
+    },
+    "take": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/take.wav"
+    },
+    "your": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/your.wav"
+    },
+    "no": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/no.wav"
+    },
+    "can": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/can.wav"
+    },
+    "the": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/the.wav"
+    },
+    "out": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/out.wav"
+    },
+    "and": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/and.wav"
+    },
+    "also": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/also.wav"
+    },
+    "people": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/people.wav"
+    },
+    "way": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/way.wav"
+    },
+    "two": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/two.wav"
+    },
+    "most": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/most.wav"
+    },
+    "over": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/over.wav"
+    },
+    "but": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/but.wav"
+    },
+    "up": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/up.wav"
+    },
+    "he": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/he.wav"
+    },
+    "there": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/there.wav"
+    },
+    "know": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/know.wav"
+    },
+    "or": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/or.wav"
+    },
+    "them": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/them.wav"
+    },
+    "these": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/these.wav"
+    },
+    "have": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/have.wav"
+    },
+    "we": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/we.wav"
+    },
+    "any": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/any.wav"
+    },
+    "me": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/me.wav"
+    },
+    "day": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/day.wav"
+    },
+    "who": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/who.wav"
+    },
+    "him": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/him.wav"
+    },
+    "some": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/some.wav"
+    },
+    "they": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/they.wav"
+    },
+    "my": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/my.wav"
+    },
+    "with": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/with.wav"
+    },
+    "other": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/other.wav"
+    },
+    "at": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/at.wav"
+    },
+    "by": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/by.wav"
+    },
+    "good": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/good.wav"
+    },
+    "our": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/our.wav"
+    },
+    "as": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/as.wav"
+    },
+    "use": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/use.wav"
+    },
+    "first": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/first.wav"
+    },
+    "if": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/if.wav"
+    },
+    "for": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/for.wav"
+    },
+    "what": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/what.wav"
+    },
+    "I": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/I.wav"
+    },
+    "a": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/a.wav"
+    },
+    "now": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/now.wav"
+    },
+    "would": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/would.wav"
+    },
+    "do": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/do.wav"
+    },
+    "make": {
+        "last_used": 0,
+        "location": "tortoise_tts_main/klpsst_addon/pregenerated/make.wav"
+    }
+}

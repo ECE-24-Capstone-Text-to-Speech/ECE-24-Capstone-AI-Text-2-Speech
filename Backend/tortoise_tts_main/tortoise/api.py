@@ -312,7 +312,7 @@ class TextToSpeech:
                     'cond_free_k': 2.0, 'diffusion_temperature': 1.0}
         # Presets are defined here.
         presets = {
-            'ultra_ultra_fast': {'num_autoregressive_samples': 2, 'diffusion_iterations': 10, 'cond_free': False},
+            'ultra_ultra_fast': {'num_autoregressive_samples': 1, 'diffusion_iterations': 10, 'cond_free': False},
             'ultra_fast': {'num_autoregressive_samples': 16, 'diffusion_iterations': 30, 'cond_free': False},
             'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
             'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
@@ -441,6 +441,7 @@ class TextToSpeech:
             # else:
             #     samples = torch.load(path)
 
+            # LC: 
             clip_results = []
             
             if not torch.backends.mps.is_available():
@@ -507,6 +508,11 @@ class TextToSpeech:
                     best_results = samples[torch.topk(clip_results, k=k).indices]
             if self.cvvp is not None:
                 self.cvvp = self.cvvp.cpu()
+            
+            # LC: get rid of cvvp
+            # samples[0] = fix_autoregressive_output(samples[0], stop_mel_token)
+            # best_results = samples[0]
+
             del samples
 
             # The diffusion model actually wants the last hidden layer from the autoregressive model as conditioning
