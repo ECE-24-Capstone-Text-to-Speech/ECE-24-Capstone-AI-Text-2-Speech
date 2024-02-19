@@ -13,7 +13,7 @@ const KLPSST_Login = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
-  //redirection code
+  //redirectiom code
   const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
 
@@ -68,6 +68,7 @@ const KLPSST_Login = ({}) => {
     try {
       const response = await fetch("http://localhost:80/users/login", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -77,6 +78,9 @@ const KLPSST_Login = ({}) => {
 
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
+        response.headers.get("set-cookie");
+        // console.log(document.cookie());
+
         const errorMessage = await response.json();
         localStorage.setItem("username", username);
         localStorage.setItem("password", password);
