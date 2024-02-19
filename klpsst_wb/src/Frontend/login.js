@@ -78,9 +78,8 @@ const KLPSST_Login = ({}) => {
 
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
-        response.headers.get('set-cookie');
+        response.headers.get("set-cookie");
         // console.log(document.cookie());
-
 
         const errorMessage = await response.json();
         localStorage.setItem("username", username);
