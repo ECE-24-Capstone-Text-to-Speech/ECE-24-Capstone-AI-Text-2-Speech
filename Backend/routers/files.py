@@ -54,12 +54,12 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     Grabs FormData.audioFile.
     Requires frontend to send file in as FormData, input called "audioFile"
     """
-    # user = getCurrUser(request)
-    # if not user:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Please log in order to upload or download files!",
-    #     )
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to upload or download files!",
+        )
 
     if not audioFile:
         raise HTTPException(
@@ -108,12 +108,12 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
 
 @router.get("/download")
 async def download_file(request: Request):
-    # user = getCurrUser(request)
-    # if not user:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Please log in order to upload or download files!"
-    #     )
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to upload or download files!",
+        )
     files = await get_list_of_audio_in_tortoise_out()
     for file in files:
         return FileResponse(path=file)

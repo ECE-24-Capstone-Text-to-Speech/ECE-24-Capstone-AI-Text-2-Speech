@@ -13,8 +13,8 @@ import { render } from "@testing-library/react";
 const KLPSST_Page = () => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
-  const [file1, setFile1] = useState('');
-  const [file2, setFile2] = useState('');
+  const [file1, setFile1] = useState("");
+  const [file2, setFile2] = useState("");
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -75,6 +75,7 @@ const KLPSST_Page = () => {
     try {
       // Adjust the URL to match the endpoint for downloading files
       const response = await fetch(`http://localhost:80/files/download`, {
+        credentials: "include",
         method: "GET",
       });
       if (response.ok) {
@@ -96,14 +97,8 @@ const KLPSST_Page = () => {
       console.error("Error downloading file:", error);
     }
   };
-  
 
   const sendFilesToBackend = async (file1, file2) => {
-    const formData1 = new FormData();
-    formData1.append("username", localStorage.getItem("username")); // Use 'audioFile' as the key for the first file
-    formData1.append("password", localStorage.getItem("password")); // Use 'audioFile' as the key for the second file
-    
-    
     // Create a FormData object to append files
     const formData = new FormData();
     formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
@@ -113,15 +108,15 @@ const KLPSST_Page = () => {
     console.log(localStorage.getItem("password"));
     console.log(localStorage.getItem("loggedIn"));
 
-
     try {
       const response = await fetch("http://localhost:80/files/audioInput", {
+        credentials: "include",
         method: "POST",
         body: formData,
       });
 
-      const responseData = await response.json();
-      console.log(responseData);
+      // const responseData = await response.json();
+      // console.log(responseData);
 
       if (response.ok) {
         // File uploaded successfully, handle success
@@ -174,11 +169,12 @@ const KLPSST_Page = () => {
           <input type="submit" value="Upload" />
         </form>
         <form>
-          <button type="download" onClick={handleDownload}>Download</button>
+          <button type="download" onClick={handleDownload}>
+            Download
+          </button>
         </form>
         <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
         <p id="fileName"></p>
-        
       </div>
     </ThemeProvider>
   );
