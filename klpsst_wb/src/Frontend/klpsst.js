@@ -115,8 +115,8 @@ const KLPSST_Page = () => {
         body: formData,
       });
 
-      const responseData = await response.json();
-      console.log(responseData);
+      // const responseData = await response.json();
+      // console.log(responseData);
 
       if (response.ok) {
         // File uploaded successfully, handle success
