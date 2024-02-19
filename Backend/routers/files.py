@@ -11,7 +11,7 @@ from internal.saveFile import save_audio_to_temp
 from dependencies import get_token_header
 from tortoise_tts.calltortoise import generate_voice_tortoise
 
-##generate_voice_tortoise("angie", "Hello. THis is Angie's second A.I. voice. Nice to meet you!")
+generate_voice_tortoise("daniel", "Hello. This is Angie's second A.I. voice. Nice to meet you!")
 MAX_FILE_SIZE = 1_000_000  # 1 MB
 
 
