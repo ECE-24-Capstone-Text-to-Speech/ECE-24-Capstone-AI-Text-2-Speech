@@ -100,7 +100,8 @@ const KLPSST_Login = ({}) => {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
         const errorMessage = await response.json();
-        setMessage(errorMessage.error || "Login failed");
+        setMessage(errorMessage.error || "Login failed, try again");
+        alert(errorMessage);
       }
     } catch (error) {
       console.error("Error:", error);
