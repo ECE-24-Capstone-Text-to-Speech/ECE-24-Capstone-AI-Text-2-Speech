@@ -17,3 +17,5 @@ echo "starting fastapi backend service"
 echo "shutting down fastapi server"
 docker stop tts
 docker rm tts
+
+
