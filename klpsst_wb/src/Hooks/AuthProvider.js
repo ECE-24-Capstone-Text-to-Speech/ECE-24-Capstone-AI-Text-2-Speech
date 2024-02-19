@@ -14,24 +14,30 @@ const AuthProvider = ({ children }) => {
 
   const isAuth = async () => {
     console.log("Checking log in status...");
-    fetch("http://localhost:80/users/loginStatus", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => {
-        return res.json();
+    try {
+      fetch("http://localhost:80/users/loginStatus", {
+        method: "GET",
+        credentials: "include",
       })
-      .then((json) => {
-        if (json.loggedIn) {
-          console.log("current user logged in: " + json.username);
-          setUser(json.username);
-          setAuth(true);
-        } else {
-          console.warn("NO USER LOGGED IN!");
-          setUser(null);
-          setAuth(false);
-        }
-      });
+        .then((res) => {
+          return res.json();
+        })
+        .then((json) => {
+          if (json.loggedIn) {
+            console.log("current user logged in: " + json.username);
+            setUser(json.username);
+            setAuth(true);
+          } else {
+            console.warn("NO USER LOGGED IN!");
+            setUser(null);
+            setAuth(false);
+          }
+        });
+    } catch (error) {
+      console.error("Error:", error);
+      setUser(null);
+      setAuth(false);
+    }
   };
 
   useEffect(() => {

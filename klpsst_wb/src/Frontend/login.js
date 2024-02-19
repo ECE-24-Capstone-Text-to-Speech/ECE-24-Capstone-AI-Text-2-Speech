@@ -8,6 +8,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
+import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
   const { setAuth } = useAuth();
@@ -80,9 +81,8 @@ const KLPSST_Login = ({}) => {
 
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
-        response.headers.get('set-cookie');
+        response.headers.get("set-cookie");
         // console.log(document.cookie());
-
 
         const errorMessage = await response.json();
         localStorage.setItem("username", username);
@@ -95,6 +95,7 @@ const KLPSST_Login = ({}) => {
 
           alert(`User does not exist`);
         } else if (errorMessage == "Correct password") {
+          setAuth(true);
           console.log("Correct");
           localStorage.setItem("loggedIn", true);
           setRedirect(true); //for redirection?
