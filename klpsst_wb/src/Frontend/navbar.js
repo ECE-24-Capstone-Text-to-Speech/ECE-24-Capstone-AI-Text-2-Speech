@@ -11,7 +11,7 @@ const KLPSST_Bar = () => {
   const { setAuth, user } = useAuth();
 
   return (
-    <div id="test">
+    <div id="top-navbar">
       {pages.map((pageTitle) => (
         <Link
           key={pageTitle}
@@ -28,7 +28,7 @@ const KLPSST_Bar = () => {
           {pageTitle}
         </Link>
       ))}
-      {user ? <div>Welcome: {user}</div> : <div>Not log-in</div>}
+      {user ? <b>Welcome: {user}</b> : <b>Not logged in</b>}
     </div>
   );
 };
