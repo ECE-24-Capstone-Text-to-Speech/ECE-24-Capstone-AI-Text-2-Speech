@@ -8,8 +8,11 @@ import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
+import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
+  const { setAuth } = useAuth();
+
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
@@ -92,6 +95,7 @@ const KLPSST_Login = ({}) => {
 
           alert(`User does not exist`);
         } else if (errorMessage == "Correct password") {
+          setAuth(true);
           console.log("Correct");
           localStorage.setItem("loggedIn", true);
           setRedirect(true); //for redirection?
