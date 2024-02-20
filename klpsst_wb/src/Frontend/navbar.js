@@ -8,7 +8,7 @@ const KLPSST_Bar = () => {
   const page = useLocation();
   const pages = ["Home", "Login", "Register"];
   // const [currUser, setCurrUser] = useState(null); // default no one logged in
-  const { setAuth, user } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div id="top-navbar">

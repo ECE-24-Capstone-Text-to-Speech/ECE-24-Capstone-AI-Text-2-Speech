@@ -11,10 +11,8 @@ import KLPSST_Page from "./Frontend/klpsst.js";
 import KLPSST_Login from "./Frontend/login.js";
 import KLPSST_Bar from "./Frontend/navbar.js";
 import KLPSST_Register from "./Frontend/register.js";
-import { useAuth } from "./Hooks/AuthProvider";
 
 const App = () => {
-  const { auth } = useAuth();
   return (
     <Router>
       <div>

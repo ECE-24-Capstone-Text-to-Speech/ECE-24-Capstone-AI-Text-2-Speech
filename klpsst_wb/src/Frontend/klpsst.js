@@ -13,7 +13,7 @@ import { render } from "@testing-library/react";
 import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Page = () => {
-  const { setAuth, user } = useAuth();
+  const { setAuth } = useAuth();
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
