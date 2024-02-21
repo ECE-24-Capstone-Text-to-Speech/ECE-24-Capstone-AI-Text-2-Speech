@@ -18,4 +18,6 @@ cd into Backend and run the code with `bash ./test.sh`
 ## Line 184 start_tortoise function
 for backend/frontend team, please integrate this on y'alls side. It works on docker docs, below are some instructions to do. Make line 191 (text) into an input you get from frontend. Lines 217 calls a voice from tortoise_tts/tortoise/voices. for example the john folder (for testing purposes) is located at tortoise_tts/tortoise/voices/john. You can try changing the load_voice function which is in tortoise_tts/tortoise/utils/audio and change the directory to a folder that your backend is already using or you can use the load_voice function, delete all the given voices, and then make a backend function to create the user voice folders in that directory. Up to you, whatever is easiest. 
 
+Make it work in the backend function of your choice. For now it works in get_audio_list, obv this is p scuffed so find a spot for start_tortoise function or make new endpoints for it.
+
 optional: correct lines 204-205 so line 213 correctly prints out the folder location for testing purposes. 
