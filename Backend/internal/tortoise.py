@@ -22,7 +22,7 @@ tts = TextToSpeech()
 # If you want to use deepspeed the pass use_deepspeed=True nearly 2x faster than normal
 
 
-def tortoise_execute(
+def _tortoise_execute(
     user: str, input_text: str, output_dir: str, output_name: str, preset: str
 ):
     print(f"Loading user `{user}`'s voice files")
@@ -31,7 +31,7 @@ def tortoise_execute(
     ##for example the john folder is tortoise_tts/tortoise/voices/john, idk how to get load_voice to work without
     # this folder
     voice_samples, conditioning_latents = load_voice(
-        voice=user, extra_voice_dirs=["../temp"]
+        voice=user, extra_voice_dirs=["temp"]
     )  ##change
     print(f"Loaded the following voice samples to train on: {voice_samples}")
 
@@ -57,7 +57,9 @@ def tortoise_execute(
     return generated_path
 
 
-async def start_tortoise(input: str, user: str, output_folder: str, speed: str):
+async def start_tortoise(
+    input: str, user: str, output_folder: str, speed: str = "fast"
+):
     """
     start the tortoise processing model
     @speed: the preset for tortoise
@@ -70,13 +72,13 @@ async def start_tortoise(input: str, user: str, output_folder: str, speed: str):
     # you upload at least 2 audio clips. They must be a WAV file, 6-10 seconds long.
 
     CUSTOM_VOICE_NAME = user  ##go through custom voices and optimize this line. There's a bunch in tortoise/voices/
-    custom_voice_folder = f"temp/{CUSTOM_VOICE_NAME}"
+    # custom_voice_folder = f"temp/{CUSTOM_VOICE_NAME}"
 
-    # Save the uploaded files
-    file1_path = os.path.join(custom_voice_folder, "1.wav")
-    file2_path = os.path.join(custom_voice_folder, "2.wav")
+    # # Save the uploaded files
+    # file1_path = os.path.join(custom_voice_folder, "1.wav")
+    # file2_path = os.path.join(custom_voice_folder, "2.wav")
 
-    generated_path = tortoise_execute(
+    generated_path = _tortoise_execute(
         user=user,
         input_text=input,
         output_dir=output_folder,
@@ -97,7 +99,7 @@ async def start_tortoise_example():
     # Pick a "preset mode" to determine quality. Options: {"ultra_fast", "fast" (default), "standard", "high_quality"}. See docs in api.py
     preset = "ultra_fast"
 
-    output_location = "../tortoise_generations"
+    output_location = "tortoise_generations"
 
     return await start_tortoise(
         input=text, user=user, output_folder=output_location, speed=preset
