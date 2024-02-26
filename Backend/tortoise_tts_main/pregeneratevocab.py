@@ -26,7 +26,7 @@ class PregenerateVocab():
 
     def __init__(self):
         self.tts = TextToSpeech()
-
+        
         print("in __init__\n")
         if self.firstrun:
             with open(mostcommonwordspath, 'r') as f:
@@ -37,21 +37,6 @@ class PregenerateVocab():
             with open(curvocab, 'r') as f:
                 curvocabdict = json.load(f)
             self.vocab = curvocabdict
-
-    # def __init__(self, tts):
-    #     if tts is not None:
-    #         self.tts = tts
-        
-    #     print("in __init__\n")
-    #     if self.firstrun:
-    #         with open(mostcommonwordspath, 'r') as f:
-    #             allwords = f.read()
-    #         common_words_list = allwords.split()
-    #         self.vocab = set(common_words_list)
-    #     else:
-    #         with open(curvocab, 'r') as f:
-    #             curvocabdict = json.load(f)
-    #         self.vocab = curvocabdict
 
     def setname(self, strname):
         self.name = strname
@@ -78,16 +63,20 @@ class PregenerateVocab():
         
     
     def run_sentence(self, sentence_str):
-        alphanum_str = re.sub(r'\W+', ' ', sentence_str)
+        alphanum_str = re.sub(r'\W\'+', ' ', sentence_str)
 
         str_split = alphanum_str.lower().split()
 
         data= []
-        outfile = self.name + ".wav"
+        outfile = "generated_" + self.name + ".wav"
         for word in str_split:
-            nextpath = "klpsst_addon/pregenerated/" + word + ".wav"
+            nextpath = "tortoise_tts_main/klpsst_addon/pregenerated/" + word + ".wav"
             if os.path.exists(nextpath):
                 w = wave.open(nextpath, 'rb')
+                data.append( [w.getparams(), w.readframes(w.getnframes())] )
+                w.close()
+            elif os.path.exists(unseensavepath + word + ".wav"):
+                w = wave.open(unseensavepath + word + ".wav", 'rb')
                 data.append( [w.getparams(), w.readframes(w.getnframes())] )
                 w.close()
             else:
