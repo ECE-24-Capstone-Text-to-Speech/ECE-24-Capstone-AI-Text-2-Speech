@@ -103,7 +103,11 @@ async def start_tortoise_example():
     # Pick a "preset mode" to determine quality. Options: {"ultra_fast", "fast" (default), "standard", "high_quality"}. See docs in api.py
     preset = "ultra_fast"
 
+<<<<<<< Updated upstream
     output_location = "tortoise_generations"
+=======
+    output_location = "tortoise_tts/tortoise/voices/john"
+>>>>>>> Stashed changes
 
     return await start_tortoise(
         input=text, user=user, output_folder=output_location, speed=preset

@@ -101,11 +101,12 @@ const KLPSST_Page = () => {
     }
   };
 
-  const sendFilesToBackend = async (file1, file2) => {
+  const sendFilesToBackend = async (file1, file2, inputValue) => {
     // Create a FormData object to append files
     const formData = new FormData();
     formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
     formData.append("audioFile", file2); // Use 'audioFile' as the key for the second file
+    formData.append("strValue", inputValue);
 
     console.log(localStorage.getItem("username"));
     console.log(localStorage.getItem("password"));
