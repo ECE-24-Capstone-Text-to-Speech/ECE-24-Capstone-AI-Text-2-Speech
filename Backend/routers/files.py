@@ -70,11 +70,11 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
     file_extension = audioFile.filename.split(".")[-1].lower()
 
     # Check if the file extension is one of the allowed formats
-    allowed_formats = {"mp3", "wav"}
+    allowed_formats = {"wav"}
     if file_extension not in allowed_formats:
         raise HTTPException(
             status_code=415,
-            detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
+            detail=f"File format not supported. Supported format is WAV. File extension provided is: {file_extension}",
         )
 
     # Check file size
