@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import wave
+import ffmpy
 
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
@@ -93,5 +94,8 @@ class PregenerateVocab():
         for i in range(len(data)):
             output.writeframes(data[i][1])
         output.close()
+
+        ff = ffmpy.FFmpeg(inputs={outfile: None}, outputs={"out_faster.wav": ["-filter:a", "atempo=1.5"]})
+        ff.run()
 
     
