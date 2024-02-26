@@ -11,6 +11,7 @@ from typing import Union
 import os
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from internal.tortoise import start_tortoise
 from internal.cookies import getCurrUser
 from internal.getFile import (
     get_list_of_audio_in_temp,
@@ -22,18 +23,6 @@ from internal.saveFile import save_audio_to_temp
 
 from dependencies import get_token_header
 
-
-import torch
-import torchaudio
-import torch.nn as nn
-import torch.nn.functional as F
-from tortoise_tts.tortoise.api import TextToSpeech
-from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voices
-import torchaudio
-import IPython
-##from tortoise_tts.calltortoise import generate_voice_tortoise
-
-##generate_voice_tortoise("daniel", "Hello. This is Angie's second A.I. voice. Nice to meet you!")
 MAX_FILE_SIZE = 1_000_000  # 1 MB
 
 
@@ -173,56 +162,3 @@ async def get_audio_file(request: Request, audio_name: str):
             return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")
-    
-
-# This will download all the models used by Tortoise from the HF hub.
-# tts = TextToSpeech()
-# If you want to use deepspeed the pass use_deepspeed=True nearly 2x faster than normal
-
-
-
-async def start_tortoise():
-    print("work")
-    tts = TextToSpeech()
-    # Save the uploatts = TextToSpeech(use_deepspeed=True, kv_cache=True)
-
-# This is the text that will be spoken.
-    
-    text = "Thanks for reading this article. I hope you learned something." ##change to a frontend input
-    
-
-# Pick a "preset mode" to determine quality. Options: {"ultra_fast", "fast" (default), "standard", "high_quality"}. See docs in api.py
-    preset = "ultra_fast"
-
-# Optionally, upload use your own voice by running the next two cells. I recommend
-# you upload at least 2 audio clips. They must be a WAV file, 6-10 seconds long.
-
-    CUSTOM_VOICE_NAME = "john"     ##go through custom voices and optimize this line. There's a bunch in tortoise/voices/
-    custom_voice_folder = f"temp/{CUSTOM_VOICE_NAME}"
-
-    # Save the uploaded files
-    file1_path = os.path.join(custom_voice_folder, "temp/john/1.wav")
-    file2_path = os.path.join(custom_voice_folder, "temp/john/2.wav")
-
-    ##with open(file1_path, 'wb') as f:
-    ##    f.write(1.wav.file.read())
-
-    ##with open(file2_path, 'wb') as f:
-    ##   f.write(audioFile2.file.read())
-    # Load the custom voice for Tortoise. # Generate speech with the custom voice.
-    print(f"Started Training on {file1_path} and {file2_path}")
-    ##needs to add a folder to tortoise_tts/tortoise/voices.
-    ##for example the john folder is tortoise_tts/tortoise/voices/john, idk how to get load_voice to work without
-    #this folder
-    voice_samples, conditioning_latents = load_voice(CUSTOM_VOICE_NAME) ##change
-
-    # Generate speech with the custom voice
-    gen = tts.tts_with_preset(text, voice_samples=voice_samples, conditioning_latents=conditioning_latents, preset='fast')
-    print("Finished generation of user voice")
-    # Save the generated speech
-    generated_path = f'generated-{CUSTOM_VOICE_NAME}.wav'
-    torchaudio.save(f'generated-{CUSTOM_VOICE_NAME}.wav', gen.squeeze(0).cpu(), 24000)
-
-    # Optionally, return the generated speech file to the client
-    IPython.display.Audio(f'generated-{CUSTOM_VOICE_NAME}.wav')
-    return FileResponse(generated_path, media_type="audio/wav", filename=generated_path)
