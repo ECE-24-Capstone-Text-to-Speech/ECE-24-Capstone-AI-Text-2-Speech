@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import styled from "styled-components";
 import "./register.css";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
-
 import KLPSSTLOGO from "./logo_image.png";
-// import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
-
-//sdiugfyuv
 
 const KLPSST_Register = ({}) => {
   const storedTheme = localStorage.getItem("theme");

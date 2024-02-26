@@ -16,11 +16,6 @@
   color: #fff;
 }
 
-/* [class*="register"].dark-mode {
-    background-color: #333;
-    color: #fff;
-  } */
-
 [class*="register"] h2 {
   text-align: center;
   margin-bottom: 20px;
