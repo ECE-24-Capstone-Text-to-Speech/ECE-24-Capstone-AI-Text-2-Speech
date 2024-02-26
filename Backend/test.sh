@@ -3,7 +3,7 @@
 set -e
 
 echo "building image for fastapi backend"
-docker build . -t tts
+docker build . -t tts 
 echo "starting fastapi backend service"
 
 pwd=$(pwd)

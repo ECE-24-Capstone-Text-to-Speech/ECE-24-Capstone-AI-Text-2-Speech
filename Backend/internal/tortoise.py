@@ -83,6 +83,10 @@ async def start_tortoise(input: str, user: str, output_folder: str, speed: str):
         output_name=CUSTOM_VOICE_NAME,
         preset=speed,
     )
+    #need to be able to access cookies, to push chat logs
+    #this will seperate the functions of putting stuff in the database and pulling stuff from the database
+    
+
 
     # Optionally, return the generated speech file to the client
     IPython.display.Audio(f"generated-{CUSTOM_VOICE_NAME}.wav")

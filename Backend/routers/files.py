@@ -162,3 +162,17 @@ async def get_audio_file(request: Request, audio_name: str):
             return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")
+
+@router.post("/toTortoise")
+async def sendToTortoise(request: Request, inputStr: str):
+    
+    user = request.cookies.get("loggedInSession", None)
+    message = "not logged in"
+    if user:
+        try:
+            path = f"tortoise_generations/{user}"
+            start_tortoise(inputStr, user, path, "ultra_fast")
+            message = "start_tortoise called"
+        except FileNotFoundError as e:
+            message = "directory not found"
+    return message
