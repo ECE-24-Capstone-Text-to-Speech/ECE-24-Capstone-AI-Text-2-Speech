@@ -12,6 +12,7 @@ conda install lazy_loader
 conda install decoratory
 python -m pip install msgpack 
 python -m pip install soundfile
+conda install -c conda-forge ffmpeg
 
 # MESSAGE AFTER INSTALLING MSGPACK (IGNORED AND WAS ABLE TO RUN):
 librosa 0.10.1 requires audioread>=2.1.9, which is not installed.

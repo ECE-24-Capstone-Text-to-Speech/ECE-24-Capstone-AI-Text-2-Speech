@@ -1,5 +1,7 @@
 import sys
 import os
+import re
+import wave
 
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
@@ -12,14 +14,19 @@ import json
 # https://en.wikipedia.org/wiki/Most_common_words_in_English
 
 savepath = r"tortoise_tts_main/klpsst_addon/pregenerated/"
+unseensavepath = r"tortoise_tts_main/klpsst_addon/tmp/"
 mostcommonwordspath = r"tortoise_tts_main/mostcommonwords.txt"
 curvocab = r"tortoise_tts_main/klpsst_addon/pregenerated.json"
+
 class PregenerateVocab():
     vocab = {}
     name = "angie"
-    firstrun = True
+    firstrun = False
+    tts = None
 
     def __init__(self):
+        self.tts = TextToSpeech()
+
         print("in __init__\n")
         if self.firstrun:
             with open(mostcommonwordspath, 'r') as f:
@@ -30,6 +37,21 @@ class PregenerateVocab():
             with open(curvocab, 'r') as f:
                 curvocabdict = json.load(f)
             self.vocab = curvocabdict
+
+    # def __init__(self, tts):
+    #     if tts is not None:
+    #         self.tts = tts
+        
+    #     print("in __init__\n")
+    #     if self.firstrun:
+    #         with open(mostcommonwordspath, 'r') as f:
+    #             allwords = f.read()
+    #         common_words_list = allwords.split()
+    #         self.vocab = set(common_words_list)
+    #     else:
+    #         with open(curvocab, 'r') as f:
+    #             curvocabdict = json.load(f)
+    #         self.vocab = curvocabdict
 
     def setname(self, strname):
         self.name = strname
@@ -43,9 +65,44 @@ class PregenerateVocab():
             json.dump(jsonstart, f, indent=4)
 
     def generatestartervocab(self):
-        tts = TextToSpeech()
-
         for word in self.vocab:
             print(word)
-            calltortoise.generate_voice_tortoise("angie", word, tts, savepath+word+".wav", preset="ultra_ultra_fast")
+            if word in self.vocab:
+                continue
+            calltortoise.generate_voice_tortoise("angie", word, self.tts, savepath+word+".wav", preset="ultra_ultra_fast")
+    
+    def input_vocab(self, vocabstr):
+        if vocabstr in self.vocab:
+            return
+        calltortoise.generate_voice_tortoise("angie", vocabstr, self.tts, savepath+vocabstr+".wav", preset="ultra_ultra_fast")
+        
+    
+    def run_sentence(self, sentence_str):
+        alphanum_str = re.sub(r'\W+', ' ', sentence_str)
 
+        str_split = alphanum_str.lower().split()
+
+        data= []
+        outfile = self.name + ".wav"
+        for word in str_split:
+            nextpath = "klpsst_addon/pregenerated/" + word + ".wav"
+            if os.path.exists(nextpath):
+                w = wave.open(nextpath, 'rb')
+                data.append( [w.getparams(), w.readframes(w.getnframes())] )
+                w.close()
+            else:
+                newpath = unseensavepath + word + ".wav"
+                calltortoise.generate_voice_tortoise("angie", word, self.tts, newpath, preset="ultra_ultra_fast")
+                # can reduce the jankiness here
+
+                w = wave.open(newpath, 'rb')
+                data.append( [w.getparams(), w.readframes(w.getnframes())] )
+                w.close()
+
+        output = wave.open(outfile, 'wb')
+        output.setparams(data[0][0])
+        for i in range(len(data)):
+            output.writeframes(data[i][1])
+        output.close()
+
+    
