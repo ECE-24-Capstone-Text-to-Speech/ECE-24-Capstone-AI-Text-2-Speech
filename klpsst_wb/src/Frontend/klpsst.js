@@ -193,7 +193,7 @@ const KLPSST_Page = () => {
           <Button onClick={toggleTheme} id="toggleButton">
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
-          <Button onClick={logOut} id="checkLogin">
+          <Button onClick={logOut} id="checkLogin" style={{ marginLeft: '10px' }}>
             {localStorage.getItem("loggedIn") === "true" ? "Logout" : "Login"}
           </Button>
         </div>
@@ -228,11 +228,11 @@ const KLPSST_Page = () => {
           <input type="submit" value="Upload" />
         </form>
         <form>
-          <button type="download" onClick={handleDownload}>
+          <button type="download" onClick={handleDownload} className="download-button">
             Download
           </button>
         </form>
-        <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
+        <h3>Please submit 2 .wav files, each about 6 seconds long</h3>
         <p id="fileName"></p>
       </div>
     </ThemeProvider>

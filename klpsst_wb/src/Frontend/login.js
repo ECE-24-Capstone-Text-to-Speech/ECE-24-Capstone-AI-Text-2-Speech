@@ -150,7 +150,7 @@ const KLPSST_Login = ({}) => {
               required
             />
           </label>
-          <button type="submit">Login</button>
+          <button type="submit" className="download-button">Login</button>
         </form>
       </div>
     </ThemeProvider>
