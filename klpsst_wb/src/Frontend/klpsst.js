@@ -7,6 +7,7 @@ import "./klpsst.css";
 import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 import KLPSST_Login from "./login";
+import KLPSST_Bar from "./navbar";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 //const backendURL;
@@ -14,6 +15,7 @@ import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
+  const { user } = useAuth();
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
@@ -193,7 +195,11 @@ const KLPSST_Page = () => {
           <Button onClick={toggleTheme} id="toggleButton">
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
-          <Button onClick={logOut} id="checkLogin" style={{ marginLeft: '10px' }}>
+          <Button
+            onClick={logOut}
+            id="checkLogin"
+            style={{ marginLeft: "10px" }}
+          >
             {localStorage.getItem("loggedIn") === "true" ? "Logout" : "Login"}
           </Button>
         </div>
@@ -225,12 +231,34 @@ const KLPSST_Page = () => {
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
 
-          <input type="submit" value="Upload" />
         </form>
         <form>
-          <button type="download" onClick={handleDownload} className="download-button">
+          {user ? (
+            <b>
+              <input type="submit" value="Upload" />
+              <button
+                type="download"
+                onClick={handleDownload}
+                className="download-button"
+              >
+                Download
+              </button>
+            </b>
+          ) : (
+            <b>
+              <input type="submit-disabled" disabled value="Upload" />
+              <button
+                type="download-disabled"
+                disabled
+                class="download-button-disabled"
+              >
+                Download
+              </button>
+            </b>
+          )}
+          {/* <button type="download"  onClick={handleDownload} className="download-button" >
             Download
-          </button>
+          </button> */}
         </form>
         <h3>Please submit 2 .wav files, each about 6 seconds long</h3>
         <p id="fileName"></p>
