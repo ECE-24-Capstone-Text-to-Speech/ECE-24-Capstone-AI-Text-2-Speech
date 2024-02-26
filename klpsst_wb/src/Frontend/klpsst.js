@@ -193,7 +193,7 @@ const KLPSST_Page = () => {
           <Button onClick={toggleTheme} id="toggleButton">
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
-          <Button onClick={logOut} id="checkLogin">
+          <Button onClick={logOut} id="checkLogin" style={{ marginLeft: '10px' }}>
             {localStorage.getItem("loggedIn") === "true" ? "Logout" : "Login"}
           </Button>
         </div>
