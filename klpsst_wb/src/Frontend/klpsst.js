@@ -19,6 +19,8 @@ const KLPSST_Page = () => {
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+  const [uploading, setUploading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [file1, setFile1] = useState("");
   const [file2, setFile2] = useState("");
   const [message, setMessage] = useState("");
@@ -73,14 +75,16 @@ const KLPSST_Page = () => {
 
   const handleUpload = async (event) => {
     event.preventDefault();
+    setUploading(true); // Set uploading state to true
 
     await sendFilesToBackend(file1, file2);
-
-    //additional logic
+    setUploading(false); // Set uploading state to false
   };
 
   const handleDownload = async (event) => {
     try {
+      setDownloading(true); // Set downloading state to true
+
       // Adjust the URL to match the endpoint for downloading files
       const response = await fetch(`http://localhost:80/files/download`, {
         credentials: "include",
@@ -100,9 +104,11 @@ const KLPSST_Page = () => {
         // Handle server-side errors or other issues
         console.error("Failed to download file:", response.statusText);
       }
+      setDownloading(false); // Set downloading state to false after download is complete
     } catch (error) {
       // Handle network errors
       console.error("Error downloading file:", error);
+      setDownloading(false); // Set downloading state to false after download is complete
     }
   };
 
@@ -230,19 +236,33 @@ const KLPSST_Page = () => {
           <label htmlFor="fileInput1">Upload File 2:</label>
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
-
         </form>
         <form>
           {user ? (
             <b>
-              <input type="submit" value="Upload" />
-              <button
-                type="download"
-                onClick={handleDownload}
-                className="download-button"
-              >
-                Download
-              </button>
+              {uploading === false ? (
+                <input type="submit" value="Upload" />
+              ) : (
+                <input type="submit-disabled" value="Upload" />
+              )}
+
+              {downloading === false ? (
+                <button
+                  type="download"
+                  onClick={handleDownload}
+                  className="download-button"
+                >
+                  Download
+                </button>
+              ) : (
+                <button
+                  type="download-disabled"
+                  onClick={handleDownload}
+                  className="download-button-disabled"
+                >
+                  Download
+                </button>
+              )}
             </b>
           ) : (
             <b>
