@@ -94,4 +94,18 @@ async def logout_user(request : Request, response : Response):
    
     return message
 
+@router.get("/users/loginStatus", tags=["users"])
+async def loginStatus(request: Request, Response : Response):
+    message = {
+                "loggedIn" : False,
+                "username": None
+            }
+    currUser = request.cookies.get("loggedInSession",None)
+    if currUser:
+        message = {
+                "loggedIn" : True,
+                "username" : currUser
+            }
+    return message
+    
 

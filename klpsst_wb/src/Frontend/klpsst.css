@@ -56,6 +56,7 @@
 #homepage input[type="submit"] {
   background-color: #544caf;
   color: white;
+  text-align: center;
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -65,6 +66,22 @@
 }
 
 #homepage input[type="submit"]:hover {
+  background-color: #b0aec5;
+}
+
+#homepage input[type="submit-disabled"] {
+  background-color: #47474ad4;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#homepage input[type="submit-disabled"]:hover {
   background-color: #b0aec5;
 }
 
@@ -88,7 +105,20 @@
 }
 
 #homepage button:hover {
+  background-color: #b0aec5;
+}
+
+#homepage button {
   background-color: #544caf;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#homepage button:hover {
+  background-color: #b0aec5;
 }
 
 #homepage p {
@@ -119,4 +149,36 @@
   right: 0; /* Align to the right */
   margin: 10px;
   z-index: 1000; /* Set a high z-index to ensure it's above other elements */
+}
+
+#homepage button[type="download"] {
+  background-color: #544caf;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#homepage button[type="download"]:hover {
+  background-color: #b0aec5;
+}
+
+#homepage button[type="download-disabled"] {
+  background-color: #47474ad4;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#homepage button[type="download-disabled"]:hover {
+  background-color: #b0aec5;
 }

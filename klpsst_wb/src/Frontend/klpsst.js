@@ -7,13 +7,20 @@ import "./klpsst.css";
 import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
 import KLPSST_Login from "./login";
+import KLPSST_Bar from "./navbar";
 // import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
 //const backendURL;
+import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Page = () => {
+  const { setAuth } = useAuth();
+  const { user } = useAuth();
+
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
+  const [uploading, setUploading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [file1, setFile1] = useState("");
   const [file2, setFile2] = useState("");
   const [message, setMessage] = useState("");
@@ -68,14 +75,16 @@ const KLPSST_Page = () => {
 
   const handleUpload = async (event) => {
     event.preventDefault();
+    setUploading(true); // Set uploading state to true
 
     await sendFilesToBackend(file1, file2);
-
-    //additional logic
+    setUploading(false); // Set uploading state to false
   };
 
   const handleDownload = async (event) => {
     try {
+      setDownloading(true); // Set downloading state to true
+
       // Adjust the URL to match the endpoint for downloading files
       const response = await fetch(`http://localhost:80/files/download`, {
         credentials: "include",
@@ -95,9 +104,11 @@ const KLPSST_Page = () => {
         // Handle server-side errors or other issues
         console.error("Failed to download file:", response.statusText);
       }
+      setDownloading(false); // Set downloading state to false after download is complete
     } catch (error) {
       // Handle network errors
       console.error("Error downloading file:", error);
+      setDownloading(false); // Set downloading state to false after download is complete
     }
   };
 
@@ -159,6 +170,7 @@ const KLPSST_Page = () => {
             console.log("Naur");
             alert(`Logout unsucessful`);
           } else if (errorMessage == "User successfully logged out") {
+            setAuth(false);
             console.log("Yer");
             localStorage.setItem("loggedIn", false);
             setRedirect(true); //for redirection?
@@ -190,7 +202,11 @@ const KLPSST_Page = () => {
           <Button onClick={toggleTheme} id="toggleButton">
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
-          <Button onClick={logOut} id="checkLogin">
+          <Button
+            onClick={logOut}
+            id="checkLogin"
+            style={{ marginLeft: "10px" }}
+          >
             {localStorage.getItem("loggedIn") === "true" ? "Logout" : "Login"}
           </Button>
         </div>
@@ -221,15 +237,51 @@ const KLPSST_Page = () => {
           <label htmlFor="fileInput1">Upload File 2:</label>
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
-
-          <input type="submit" value="Upload" />
         </form>
         <form>
-          <button type="download" onClick={handleDownload}>
+          {user ? (
+            <b>
+              {uploading === false ? (
+                <input type="submit" value="Upload" />
+              ) : (
+                <input type="submit-disabled" value="Upload" />
+              )}
+
+              {downloading === false ? (
+                <button
+                  type="download"
+                  onClick={handleDownload}
+                  className="download-button"
+                >
+                  Download
+                </button>
+              ) : (
+                <button
+                  type="download-disabled"
+                  onClick={handleDownload}
+                  className="download-button-disabled"
+                >
+                  Download
+                </button>
+              )}
+            </b>
+          ) : (
+            <b>
+              <input type="submit-disabled" disabled value="Upload" />
+              <button
+                type="download-disabled"
+                disabled
+                class="download-button-disabled"
+              >
+                Download
+              </button>
+            </b>
+          )}
+          {/* <button type="download"  onClick={handleDownload} className="download-button" >
             Download
-          </button>
+          </button> */}
         </form>
-        <h3>Please submit 2 .wav or .mp3 files, each about 6 seconds long</h3>
+        <h3>Please submit 2 .wav files, each about 6 seconds long</h3>
         <p id="fileName"></p>
       </div>
     </ThemeProvider>

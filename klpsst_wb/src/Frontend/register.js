@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import styled from "styled-components";
 import "./register.css";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
-
 import KLPSSTLOGO from "./logo_image.png";
-// import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
-
-//sdiugfyuv
 
 const KLPSST_Register = ({}) => {
   const storedTheme = localStorage.getItem("theme");
@@ -118,9 +113,11 @@ const KLPSST_Register = ({}) => {
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <div className={`register${theme === "dark" ? " dark-mode" : ""}`}>
-        <Button onClick={toggleTheme} id="toggleButton">
-          {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        </Button>
+        <div id="buttons">
+          <Button onClick={toggleTheme} id="toggleButton">
+            {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          </Button>
+        </div>
         <Typography variant="h1">Register</Typography>
         <form onSubmit={handleSubmit}>
           <label>
@@ -145,7 +142,7 @@ const KLPSST_Register = ({}) => {
             Confirm Password:
             <input type="password" onChange={handleConfirm} required />
           </label>
-          <button type="submit">Enter</button>
+          <button type="submit" className="download-button">Register</button>
         </form>
       </div>
     </ThemeProvider>

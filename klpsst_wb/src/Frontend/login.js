@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import styled from "styled-components";
 import "./login.css";
 import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "./logo_image.png";
-// import { routeManager } from "../../routeManager";
 import { render } from "@testing-library/react";
+import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
+  const { setAuth } = useAuth();
+
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
 
@@ -92,6 +93,7 @@ const KLPSST_Login = ({}) => {
 
           alert(`User does not exist`);
         } else if (errorMessage == "Correct password") {
+          setAuth(true);
           console.log("Correct");
           localStorage.setItem("loggedIn", true);
           setRedirect(true); //for redirection?
@@ -104,7 +106,8 @@ const KLPSST_Login = ({}) => {
         // Authentication failed, handle accordingly (e.g., show error message)
         //   console.error("Login failed");
         const errorMessage = await response.json();
-        setMessage(errorMessage.error || "Login failed");
+        setMessage(errorMessage.error || "Login failed, try again");
+        alert(errorMessage);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -145,7 +148,7 @@ const KLPSST_Login = ({}) => {
               required
             />
           </label>
-          <button type="submit">Login</button>
+          <button type="submit" className="download-button">Login</button>
         </form>
       </div>
     </ThemeProvider>

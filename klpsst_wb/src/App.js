@@ -1,11 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom'
-import KLPSST_Page from './Frontend/klpsst.js';
-import KLPSST_Login from './Frontend/login.js';
-import KLPSST_Bar from './Frontend/navbar.js';
-import KLPSST_Register from './Frontend/register.js';
-import KLPSST_Test from './Frontend/test.js';
+import logo from "./logo.svg";
+import "./App.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  NavLink,
+} from "react-router-dom";
+import KLPSST_Page from "./Frontend/klpsst.js";
+import KLPSST_Login from "./Frontend/login.js";
+import KLPSST_Bar from "./Frontend/navbar.js";
+import KLPSST_Register from "./Frontend/register.js";
 
 const App = () => {
   return (
