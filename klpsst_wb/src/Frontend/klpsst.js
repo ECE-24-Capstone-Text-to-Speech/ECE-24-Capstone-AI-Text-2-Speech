@@ -79,6 +79,7 @@ const KLPSST_Page = () => {
 
     await sendFilesToBackend(file1, file2);
     setUploading(false); // Set uploading state to false
+    await sendTextToTortoise(inputValue);
   };
 
   const handleDownload = async (event) => {
@@ -136,6 +137,42 @@ const KLPSST_Page = () => {
       if (response.ok) {
         // File uploaded successfully, handle success
         alert("Files uploaded successfully.");
+      } else {
+        // Handle server-side validation errors or other issues
+        const errorData = await response.json();
+        alert(`Error: ${errorData.detail}`);
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error("Error uploading files:", error);
+      alert("In order to upload, please log in!");
+    }
+  };
+
+  const sendTextToTortoise = async (inputValue) => {
+    // Create a FormData object to append files
+    // const inputValue = new str();
+    // formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
+    // formData.append("audioFile", file2); // Use 'audioFile' as the key for the second file
+    // formData.append("strValue", inputValue);
+
+    console.log(localStorage.getItem("username"));
+    console.log(localStorage.getItem("password"));
+    console.log(localStorage.getItem("loggedIn"));
+
+    try {
+      const response = await fetch("http://localhost:80/files/toTortoise", {
+        credentials: "include",
+        method: "POST",
+        body: inputValue,
+      });
+
+      // const responseData = await response.json();
+      // console.log(responseData);
+
+      if (response.ok) {
+        // File uploaded successfully, handle success
+        alert("Text sent successfully.");
       } else {
         // Handle server-side validation errors or other issues
         const errorData = await response.json();
