@@ -56,6 +56,7 @@
 #homepage input[type="submit"] {
   background-color: #544caf;
   color: white;
+  text-align: center;
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -68,6 +69,22 @@
   background-color: #b0aec5;
 }
 
+#homepage input[type="submit-disabled"] {
+  background-color: #47474ad4;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#homepage input[type="submit-disabled"]:hover {
+  background-color: #b0aec5;
+}
+
 #homepage h3 {
   text-align: center;
   color: inherit;
@@ -76,6 +93,19 @@
 
 #homepage input[type="file"] {
   margin-bottom: 16px;
+}
+
+#homepage button {
+  background-color: #544caf;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#homepage button:hover {
+  background-color: #b0aec5;
 }
 
 #homepage button {
@@ -121,15 +151,34 @@
   z-index: 1000; /* Set a high z-index to ensure it's above other elements */
 }
 
-.download-button {
+#homepage button[type="download"] {
+  background-color: #544caf;
+  color: white;
+  text-align: center;
   padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
   width: 100%;
   box-sizing: border-box;
 }
 
-#homepage button.download-button:hover {
-  background-color: #b0aec5; /* Change the background color on hover */
+#homepage button[type="download"]:hover {
+  background-color: #b0aec5;
+}
+
+#homepage button[type="download-disabled"] {
+  background-color: #47474ad4;
+  text-align: center;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#homepage button[type="download-disabled"]:hover {
+  background-color: #b0aec5;
 }
