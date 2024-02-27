@@ -33,7 +33,6 @@ const App = () => {
           <Route path="/home" element={<KLPSST_Page />} />
           <Route path="/login" element={<KLPSST_Login />} />
           <Route path="/register" element={<KLPSST_Register />} />
-          <Route path="/test" element={<KLPSST_Test/>} />
         </Routes>
       </div>
     </Router>
