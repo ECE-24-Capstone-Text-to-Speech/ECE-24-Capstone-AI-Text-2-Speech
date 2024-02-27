@@ -51,7 +51,7 @@ def _tortoise_execute(
     generated_path = f"{output_dir}/generated-{output_name}.wav"
     print(f"Saving generated audio to `{generated_path}`")
     torchaudio.save(
-        uri=generated_path, audio_data=gen.squeeze(0).cpu(), sample_rate=24000
+        uri=generated_path, src=gen.squeeze(0).cpu(), sample_rate=24000
     )
     print("Tortoise generation done.")
     return generated_path
@@ -88,10 +88,10 @@ async def start_tortoise(
     #need to be able to access cookies, to push chat logs
     #this will seperate the functions of putting stuff in the database and pulling stuff from the database
     
-
+    print("Generated audio at:", generated_path)
 
     # Optionally, return the generated speech file to the client
-    IPython.display.Audio(f"generated-{CUSTOM_VOICE_NAME}.wav")
+    # IPython.display.Audio(f"generated-{CUSTOM_VOICE_NAME}.wav")
     return FileResponse(generated_path, media_type="audio/wav", filename=generated_path)
 
 

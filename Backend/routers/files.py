@@ -171,7 +171,7 @@ async def sendToTortoise(request: Request, inputStr: str):
     if user:
         try:
             path = f"tortoise_generations/{user}"
-            start_tortoise(inputStr, user, path, "ultra_fast")
+            await start_tortoise(inputStr, user, path, "ultra_fast")
             message = "start_tortoise called"
         except FileNotFoundError as e:
             message = "directory not found"
