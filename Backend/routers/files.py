@@ -103,9 +103,9 @@ async def audio_input(request: Request, audioFiles: List[UploadFile], strValue: 
             saved, message = await save_audio_to_temp(audioFile, user=user)
         else:
             message = "File already exists"
-    print("awooga")
-    await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
-    print("joemamatoes")
+    # print("awooga")
+    # await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
+    # print("joemamatoes")
     return {
         "filename": fileName,
         "format": file_extension,

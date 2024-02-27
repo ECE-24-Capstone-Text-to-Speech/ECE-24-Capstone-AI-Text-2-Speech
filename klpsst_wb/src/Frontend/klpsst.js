@@ -73,27 +73,30 @@ const KLPSST_Page = () => {
     setFile2(event.target.files[0]);
   };
 
-  const handleUpload = async (event) => {
+  const handleUpload = (event) => {
     event.preventDefault();
     setUploading(true); // Set uploading state to true
 
-    await sendFilesToBackend(file1, file2);
+    alert("Upload pressed");
+    console.log("Uploading");
+
+    sendFilesToBackend(file1, file2);
     setUploading(false); // Set uploading state to false
-    await sendTextToTortoise(inputValue);
+    // sendTextToTortoise(inputValue);
   };
 
-  const handleDownload = async (event) => {
+  const handleDownload = (event) => {
     try {
       setDownloading(true); // Set downloading state to true
 
       // Adjust the URL to match the endpoint for downloading files
-      const response = await fetch(`http://localhost:80/files/download`, {
+      const response = fetch(`http://localhost:80/files/download`, {
         credentials: "include",
         method: "GET",
       });
       if (response.ok) {
         // File downloaded successfully, handle success
-        const blob = await response.blob();
+        const blob = response.blob();
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement("a");
         link.href = url;
@@ -113,35 +116,48 @@ const KLPSST_Page = () => {
     }
   };
 
-  const sendFilesToBackend = async (file1, file2, inputValue) => {
+  const sendFilesToBackend = (file1, file2) => {
     // Create a FormData object to append files
     const formData = new FormData();
-    formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
-    formData.append("audioFile", file2); // Use 'audioFile' as the key for the second file
-    formData.append("strValue", inputValue);
-
-    console.log(localStorage.getItem("username"));
-    console.log(localStorage.getItem("password"));
-    console.log(localStorage.getItem("loggedIn"));
+    formData.append("audioFiles", file1); // Use 'audioFile' as the key for the first file
+    formData.append("audioFiles", file2); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch("http://localhost:80/files/audioInput", {
+      fetch("http://localhost:80/files/audioInput", {
         credentials: "include",
         method: "POST",
         body: formData,
-      });
+      })
+        .then((response) => {
+          return response.ok, response.json();
+        })
+        .then((responseOk, data) => {
+          if (responseOk) {
+            // File uploaded successfully, handle success
+            alert("Files uploaded successfully.");
+          } else {
+            // Handle server-side validation errors or other issues
+            const errorData = data;
+            alert(`Error: ${errorData.detail}`);
+          }
+        });
+      // const response = fetch("http://localhost:80/files/audioInput", {
+      //   credentials: "include",
+      //   method: "POST",
+      //   body: formData,
+      // });
 
-      // const responseData = await response.json();
-      // console.log(responseData);
+      // // const responseData =   response.json();
+      // // console.log(responseData);
 
-      if (response.ok) {
-        // File uploaded successfully, handle success
-        alert("Files uploaded successfully.");
-      } else {
-        // Handle server-side validation errors or other issues
-        const errorData = await response.json();
-        alert(`Error: ${errorData.detail}`);
-      }
+      // if (response.ok) {
+      //   // File uploaded successfully, handle success
+      //   alert("Files uploaded successfully.");
+      // } else {
+      //   // Handle server-side validation errors or other issues
+      //   const errorData =   response.json();
+      //   alert(`Error: ${errorData.detail}`);
+      // }
     } catch (error) {
       // Handle network errors
       console.error("Error uploading files:", error);
@@ -149,7 +165,7 @@ const KLPSST_Page = () => {
     }
   };
 
-  const sendTextToTortoise = async (inputValue) => {
+  const sendTextToTortoise = (inputValue) => {
     // Create a FormData object to append files
     // const inputValue = new str();
     // formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
@@ -161,13 +177,13 @@ const KLPSST_Page = () => {
     console.log(localStorage.getItem("loggedIn"));
 
     try {
-      const response = await fetch("http://localhost:80/files/toTortoise", {
+      const response = fetch("http://localhost:80/files/toTortoise", {
         credentials: "include",
         method: "POST",
         body: inputValue,
       });
 
-      // const responseData = await response.json();
+      // const responseData =   response.json();
       // console.log(responseData);
 
       if (response.ok) {
@@ -175,7 +191,7 @@ const KLPSST_Page = () => {
         alert("Text sent successfully.");
       } else {
         // Handle server-side validation errors or other issues
-        const errorData = await response.json();
+        const errorData = response.json();
         alert(`Error: ${errorData.detail}`);
       }
     } catch (error) {
@@ -185,12 +201,12 @@ const KLPSST_Page = () => {
     }
   };
 
-  const logOut = async (e) => {
+  const logOut = (e) => {
     e.preventDefault();
 
     if (localStorage.getItem("loggedIn") === "true") {
       try {
-        const response = await fetch("http://localhost:80/users/logout", {
+        const response = fetch("http://localhost:80/users/logout", {
           method: "POST",
           credentials: "include",
         });
@@ -198,7 +214,7 @@ const KLPSST_Page = () => {
         // console.log(response);
 
         if (response.ok) {
-          const errorMessage = await response.json();
+          const errorMessage = response.json();
           localStorage.setItem("username", "");
           localStorage.setItem("password", "");
 
@@ -214,7 +230,7 @@ const KLPSST_Page = () => {
             alert("User successfully logged out");
           }
         } else {
-          const errorMessage = await response.json();
+          const errorMessage = response.json();
           setMessage(errorMessage.error || "Logout failed");
           alert(errorMessage);
         }
@@ -274,8 +290,6 @@ const KLPSST_Page = () => {
           <label htmlFor="fileInput1">Upload File 2:</label>
           <input type="file" id="fileInput1" onChange={handleFile2Change} />
           <br />
-        </form>
-        <form>
           {user ? (
             <b>
               {uploading === false ? (
@@ -308,7 +322,7 @@ const KLPSST_Page = () => {
               <button
                 type="download-disabled"
                 disabled
-                class="download-button-disabled"
+                className="download-button-disabled"
               >
                 Download
               </button>
