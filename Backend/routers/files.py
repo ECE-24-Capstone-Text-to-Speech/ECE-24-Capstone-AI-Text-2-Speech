@@ -37,18 +37,27 @@ router = APIRouter(
 
 # router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
 
+
 async def save_audio_file(user: str, audioFile: UploadFile):
-    mime = magic.Magic()
-    file_type = mime.from_buffer(audioFile.file.read(1024))
-    # fileSize = len(audioFile)
-    
-    allowed_formats = {"MPEG ADTS", "RIFF"}
-    if not any(x in file_type for x in allowed_formats):
+    # mime = magic.Magic()
+    # file_type = mime.from_buffer(audioFile.file.read(1024))
+    # # fileSize = len(audioFile)
+
+    # allowed_formats = {"MPEG ADTS", "RIFF"}
+    # if not any(x in file_type for x in allowed_formats):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+    #         detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+    #     )
+    file_extension = audioFile.filename.split(".")[-1].lower()
+    allowed_formats = {"mp3", "wav"}
+    if file_extension not in allowed_formats:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+            detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
         )
-    # audioFile.size    
+
+    # audioFile.size
     if audioFile.size > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
@@ -67,10 +76,16 @@ async def save_audio_file(user: str, audioFile: UploadFile):
     # if fileSize > threshhold:
     allUserFiles = await get_list_of_audio_in_temp(user=user)
     if fileName not in allUserFiles:
-        print("file "+audioFile.filename+" not exists in "+str(allUserFiles)+", adding")
+        print(
+            "file "
+            + audioFile.filename
+            + " not exists in "
+            + str(allUserFiles)
+            + ", adding"
+        )
         saved, message = await save_audio_to_temp(audioFile, user=user)
     else:
-        print("file "+audioFile.filename+" found aready")
+        print("file " + audioFile.filename + " found aready")
         message = "File already exists"
 
     return {
@@ -80,6 +95,7 @@ async def save_audio_file(user: str, audioFile: UploadFile):
         "success": saved,
         "message": message,
     }
+
 
 @router.get("/")
 async def audio_page():
@@ -106,7 +122,9 @@ async def audio_page():
 
 
 @router.post("/audioInput")
-async def audio_input(request: Request, audioFiles: List[UploadFile], strValue: str | None = None):
+async def audio_input(
+    request: Request, audioFiles: List[UploadFile], strValue: str | None = None
+):
     """
     Grabs FormData.audioFile.
     Requires frontend to send file in as FormData, input called "audioFile"
@@ -121,7 +139,7 @@ async def audio_input(request: Request, audioFiles: List[UploadFile], strValue: 
     if audioFiles is None or len(audioFiles) == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No input audio file given in the request."
+            detail="No input audio file given in the request.",
         )
 
     # Extract file extension from the filename
@@ -168,6 +186,7 @@ async def audio_input(request: Request, audioFiles: List[UploadFile], strValue: 
         "message": message,
     }
 
+
 @router.post("/multiAudioInputs")
 async def audio_input(request: Request, audioFiles: list[UploadFile]):
     """
@@ -179,15 +198,15 @@ async def audio_input(request: Request, audioFiles: list[UploadFile]):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload files!"
+            detail="Please log in in order to upload files!",
         )
 
     if not audioFiles:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No input audio file given in the request."
+            detail="No input audio file given in the request.",
         )
-    
+
     print(f"Received {len(audioFiles)} files")
 
     results = []
@@ -195,7 +214,7 @@ async def audio_input(request: Request, audioFiles: list[UploadFile]):
     for audioFile in audioFiles:
         result = await save_audio_file(user, audioFile)
         results.append(result)
-    
+
     return results
 
 
@@ -255,9 +274,10 @@ async def get_audio_file(request: Request, audio_name: str):
     else:
         raise HTTPException(status_code=404, detail="File not found")
 
+
 @router.post("/toTortoise")
 async def sendToTortoise(request: Request, inputStr: str):
-    
+
     user = request.cookies.get("loggedInSession", None)
     message = "not logged in"
     if user:
