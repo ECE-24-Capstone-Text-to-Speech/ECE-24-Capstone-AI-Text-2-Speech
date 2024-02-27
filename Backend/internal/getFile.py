@@ -30,7 +30,7 @@ async def get_list_of_audio_in_temp(
                 files.extend(subFiles)
             else:
                 # print("\t\tIs file, adding to list")
-                finalPath = (baseFolder + currPath) if fullPath else currPath
+                finalPath = (baseFolder + currPath) if fullPath else filename
                 files.append(finalPath)
         return files
 

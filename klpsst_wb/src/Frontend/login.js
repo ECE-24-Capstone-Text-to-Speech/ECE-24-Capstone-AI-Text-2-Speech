@@ -124,7 +124,7 @@ const KLPSST_Login = ({}) => {
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <div className={`login${theme === "dark" ? " dark-mode" : ""}`}>
         <div id="buttons">
-          <Button onClick={toggleTheme} id="toggleButton">
+          <Button onClick={toggleTheme} id="toggleButton" className="narrow-button">
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
         </div>

@@ -37,13 +37,67 @@ router = APIRouter(
 
 # router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
 
+async def save_audio_file(user: str, audioFile: UploadFile):
+    mime = magic.Magic()
+    file_type = mime.from_buffer(audioFile.file.read(1024))
+    # fileSize = len(audioFile)
+    
+    allowed_formats = {"MPEG ADTS", "RIFF"}
+    if not any(x in file_type for x in allowed_formats):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+        )
+    # audioFile.size    
+    if audioFile.size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
+        )
+
+    # Reset the file cursor to the beginning
+    audioFile.file.seek(0)
+
+    fileName = audioFile.filename
+    file_extension = fileName.split(".")[-1]
+
+    message: str = "Default message"
+    saved: bool = False
+
+    # if fileSize > threshhold:
+    allUserFiles = await get_list_of_audio_in_temp(user=user)
+    if fileName not in allUserFiles:
+        print("file "+audioFile.filename+" not exists in "+str(allUserFiles)+", adding")
+        saved, message = await save_audio_to_temp(audioFile, user=user)
+    else:
+        print("file "+audioFile.filename+" found aready")
+        message = "File already exists"
+
+    return {
+        "filename": audioFile.filename,
+        "format": file_extension,
+        "size": audioFile.size,
+        "success": saved,
+        "message": message,
+    }
 
 @router.get("/")
 async def audio_page():
     content = """
         <body>
+            <header>
+                <h1>Test file upload page</h1>
+                <p>This runs on the backend only</p>
+                <p>Check "Network" tab in F12 menu to see how this API is used</p>
+            </header>
+            <p>The top upload option is for single file....</p>
             <form action="/files/audioInput" enctype="multipart/form-data" method="post">
                 <input name="audioFile" type="file">
+                <input type="submit">
+            </form>
+            <p>The bottom upload option is for multiple files....</p>
+            <form action="/files/multiAudioInputs" enctype="multipart/form-data" method="post">
+                <input name="audioFiles" type="file" multiple>
                 <input type="submit">
             </form>
         </body>
@@ -106,12 +160,43 @@ async def audio_input(request: Request, audioFiles: List[UploadFile], strValue: 
     # print("awooga")
     # await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
     # print("joemamatoes")
+
     return {
         "filename": fileName,
         "format": file_extension,
         "success": saved,
         "message": message,
     }
+
+@router.post("/multiAudioInputs")
+async def audio_input(request: Request, audioFiles: list[UploadFile]):
+    """
+    Grabs FormData.audioFile.
+    Requires frontend to send file in as FormData, input called "audioFile"
+    """
+    print("Multi file upload function")
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in in order to upload files!"
+        )
+
+    if not audioFiles:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No input audio file given in the request."
+        )
+    
+    print(f"Received {len(audioFiles)} files")
+
+    results = []
+
+    for audioFile in audioFiles:
+        result = await save_audio_file(user, audioFile)
+        results.append(result)
+    
+    return results
 
 
 @router.get("/download")
