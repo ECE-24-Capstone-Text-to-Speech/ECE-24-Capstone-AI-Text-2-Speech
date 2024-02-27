@@ -105,6 +105,8 @@ async def start_tortoise_example():
 
     output_location = "tortoise_generations"
 
+    ##output_location = "tortoise_tts/tortoise/voices/john"
+
     return await start_tortoise(
         input=text, user=user, output_folder=output_location, speed=preset
     )
