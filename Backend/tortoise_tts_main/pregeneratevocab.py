@@ -29,7 +29,7 @@ class PregenerateVocab():
     curvocab = r"tortoise_tts_main/klpsst_addon/pregenerated.json"
 
     def __init__(self):
-        self.tts = TextToSpeech(use_deepspeed=True, kv_cache=True, half=True)
+        self.tts = TextToSpeech(use_deepspeed=True, half=True)
         
         print("in __init__\n")
         if self.firstrun:
@@ -56,14 +56,13 @@ class PregenerateVocab():
     def generatestartervocab(self):
         for word in self.vocab:
             print(word)
-
-            calltortoise.generate_voice_tortoise(self.name, word, self.tts, self.temppath, preset="fast")
-
             newpath = self.pregensavepath + self.name + "/" + word + ".wav"
-            # can reduce the jankiness here
 
-            subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-20dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
-            # os.remove(temppath)
+            if not os.path.exists(newpath):
+                calltortoise.generate_voice_tortoise(self.name, word + " ", self.tts, self.temppath, preset="ultra_fast")
+
+                subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
+                # os.remove(temppath)
     
     # untested
     def input_vocab(self, vocabstr):
@@ -73,7 +72,7 @@ class PregenerateVocab():
         newpath = self.pregensavepath + vocabstr + ".wav"
         # can reduce the jankiness here
 
-        subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-20dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
+        subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
         # os.remove(temppath)
     
     def run_sentence(self, sentence_str):
@@ -84,7 +83,7 @@ class PregenerateVocab():
         data= []
         outfile = "generated_" + self.name + ".wav"
         for word in str_split:
-            nextpath = "tortoise_tts_main/klpsst_addon/pregenerated/" + word + ".wav"
+            nextpath = self.pregensavepath + word + ".wav"
             if os.path.exists(nextpath):
                 w = wave.open(nextpath, 'rb')
                 data.append( [w.getparams(), w.readframes(w.getnframes())] )
@@ -98,7 +97,7 @@ class PregenerateVocab():
                 calltortoise.generate_voice_tortoise(self.name, word, self.tts, self.temppath, preset=self.preset)
                 # can reduce the jankiness here
 
-                subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-20dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
+                subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
                 w = wave.open(newpath, 'rb')
                 data.append( [w.getparams(), w.readframes(w.getnframes())] )
                 w.close()
@@ -111,7 +110,7 @@ class PregenerateVocab():
             output.writeframes(data[i][1])
         output.close()
 
-        ff = ffmpy.FFmpeg(inputs={outfile: None}, outputs={"out_faster.wav": ["-filter:a", "atempo=1.5"]})
+        ff = ffmpy.FFmpeg(inputs={outfile: None}, outputs={"out_faster.wav": ["-filter:a", "atempo=1.3"]})
         ff.run()
 
     
