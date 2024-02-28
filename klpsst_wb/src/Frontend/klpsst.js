@@ -116,6 +116,19 @@ const KLPSST_Page = () => {
     }
   };
 
+  const handleText = (event) => {
+    event.preventDefault();
+    //setUploading(true); // Set uploading state to true
+
+    alert("Upload pressed");
+    console.log("Uploading");
+
+    sendTextToTortoise(inputValue);
+  
+    //setUploading(false); // Set uploading state to false
+    // sendTextToTortoise(inputValue);
+  };
+
   const sendFilesToBackend = (file1, file2) => {
     // Create a FormData object to append files
     const formData = new FormData();
@@ -282,6 +295,11 @@ const KLPSST_Page = () => {
             onChange={handleInputChange}
           />
           <p>You typed: {inputValue}</p>
+          <button
+            onClick={handleText}
+          >
+            Send Text
+          </button>
 
           <label htmlFor="fileInput1">Upload File 1:</label>
           <input type="file" id="fileInput" onChange={handleFile1Change} />
