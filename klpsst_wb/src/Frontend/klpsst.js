@@ -120,11 +120,11 @@ const KLPSST_Page = () => {
     event.preventDefault();
     //setUploading(true); // Set uploading state to true
 
-    alert("Upload pressed");
-    console.log("Uploading");
+    alert("Send Text pressed");
+    console.log("Sending");
 
     sendTextToTortoise(inputValue);
-  
+
     //setUploading(false); // Set uploading state to false
     // sendTextToTortoise(inputValue);
   };
@@ -190,27 +190,28 @@ const KLPSST_Page = () => {
     console.log(localStorage.getItem("loggedIn"));
 
     try {
-      const response = fetch("http://localhost:80/files/toTortoise", {
+      fetch("http://localhost:80/files/toTortoise", {
         credentials: "include",
         method: "POST",
-        body: inputValue,
-      });
-
-      // const responseData =   response.json();
-      // console.log(responseData);
-
-      if (response.ok) {
-        // File uploaded successfully, handle success
-        alert("Text sent successfully.");
-      } else {
-        // Handle server-side validation errors or other issues
-        const errorData = response.json();
-        alert(`Error: ${errorData.detail}`);
-      }
+        body: inputValue ,
+      })
+        .then((response) => {
+          return response.ok, response.json();
+        })
+        .then((responseOk, data) => {
+          if (responseOk) {
+            // File uploaded successfully, handle success
+            alert("Text uploaded successfully.");
+          } else {
+            // Handle server-side validation errors or other issues
+            const errorData = data;
+            alert(`Error: ${errorData.detail}`);
+          }
+        });
     } catch (error) {
       // Handle network errors
-      console.error("Error uploading files:", error);
-      alert("In order to upload, please log in!");
+      console.error("Error uploading Text:", error);
+      alert("In order to upload text, please log in!");
     }
   };
 
@@ -295,11 +296,7 @@ const KLPSST_Page = () => {
             onChange={handleInputChange}
           />
           <p>You typed: {inputValue}</p>
-          <button
-            onClick={handleText}
-          >
-            Send Text
-          </button>
+          <button onClick={handleText}>Send Text</button>
 
           <label htmlFor="fileInput1">Upload File 1:</label>
           <input type="file" id="fileInput" onChange={handleFile1Change} />

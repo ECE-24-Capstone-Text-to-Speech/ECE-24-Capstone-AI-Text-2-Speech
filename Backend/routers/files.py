@@ -276,12 +276,15 @@ async def get_audio_file(request: Request, audio_name: str):
 
 
 @router.post("/toTortoise")
-async def sendToTortoise(request: Request, inputStr: str):
+async def sendToTortoise(request: Request):
 
     user = request.cookies.get("loggedInSession", None)
     message = "not logged in"
     if user:
         try:
+            body_str = await request.body()  # Get the request body as bytes
+            inputStr = body_str.decode()
+            
             path = f"tortoise_generations/{user}"
             await start_tortoise(inputStr, user, path, "ultra_fast")
             message = "start_tortoise called"
