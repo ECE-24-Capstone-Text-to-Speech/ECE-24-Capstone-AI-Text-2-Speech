@@ -81,6 +81,7 @@ class PregenerateVocab():
         str_split = alphanum_str.lower().split()
 
         data= []
+        self.pregensavepath = r"tortoise_tts_main/klpsst_addon/pregenerated/" + self.name + "/"
         outfile = "generated_" + self.name + ".wav"
         for word in str_split:
             nextpath = self.pregensavepath + word + ".wav"
