@@ -94,27 +94,27 @@ const KLPSST_Page = () => {
         credentials: "include",
         method: "GET",
       })
-      .then((res) => {
-        // console.log("Fetch successful, decoding packet...")
-        return res.ok, res.blob()
-      })
-      .then((responseOK, blob) => {
-        if (responseOK) {
-          // File downloaded successfully, handle success
-          // console.log("Decoded audio file, saving mode")
-          const url = window.URL.createObjectURL(new Blob([blob]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "tortoisegeneration.mp3");
-          document.body.appendChild(link);
-          link.click();
-          link.parentNode.removeChild(link);
-        } else {
-          // Handle server-side errors or other issues
-          console.error("Download failed:", responseOK);
-        }
-        setDownloading(false); // Set downloading state to false after download is complete
-      })
+        .then((res) => {
+          // console.log("Fetch successful, decoding packet...")
+          return res.ok, res.blob();
+        })
+        .then((responseOK, blob) => {
+          if (responseOK) {
+            // File downloaded successfully, handle success
+            // console.log("Decoded audio file, saving mode")
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "tortoisegeneration.mp3");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+          } else {
+            // Handle server-side errors or other issues
+            console.error("Download failed:", responseOK);
+          }
+          setDownloading(false); // Set downloading state to false after download is complete
+        });
     } catch (error) {
       // Handle network errors
       console.error("Error while downloading file:", error);
@@ -199,7 +199,7 @@ const KLPSST_Page = () => {
       fetch("http://localhost:80/files/toTortoise", {
         credentials: "include",
         method: "POST",
-        body: inputValue ,
+        body: inputValue,
       })
         .then((response) => {
           return response.ok, response.json();
@@ -289,47 +289,57 @@ const KLPSST_Page = () => {
           alt="logo"
           style={{ width: "168px", height: "168px" }}
         />
-          <label htmlFor="userInput" style={{ textAlign: "left" }}>
-            Type a sentence:
-          </label>
-          <input
-            type="text"
-            id="userInput"
-            name="userInput"
-            placeholder="sentence"
-            value={inputValue}
-            onChange={handleInputChange}
-          />
-          <p>You typed: {inputValue}</p>
-          <button onClick={handleText}>Send Text</button>
+        <label htmlFor="userInput" style={{ textAlign: "left" }}>
+          Type a sentence:
+        </label>
+        <input
+          type="text"
+          id="userInput"
+          name="userInput"
+          placeholder="sentence"
+          value={inputValue}
+          onChange={handleInputChange}
+        />
+        <p>You typed: {inputValue}</p>
+        <button onClick={handleText}>Send Text</button>
 
-          <label htmlFor="fileInput1">Upload File 1:</label>
-          <input type="file" id="fileInput" onChange={handleFile1Change} />
-          <br />
+        <label htmlFor="fileInput1">Upload File 1:</label>
+        <input type="file" id="fileInput" onChange={handleFile1Change} />
+        <br />
 
-          <label htmlFor="fileInput1">Upload File 2:</label>
-          <input type="file" id="fileInput1" onChange={handleFile2Change} />
-          <br />
-          {user ? (
-            <b>
-              <input type={`submit${uploading?"-disabled":""}`} value="Upload" onClick={handleUpload} disabled={uploading}/>
-              <button type={`download${downloading?"-disabled":""}`} onClick={handleDownload} className={`download-button${downloading?"-disabled":""}`} disabled={downloading} >
-                Download
-              </button>
-            </b>
-          ) : (
-            <b>
-              <input type="submit-disabled" disabled value="Upload" />
-              <button
-                type="download-disabled"
-                disabled
-                className="download-button-disabled"
-              >
-                Download
-              </button>
-            </b>
-          )}
-          {/* <button type="download"  onClick={handleDownload} className="download-button" >
+        <label htmlFor="fileInput1">Upload File 2:</label>
+        <input type="file" id="fileInput1" onChange={handleFile2Change} />
+        <br />
+        {user ? (
+          <b>
+            <input
+              type={`submit${uploading ? "-disabled" : ""}`}
+              value="Upload"
+              onClick={handleUpload}
+              disabled={uploading}
+            />
+            <button
+              type={`download${downloading ? "-disabled" : ""}`}
+              onClick={handleDownload}
+              className={`download-button${downloading ? "-disabled" : ""}`}
+              disabled={downloading}
+            >
+              Download
+            </button>
+          </b>
+        ) : (
+          <b>
+            <input type="submit-disabled" disabled value="Upload" />
+            <button
+              type="download-disabled"
+              disabled
+              className="download-button-disabled"
+            >
+              Download
+            </button>
+          </b>
+        )}
+        {/* <button type="download"  onClick={handleDownload} className="download-button" >
             Download
           </button> */}
         <h3>Please submit 2 .wav files, each about 6 seconds long</h3>

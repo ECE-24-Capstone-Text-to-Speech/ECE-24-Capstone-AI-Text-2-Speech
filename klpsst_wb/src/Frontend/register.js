@@ -114,7 +114,11 @@ const KLPSST_Register = ({}) => {
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <div className={`register${theme === "dark" ? " dark-mode" : ""}`}>
         <div id="buttons">
-          <Button onClick={toggleTheme} id="toggleButton" className="narrow-button">
+          <Button
+            onClick={toggleTheme}
+            id="toggleButton"
+            className="narrow-button"
+          >
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
         </div>
@@ -142,7 +146,9 @@ const KLPSST_Register = ({}) => {
             Confirm Password:
             <input type="password" onChange={handleConfirm} required />
           </label>
-          <button type="submit" className="download-button">Register</button>
+          <button type="submit" className="download-button">
+            Register
+          </button>
         </form>
       </div>
     </ThemeProvider>

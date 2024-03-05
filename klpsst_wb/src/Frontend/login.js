@@ -124,7 +124,11 @@ const KLPSST_Login = ({}) => {
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <div className={`login${theme === "dark" ? " dark-mode" : ""}`}>
         <div id="buttons">
-          <Button onClick={toggleTheme} id="toggleButton" className="narrow-button">
+          <Button
+            onClick={toggleTheme}
+            id="toggleButton"
+            className="narrow-button"
+          >
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
         </div>
@@ -148,7 +152,9 @@ const KLPSST_Login = ({}) => {
               required
             />
           </label>
-          <button type="submit" className="download-button">Login</button>
+          <button type="submit" className="download-button">
+            Login
+          </button>
         </form>
       </div>
     </ThemeProvider>
