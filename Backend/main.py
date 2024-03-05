@@ -12,12 +12,18 @@ server = FastAPI()
 # allow direct access to files in temp folder (e.g. localhost/files/audio/Record1.mp3)
 # server.mount("/files/audio", StaticFiles(directory="temp"), name="audioFiles")
 
+origins = [
+    "http://localhost:3000",
+]
+
+methods = ["POST", "GET", "OPTIONS", "DELETE"]
+
 server.add_middleware(
     CORSMiddleware,
     # allow_origins=["*"],  # Add your frontend URL here
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=methods,
     allow_headers=["*"],
 )
 

@@ -88,30 +88,36 @@ const KLPSST_Page = () => {
   const handleDownload = (event) => {
     try {
       setDownloading(true); // Set downloading state to true
-
+      // console.log("Attempting to download audio file.")
       // Adjust the URL to match the endpoint for downloading files
-      const response = fetch(`http://localhost:80/files/download`, {
+      fetch(`http://localhost:80/files/download`, {
         credentials: "include",
         method: "GET",
-      });
-      if (response.ok) {
-        // File downloaded successfully, handle success
-        const blob = response.blob();
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "tortoisegeneration.mp3");
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      } else {
-        // Handle server-side errors or other issues
-        console.error("Failed to download file:", response.statusText);
-      }
-      setDownloading(false); // Set downloading state to false after download is complete
+      })
+      .then((res) => {
+        // console.log("Fetch successful, decoding packet...")
+        return res.ok, res.blob()
+      })
+      .then((responseOK, blob) => {
+        if (responseOK) {
+          // File downloaded successfully, handle success
+          // console.log("Decoded audio file, saving mode")
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "tortoisegeneration.mp3");
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } else {
+          // Handle server-side errors or other issues
+          console.error("Download failed:", responseOK);
+        }
+        setDownloading(false); // Set downloading state to false after download is complete
+      })
     } catch (error) {
       // Handle network errors
-      console.error("Error downloading file:", error);
+      console.error("Error while downloading file:", error);
       setDownloading(false); // Set downloading state to false after download is complete
     }
   };
@@ -283,7 +289,6 @@ const KLPSST_Page = () => {
           alt="logo"
           style={{ width: "168px", height: "168px" }}
         />
-        <form onSubmit={handleUpload}>
           <label htmlFor="userInput" style={{ textAlign: "left" }}>
             Type a sentence:
           </label>
@@ -307,29 +312,10 @@ const KLPSST_Page = () => {
           <br />
           {user ? (
             <b>
-              {uploading === false ? (
-                <input type="submit" value="Upload" />
-              ) : (
-                <input type="submit-disabled" value="Upload" />
-              )}
-
-              {downloading === false ? (
-                <button
-                  type="download"
-                  onClick={handleDownload}
-                  className="download-button"
-                >
-                  Download
-                </button>
-              ) : (
-                <button
-                  type="download-disabled"
-                  onClick={handleDownload}
-                  className="download-button-disabled"
-                >
-                  Download
-                </button>
-              )}
+              <input type={`submit${uploading?"-disabled":""}`} value="Upload" onClick={handleUpload} disabled={uploading}/>
+              <button type={`download${downloading?"-disabled":""}`} onClick={handleDownload} className={`download-button${downloading?"-disabled":""}`} disabled={downloading} >
+                Download
+              </button>
             </b>
           ) : (
             <b>
@@ -346,7 +332,6 @@ const KLPSST_Page = () => {
           {/* <button type="download"  onClick={handleDownload} className="download-button" >
             Download
           </button> */}
-        </form>
         <h3>Please submit 2 .wav files, each about 6 seconds long</h3>
         <p id="fileName"></p>
       </div>
