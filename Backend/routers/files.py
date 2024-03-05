@@ -226,11 +226,9 @@ async def download_file(request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Please log in order to upload or download files!",
         )
-    files = await get_list_of_audio_in_tortoise_out()
-    ##print("awooga")
-    ##wait start_tortoise()
-    ##print("done")
+    files = await get_list_of_audio_in_tortoise_out(user=user)
     for file in files:
+        print(f'Sending to user {user} with file: {file}')
         return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")

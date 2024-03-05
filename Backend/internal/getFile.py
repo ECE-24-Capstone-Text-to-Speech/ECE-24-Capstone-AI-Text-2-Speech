@@ -62,11 +62,11 @@ async def get_list_of_audio_in_tortoise_out(user: str = None) -> list[str]:
     """
     baseFolder = "tortoise_generations"
     targetFolder = ""
-    # if user:
-    #     if user not in os.listdir(baseFolder):
-    #         print(user + " doesn't exists")
-    #         return []
-    #     targetFolder += "/" + user
+    if user:
+        if user not in os.listdir(baseFolder):
+            print(user + " doesn't exists")
+            return []
+        targetFolder += "/" + user
 
     def getFilesInFolder(folderName):
         files = []
@@ -81,7 +81,7 @@ async def get_list_of_audio_in_tortoise_out(user: str = None) -> list[str]:
         return files
 
     out = getFilesInFolder(targetFolder)
-
+    print("found the following files:", out)
     return out
 
 
