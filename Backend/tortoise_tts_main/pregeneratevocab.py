@@ -79,11 +79,18 @@ class PregenerateVocab():
         subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
         # os.remove(temppath)
     
-    def change_speed(self, audio, speed_map):
+    def change_speed_and_pitch(self, audio, speed_pitch_map):
         result = AudioSegment.empty()
         position = 0
-        for segment, speed in speed_map:
-            result += audio[position:position+segment].speedup(playback_speed=speed)
+        for (segment, speed, pitch_shift) in speed_pitch_map:
+            segment_audio = audio[position:position + segment]
+            # Apply speed change
+            segment_audio = segment_audio.speedup(playback_speed=speed)
+            # Apply pitch shift
+            segment_audio = segment_audio._spawn(segment_audio.raw_data, overrides={
+                "frame_rate": int(segment_audio.frame_rate * (2 ** (pitch_shift / 12.0)))
+            })
+            result += segment_audio
             position += segment
         return result
 
@@ -118,34 +125,21 @@ class PregenerateVocab():
         # # Create random modulation signal
         # random_modulation = numpy.random.randn(len(samples))
 
-        speed_map = [
-            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
-            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
-            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
-            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
-            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
-            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
-            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
-            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
-            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
-            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
-            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
-        ]
-
-        pitch_shift_map = [
-            (500, 2),   # Increase pitch by 2 semitones for the first 5 seconds
-            (500, -1), 
-            (500, 1),  
-            (500, 2),   
-            (500, -1), 
-            (500, 1),  
-            (500, 2),   # Increase pitch by 2 semitones for the first 5 seconds
-            (500, -1), 
-            (500, 1),  
-            (500, 2)
+        speed_pitch_map = [
+            (500, 1.3, 2),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8, -1),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.15, 1),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.3, -2),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8, -3),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.2, 1),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.1, 2),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8, 2.1),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.2, 1.7),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.3, 0),   # Speed up the first 0.5 seconds by 50%
+            (500, 1.3, -1),   # Speed up the first 0.5 seconds by 50%
         ]
         
-        audio = self.change_speed(audio, speed_map)
+        audio = self.change_speed_and_pitch(audio, speed_pitch_map)
 
         # is the numpy.sin too small (wavelength is not big enough)
         # modulated_samples = (numpy.array(audio.get_array_of_samples())) * (numpy.sin(0.01 * rate * t * (1 + depth * random_modulation)) * 0.5 + 0.75)
