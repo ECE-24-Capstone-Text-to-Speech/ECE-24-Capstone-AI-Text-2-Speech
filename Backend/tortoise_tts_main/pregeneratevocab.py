@@ -79,7 +79,7 @@ class PregenerateVocab():
         subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
         # os.remove(temppath)
     
-    def change_speed(audio, speed_map):
+    def change_speed(self, audio, speed_map):
         result = AudioSegment.empty()
         position = 0
         for segment, speed in speed_map:
@@ -94,9 +94,9 @@ class PregenerateVocab():
         # Define equalization bands to boost mid-range frequencies
         # Adjust the values according to your preference
         bands = {
-            125: 1.5,    # Lower midrange frequencies
-            250: 2.5,    # Midrange frequencies
-            500: 2.5,    # Midrange frequencies
+            125: 1.25,    # Lower midrange frequencies
+            250: 1.5,    # Midrange frequencies
+            500: 1.5,    # Midrange frequencies
             1000: 1,   # Midrange frequencies
         }
 
@@ -106,29 +106,56 @@ class PregenerateVocab():
 
         # Apply random volume adjustment within a range
         volume_adjustment = random.uniform(1 - variance_factor, 1 + variance_factor)
-        audio = audio.apply_gain(volume_adjustment * 10)
+        audio = audio.apply_gain(volume_adjustment * 2)
 
-        rate=0.5
-        depth=0.5
+        # rate=0.5
+        # depth=0.5
 
-        # Convert audio to raw numpy array
-        samples = numpy.array(audio.get_array_of_samples())
-        # Time array
-        t = numpy.arange(len(samples)) / audio.frame_rate
-        # Create random modulation signal
-        random_modulation = numpy.random.randn(len(samples))
+        # # Convert audio to raw numpy array
+        # samples = numpy.array(audio.get_array_of_samples())
+        # # Time array
+        # t = numpy.arange(len(samples)) / audio.frame_rate
+        # # Create random modulation signal
+        # random_modulation = numpy.random.randn(len(samples))
+
+        speed_map = [
+            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
+            (500, 0.8),  # Slow down the next 0.5 seconds by 20%
+            (500, 1.2),    # Speed up the next 0.5 seconds by 20%
+            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
+            (500, 1.5),   # Speed up the first 0.5 seconds by 50%
+        ]
+
+        pitch_shift_map = [
+            (500, 2),   # Increase pitch by 2 semitones for the first 5 seconds
+            (500, -1), 
+            (500, 1),  
+            (500, 2),   
+            (500, -1), 
+            (500, 1),  
+            (500, 2),   # Increase pitch by 2 semitones for the first 5 seconds
+            (500, -1), 
+            (500, 1),  
+            (500, 2)
+        ]
+        
+        audio = self.change_speed(audio, speed_map)
 
         # is the numpy.sin too small (wavelength is not big enough)
-        modulated_samples = (numpy.array(audio.get_array_of_samples())) * (numpy.sin(0.01 * rate * t * (1 + depth * random_modulation)) * 0.5 + 0.75)
+        # modulated_samples = (numpy.array(audio.get_array_of_samples())) * (numpy.sin(0.01 * rate * t * (1 + depth * random_modulation)) * 0.5 + 0.75)
 
-        # construct speed map? 
-        
-        audio = AudioSegment(
-            data=modulated_samples.astype(samples.dtype).tobytes(),
-            sample_width=audio.sample_width,
-            frame_rate=audio.frame_rate,
-            channels=audio.channels
-        )
+        # audio = AudioSegment(
+        #     data=modulated_samples.astype(samples.dtype).tobytes(),
+        #     sample_width=audio.sample_width,
+        #     frame_rate=audio.frame_rate,
+        #     channels=audio.channels
+        # )
         # Export the humanized audio
         audio.export(output_file_path, format="wav")
 
