@@ -1,0 +1,102 @@
+.register {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(243, 180, 65);
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+
+[class*="dark-mode"] {
+  background-color: #333;
+  color: #fff;
+}
+
+[class*="register"] h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+[class*="register"] form {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+[class*="register"] label {
+  margin-bottom: 8px;
+}
+
+[class*="register"] input {
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  box-sizing: border-box;
+}
+
+[class*="register"] button {
+  background-color: #544caf;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  width: 300px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+[class*="register"] .narrow-button {
+  background-color: #544caf;
+  color: white;
+  padding: 10px;
+  width: auto;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+[class*="register"] button:hover {
+  background-color: #b0aec5;
+}
+
+#buttons {
+  position: fixed; /* Fixed positioning to keep it in place */
+  top: 10%; /* Position at the top */
+  right: 0; /* Align to the right */
+  margin: 10px;
+  z-index: 1000; /* Set a high z-index to ensure it's above other elements */
+}
+
+#buttons toggleButton {
+  position: fixed; /* Fixed positioning to keep it in place */
+  top: 5%; /* Position at the top */
+  right: 0; /* Align to the right */
+  margin: 10px;
+  z-index: 1000; /* Set a high z-index to ensure it's above other elements */
+}
+
+/* fix later */
+#buttons checkLogin {
+  position: fixed; /* Fixed positioning to keep it in place */
+  top: 5%; /* Position at the top */
+  right: 0; /* Align to the right */
+  margin: 10px;
+  z-index: 1000; /* Set a high z-index to ensure it's above other elements */
+}
+
+.register-button {
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  box-sizing: border-box;
+}
