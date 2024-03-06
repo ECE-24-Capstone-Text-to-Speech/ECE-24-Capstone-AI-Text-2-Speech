@@ -4,6 +4,9 @@ import subprocess
 import re
 import wave
 import ffmpy
+import random
+import numpy
+from pydub import AudioSegment
 
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
@@ -27,6 +30,7 @@ class PregenerateVocab():
     temppath = tmpsavepath + "word_temp.wav"
     mostcommonwordspath = r"tortoise_tts_main/mostcommonwords.txt"
     curvocab = r"tortoise_tts_main/klpsst_addon/pregenerated.json"
+    outfastpath = r"out_faster.wav"
 
     def __init__(self):
         self.tts = TextToSpeech(use_deepspeed=True, half=True)
@@ -75,6 +79,59 @@ class PregenerateVocab():
         subprocess.run("ffmpeg -i " + self.temppath + " -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-40dB,areverse " + newpath)
         # os.remove(temppath)
     
+    def change_speed(audio, speed_map):
+        result = AudioSegment.empty()
+        position = 0
+        for segment, speed in speed_map:
+            result += audio[position:position+segment].speedup(playback_speed=speed)
+            position += segment
+        return result
+
+    def humanize_audio(self, audio_file_path, output_file_path, variance_factor=0.5):
+        # Load the audio file
+        audio = AudioSegment.from_wav(audio_file_path)
+
+        # Define equalization bands to boost mid-range frequencies
+        # Adjust the values according to your preference
+        bands = {
+            125: 1.5,    # Lower midrange frequencies
+            250: 2.5,    # Midrange frequencies
+            500: 2.5,    # Midrange frequencies
+            1000: 1,   # Midrange frequencies
+        }
+
+        if bands is not None:
+            for freq, gain in bands.items():
+                audio = audio + gain
+
+        # Apply random volume adjustment within a range
+        volume_adjustment = random.uniform(1 - variance_factor, 1 + variance_factor)
+        audio = audio.apply_gain(volume_adjustment * 10)
+
+        rate=0.5
+        depth=0.5
+
+        # Convert audio to raw numpy array
+        samples = numpy.array(audio.get_array_of_samples())
+        # Time array
+        t = numpy.arange(len(samples)) / audio.frame_rate
+        # Create random modulation signal
+        random_modulation = numpy.random.randn(len(samples))
+
+        # is the numpy.sin too small (wavelength is not big enough)
+        modulated_samples = (numpy.array(audio.get_array_of_samples())) * (numpy.sin(0.01 * rate * t * (1 + depth * random_modulation)) * 0.5 + 0.75)
+
+        # construct speed map? 
+        
+        audio = AudioSegment(
+            data=modulated_samples.astype(samples.dtype).tobytes(),
+            sample_width=audio.sample_width,
+            frame_rate=audio.frame_rate,
+            channels=audio.channels
+        )
+        # Export the humanized audio
+        audio.export(output_file_path, format="wav")
+
     def run_sentence(self, sentence_str):
         alphanum_str = re.sub(r'\W+', ' ', sentence_str)
 
@@ -111,7 +168,9 @@ class PregenerateVocab():
             output.writeframes(data[i][1])
         output.close()
 
-        ff = ffmpy.FFmpeg(inputs={outfile: None}, outputs={"out_faster.wav": ["-filter:a", "atempo=1.3"]})
+        ff = ffmpy.FFmpeg(inputs={outfile: None}, outputs={self.outfastpath: ["-filter:a", "atempo=1.3"]})
         ff.run()
+
+        self.humanize_audio(self.outfastpath, "nextout.wav")
 
     
