@@ -1,9 +1,0 @@
-{
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  },
-  "python.formatting.provider": "none",
-  "docker.languageserver.formatter.ignoreMultilineInstructions": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
-}
