@@ -100,7 +100,7 @@ const KLPSST_Page = () => {
           setDownloading(false); // Set downloading state to false after download is complete
           if (!res.ok) {
             // Handle server-side errors or other issues
-            console.error("Download failed:", res.statusText);
+            return Promise.reject("Download failed:" + res.statusText);
           } else {
             const disposition = res.headers.get("Content-Disposition");
             filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
@@ -111,17 +111,23 @@ const KLPSST_Page = () => {
             return res.blob();
           }
         })
-        .then((blob) => {
-          // File downloaded successfully, handle success
-          // console.log("Decoded audio file, saving mode")
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", filename);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        });
+        .then(
+          (blob) => {
+            // File downloaded successfully, handle success
+            // console.log("Decoded audio file, saving mode")
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+          },
+          (failMessage) => {
+            console.error(failMessage);
+            alert(failMessage);
+          }
+        );
     } catch (error) {
       // Handle network errors
       console.error("Error while downloading file:", error);
@@ -155,18 +161,24 @@ const KLPSST_Page = () => {
         body: formData,
       })
         .then((response) => {
-          return response.ok, response.json();
-        })
-        .then((responseOk, data) => {
-          if (responseOk) {
-            // File uploaded successfully, handle success
-            alert("Files uploaded successfully.");
+          // if error present then fullfill promise else reject promise
+          if (response.ok) {
+            return Promise.reject("Files uploaded successfully.");
           } else {
-            // Handle server-side validation errors or other issues
-            const errorData = data;
-            alert(`Error: ${errorData.detail}`);
+            return response.json();
           }
-        });
+        })
+        .then(
+          (errorData) => {
+            // promise fullfill (error present) function
+            // Handle server-side validation errors or other issues
+            alert(`Error: ${errorData.detail}`);
+          },
+          (successMessage) => {
+            // promise reject (no error) function
+            alert(successMessage);
+          }
+        );
       // const response = fetch("http://localhost:80/files/audioInput", {
       //   credentials: "include",
       //   method: "POST",
@@ -208,18 +220,9 @@ const KLPSST_Page = () => {
         method: "POST",
         body: inputValue,
       })
-        .then((response) => {
-          return response.ok, response.json();
-        })
-        .then((responseOk, data) => {
-          if (responseOk) {
-            // File uploaded successfully, handle success
-            alert("Text uploaded successfully.");
-          } else {
-            // Handle server-side validation errors or other issues
-            const errorData = data;
-            alert(`Error: ${errorData.detail}`);
-          }
+        .then((response) => response.json())
+        .then((message) => {
+          if (message) alert(message);
         });
     } catch (error) {
       // Handle network errors
@@ -333,9 +336,6 @@ const KLPSST_Page = () => {
             >
               Download
             </button>
-            {/* <a href="http://localhost:80/files/download" download>
-              DOWNLOAD
-            </a> */}
           </b>
         ) : (
           <b>
