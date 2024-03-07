@@ -48,10 +48,10 @@ def _tortoise_execute(
     print("Finished generation of user voice")
 
     # Save the generated speech
-    generated_path = f"{output_dir}/generated-{output_name}.wav"
+    generated_path = f"{output_dir}/generated-{output_name}.mp3"
     print(f"Saving generated audio to `{generated_path}`")
     torchaudio.save(
-        uri=generated_path, src=gen.squeeze(0).cpu(), sample_rate=24000
+        uri=generated_path, src=gen.squeeze(0).cpu(), sample_rate=24000, encoding="MP3"
     )
     print("Tortoise generation done.")
     return generated_path
@@ -85,9 +85,9 @@ async def start_tortoise(
         output_name=CUSTOM_VOICE_NAME,
         preset=speed,
     )
-    #need to be able to access cookies, to push chat logs
-    #this will seperate the functions of putting stuff in the database and pulling stuff from the database
-    
+    # need to be able to access cookies, to push chat logs
+    # this will seperate the functions of putting stuff in the database and pulling stuff from the database
+
     print("Generated audio at:", generated_path)
 
     # Optionally, return the generated speech file to the client

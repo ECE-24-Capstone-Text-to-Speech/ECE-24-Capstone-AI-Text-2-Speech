@@ -228,8 +228,9 @@ async def download_file(request: Request):
         )
     files = await get_list_of_audio_in_tortoise_out(user=user)
     for file in files:
-        print(f'Sending to user {user} with file: {file}')
-        return FileResponse(path=file)
+        print(f"Sending to user {user} with file: {file}")
+        audio_name = file.split("/")[-1]
+        return FileResponse(path=file, filename=audio_name, media_type="audio/mpeg")
     else:
         raise HTTPException(status_code=404, detail="File not found")
 
@@ -282,7 +283,7 @@ async def sendToTortoise(request: Request):
         try:
             body_str = await request.body()  # Get the request body as bytes
             inputStr = body_str.decode()
-            
+
             path = f"tortoise_generations/{user}"
             await start_tortoise(inputStr, user, path, "ultra_fast")
             message = "start_tortoise called"

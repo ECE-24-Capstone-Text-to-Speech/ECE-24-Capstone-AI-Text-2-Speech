@@ -89,6 +89,7 @@ const KLPSST_Page = () => {
     try {
       setDownloading(true); // Set downloading state to true
       // console.log("Attempting to download audio file.")
+      let filename = "generatedAudio.mp3";
       // Adjust the URL to match the endpoint for downloading files
       fetch(`http://localhost:80/files/download`, {
         credentials: "include",
@@ -96,24 +97,30 @@ const KLPSST_Page = () => {
       })
         .then((res) => {
           // console.log("Fetch successful, decoding packet...")
-          return res.ok, res.blob();
-        })
-        .then((responseOK, blob) => {
-          if (responseOK) {
-            // File downloaded successfully, handle success
-            // console.log("Decoded audio file, saving mode")
-            const url = window.URL.createObjectURL(new Blob([blob]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "tortoisegeneration.mp3");
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-          } else {
-            // Handle server-side errors or other issues
-            console.error("Download failed:", responseOK);
-          }
           setDownloading(false); // Set downloading state to false after download is complete
+          if (!res.ok) {
+            // Handle server-side errors or other issues
+            console.error("Download failed:", res.statusText);
+          } else {
+            const disposition = res.headers.get("Content-Disposition");
+            filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
+            if (filename.toLowerCase().startsWith("utf-8''"))
+              filename = decodeURIComponent(filename.replace(/utf-8''/i, ""));
+            else filename = filename.replace(/['"]/g, "");
+            console.log("received file " + filename);
+            return res.blob();
+          }
+        })
+        .then((blob) => {
+          // File downloaded successfully, handle success
+          // console.log("Decoded audio file, saving mode")
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", filename);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
         });
     } catch (error) {
       // Handle network errors
@@ -326,6 +333,9 @@ const KLPSST_Page = () => {
             >
               Download
             </button>
+            {/* <a href="http://localhost:80/files/download" download>
+              DOWNLOAD
+            </a> */}
           </b>
         ) : (
           <b>
@@ -350,3 +360,11 @@ const KLPSST_Page = () => {
 };
 
 export default KLPSST_Page;
+
+var sleepSetTimeout_ctrl;
+function sleep(ms) {
+  clearInterval(sleepSetTimeout_ctrl);
+  return new Promise(
+    (resolve) => (sleepSetTimeout_ctrl = setTimeout(resolve, ms))
+  );
+}

@@ -18,6 +18,8 @@ origins = [
 
 methods = ["POST", "GET", "OPTIONS", "DELETE"]
 
+headers = ["Content-Disposition"]
+
 server.add_middleware(
     CORSMiddleware,
     # allow_origins=["*"],  # Add your frontend URL here
@@ -25,6 +27,7 @@ server.add_middleware(
     allow_credentials=True,
     allow_methods=methods,
     allow_headers=["*"],
+    expose_headers=headers,
 )
 
 server.include_router(items.router)
