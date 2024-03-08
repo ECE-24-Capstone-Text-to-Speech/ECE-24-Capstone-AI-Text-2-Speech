@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import Recorder from "recorder-js";
+import WaveStream from "react-wave-stream";
 import PropTypes from "prop-types";
+import "./VoiceRecorder.css";
 
 const VoiceRecorder = (props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const recorder = useRef(null);
   const stream = useRef(null);
+
+  const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
 
   const startRecord = async () => {
     try {
@@ -19,7 +23,10 @@ const VoiceRecorder = (props) => {
       const audioContext = new (window.AudioContext ||
         window.webkitAudioContext)();
       recorder.current = new Recorder(audioContext, {
-        onAnalysed: (data) => console.log(data),
+        onAnalysed: (data) => {
+          // console.log(data);
+          setAnalyserData(data);
+        },
       });
       await recorder.current.init(stream.current);
       await recorder.current.start();
@@ -61,16 +68,25 @@ const VoiceRecorder = (props) => {
   };
 
   return (
-    <div>
-      {isRecording ? (
-        <button onClick={stopRecord}>Stop record</button>
-      ) : (
-        <button onClick={startRecord}>Start record</button>
-      )}
+    <div className="VoiceRecorder">
+      <p>Recorder:</p>
+      <div className="VR-Buttons">
+        {isRecording ? (
+          <button onClick={stopRecord}>Stop record</button>
+        ) : (
+          <button onClick={startRecord}>Start record</button>
+        )}
 
-      <button onClick={downloadRecord} disabled={!audioBlob}>
-        Download Recording
-      </button>
+        {audioBlob && (
+          <button onClick={downloadRecord} disabled={!audioBlob}>
+            Download Recording
+          </button>
+        )}
+      </div>
+
+      <div className="Wavestream">
+        {isRecording && <WaveStream {...analyserData} />}
+      </div>
     </div>
   );
 };

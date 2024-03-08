@@ -314,7 +314,6 @@ const KLPSST_Page = () => {
         <p>You typed: {inputValue}</p>
         <button onClick={handleText}>Send Text</button>
 
-        <div>Recorder:</div>
         <VoiceRecorder />
 
         <label htmlFor="fileInput1">Upload File 1:</label>
