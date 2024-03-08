@@ -12,6 +12,7 @@ import KLPSST_Bar from "./navbar";
 import { render } from "@testing-library/react";
 //const backendURL;
 import { useAuth } from "../Hooks/AuthProvider";
+import VoiceRecorder from "./Components/VoiceRecorder";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -312,6 +313,9 @@ const KLPSST_Page = () => {
         />
         <p>You typed: {inputValue}</p>
         <button onClick={handleText}>Send Text</button>
+
+        <div>Recorder:</div>
+        <VoiceRecorder />
 
         <label htmlFor="fileInput1">Upload File 1:</label>
         <input type="file" id="fileInput" onChange={handleFile1Change} />
