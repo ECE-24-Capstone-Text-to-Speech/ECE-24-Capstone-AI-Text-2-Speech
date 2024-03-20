@@ -12,6 +12,7 @@ import KLPSST_Bar from "./navbar";
 import { render } from "@testing-library/react";
 //const backendURL;
 import { useAuth } from "../Hooks/AuthProvider";
+import VoiceRecorder from "./Components/VoiceRecorder";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -89,6 +90,7 @@ const KLPSST_Page = () => {
     try {
       setDownloading(true); // Set downloading state to true
       // console.log("Attempting to download audio file.")
+      let filename = "generatedAudio.mp3";
       // Adjust the URL to match the endpoint for downloading files
       fetch(`http://localhost:80/files/download`, {
         credentials: "include",
@@ -96,25 +98,37 @@ const KLPSST_Page = () => {
       })
         .then((res) => {
           // console.log("Fetch successful, decoding packet...")
-          return res.ok, res.blob();
+          setDownloading(false); // Set downloading state to false after download is complete
+          if (!res.ok) {
+            // Handle server-side errors or other issues
+            return Promise.reject("Download failed:" + res.statusText);
+          } else {
+            const disposition = res.headers.get("Content-Disposition");
+            filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
+            if (filename.toLowerCase().startsWith("utf-8''"))
+              filename = decodeURIComponent(filename.replace(/utf-8''/i, ""));
+            else filename = filename.replace(/['"]/g, "");
+            console.log("received file " + filename);
+            return res.blob();
+          }
         })
-        .then((responseOK, blob) => {
-          if (responseOK) {
+        .then(
+          (blob) => {
             // File downloaded successfully, handle success
             // console.log("Decoded audio file, saving mode")
-            const url = window.URL.createObjectURL(new Blob([blob]));
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", "tortoisegeneration.mp3");
+            link.setAttribute("download", filename);
             document.body.appendChild(link);
             link.click();
-            link.parentNode.removeChild(link);
-          } else {
-            // Handle server-side errors or other issues
-            console.error("Download failed:", responseOK);
+            link.remove();
+          },
+          (failMessage) => {
+            console.error(failMessage);
+            alert(failMessage);
           }
-          setDownloading(false); // Set downloading state to false after download is complete
-        });
+        );
     } catch (error) {
       // Handle network errors
       console.error("Error while downloading file:", error);
@@ -148,18 +162,24 @@ const KLPSST_Page = () => {
         body: formData,
       })
         .then((response) => {
-          return response.ok, response.json();
-        })
-        .then((responseOk, data) => {
-          if (responseOk) {
-            // File uploaded successfully, handle success
-            alert("Files uploaded successfully.");
+          // if error present then fullfill promise else reject promise
+          if (response.ok) {
+            return Promise.reject("Files uploaded successfully.");
           } else {
-            // Handle server-side validation errors or other issues
-            const errorData = data;
-            alert(`Error: ${errorData.detail}`);
+            return response.json();
           }
-        });
+        })
+        .then(
+          (errorData) => {
+            // promise fullfill (error present) function
+            // Handle server-side validation errors or other issues
+            alert(`Error: ${errorData.detail}`);
+          },
+          (successMessage) => {
+            // promise reject (no error) function
+            alert(successMessage);
+          }
+        );
       // const response = fetch("http://localhost:80/files/audioInput", {
       //   credentials: "include",
       //   method: "POST",
@@ -201,18 +221,9 @@ const KLPSST_Page = () => {
         method: "POST",
         body: inputValue,
       })
-        .then((response) => {
-          return response.ok, response.json();
-        })
-        .then((responseOk, data) => {
-          if (responseOk) {
-            // File uploaded successfully, handle success
-            alert("Text uploaded successfully.");
-          } else {
-            // Handle server-side validation errors or other issues
-            const errorData = data;
-            alert(`Error: ${errorData.detail}`);
-          }
+        .then((response) => response.json())
+        .then((message) => {
+          if (message) alert(message);
         });
     } catch (error) {
       // Handle network errors
@@ -303,6 +314,8 @@ const KLPSST_Page = () => {
         <p>You typed: {inputValue}</p>
         <button onClick={handleText}>Send Text</button>
 
+        <VoiceRecorder />
+
         <label htmlFor="fileInput1">Upload File 1:</label>
         <input type="file" id="fileInput" onChange={handleFile1Change} />
         <br />
@@ -350,3 +363,11 @@ const KLPSST_Page = () => {
 };
 
 export default KLPSST_Page;
+
+var sleepSetTimeout_ctrl;
+function sleep(ms) {
+  clearInterval(sleepSetTimeout_ctrl);
+  return new Promise(
+    (resolve) => (sleepSetTimeout_ctrl = setTimeout(resolve, ms))
+  );
+}
