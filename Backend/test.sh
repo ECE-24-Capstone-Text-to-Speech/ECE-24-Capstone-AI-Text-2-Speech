@@ -1,15 +1,23 @@
 #!/bin/bash
 
-dir=$(dirname "$0")
-cd $dir
-mkdir local
+set -e
 
 echo "building image for fastapi backend"
-docker build -t my-fastapi-app .
-
+docker build . -t tts 
 echo "starting fastapi backend service"
-docker run -v "$(pwd):/server" -p 80:80 my-fastapi-app
+
+pwd=$(pwd)
+
+docker run --gpus all -p 80:80 \
+    -e TORTOISE_MODELS_DIR=/models \
+    -v $pwd/docker_data/models:/models \
+    -v $pwd/docker_data/results:/results \
+    -v $pwd/docker_data/.cache/huggingface:/root/.cache/huggingface \
+    -v $pwd/docker_data/work:/work \
+    -v "$(pwd):/server" \
+    -it tts
+
 
 echo "shutting down fastapi server"
-docker stop my-fastapi-app
-docker rm my-fastapi-app
+docker stop tts
+docker rm tts

@@ -11,18 +11,21 @@ from typing import Union
 import os
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from internal.tortoise import start_tortoise
+from internal.tortoise import start_tortoise_example
 from internal.cookies import getCurrUser
 from internal.getFile import (
     get_list_of_audio_in_temp,
     get_list_of_audio_in_tortoise_out,
 )
 from internal.saveFile import save_audio_to_temp
+from typing import List
 
 # from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
 
-MAX_FILE_SIZE = 1_000_000  # 1 MB
+MAX_FILE_SIZE = 3_000_000  # 3 MB
 
 
 router = APIRouter(
@@ -34,18 +37,27 @@ router = APIRouter(
 
 # router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
 
+
 async def save_audio_file(user: str, audioFile: UploadFile):
-    mime = magic.Magic()
-    file_type = mime.from_buffer(audioFile.file.read(1024))
-    # fileSize = len(audioFile)
-    
-    allowed_formats = {"MPEG ADTS", "RIFF"}
-    if not any(x in file_type for x in allowed_formats):
+    # mime = magic.Magic()
+    # file_type = mime.from_buffer(audioFile.file.read(1024))
+    # # fileSize = len(audioFile)
+
+    # allowed_formats = {"MPEG ADTS", "RIFF"}
+    # if not any(x in file_type for x in allowed_formats):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+    #         detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+    #     )
+    file_extension = audioFile.filename.split(".")[-1].lower()
+    allowed_formats = {"mp3", "wav"}
+    if file_extension not in allowed_formats:
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail="File format not supported. Supported formats are MP3 and WAV. File type provided is: "+file_type,
+            detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
         )
-    # audioFile.size    
+
+    # audioFile.size
     if audioFile.size > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
@@ -64,10 +76,16 @@ async def save_audio_file(user: str, audioFile: UploadFile):
     # if fileSize > threshhold:
     allUserFiles = await get_list_of_audio_in_temp(user=user)
     if fileName not in allUserFiles:
-        print("file "+audioFile.filename+" not exists in "+str(allUserFiles)+", adding")
+        print(
+            "file "
+            + audioFile.filename
+            + " not exists in "
+            + str(allUserFiles)
+            + ", adding"
+        )
         saved, message = await save_audio_to_temp(audioFile, user=user)
     else:
-        print("file "+audioFile.filename+" found aready")
+        print("file " + audioFile.filename + " found aready")
         message = "File already exists"
 
     return {
@@ -77,6 +95,7 @@ async def save_audio_file(user: str, audioFile: UploadFile):
         "success": saved,
         "message": message,
     }
+
 
 @router.get("/")
 async def audio_page():
@@ -103,7 +122,9 @@ async def audio_page():
 
 
 @router.post("/audioInput")
-async def audio_input(request: Request, audioFile: UploadFile | None = None):
+async def audio_input(
+    request: Request, audioFiles: List[UploadFile], strValue: str | None = None
+):
     """
     Grabs FormData.audioFile.
     Requires frontend to send file in as FormData, input called "audioFile"
@@ -115,42 +136,48 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
             detail="Please log in order to upload or download files!",
         )
 
-    if not audioFile:
+    if audioFiles is None or len(audioFiles) == 0:
         raise HTTPException(
-            status_code=404, detail="No input audio file given in the request."
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No input audio file given in the request.",
         )
 
     # Extract file extension from the filename
-    file_extension = audioFile.filename.split(".")[-1].lower()
 
-    # Check if the file extension is one of the allowed formats
-    allowed_formats = {"wav"}
-    if file_extension not in allowed_formats:
-        raise HTTPException(
-            status_code=415,
-            detail=f"File format not supported. Supported format is WAV. File extension provided is: {file_extension}",
-        )
+    for audioFile in audioFiles:
+        file_extension = audioFile.filename.split(".")[-1].lower()
 
-    # Check file size
-    if audioFile.size > MAX_FILE_SIZE:
-        raise HTTPException(
-            status_code=413,
-            detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
-        )
+        # Check if the file extension is one of the allowed formats
+        allowed_formats = {"mp3", "wav"}
+        if file_extension not in allowed_formats:
+            raise HTTPException(
+                status_code=415,
+                detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
+            )
 
-    # Reset the file cursor to the beginning
-    audioFile.file.seek(0)
+        # Check file size
+        if audioFile.size > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
+            )
 
-    fileName = audioFile.filename
+        # Reset the file cursor to the beginning
+        audioFile.file.seek(0)
 
-    message: str = "Default message"
-    saved: bool = False
+        fileName = audioFile.filename
 
-    # Check if the file already exists in the temporary directory
-    if fileName not in await get_list_of_audio_in_temp(user=user):
-        saved, message = await save_audio_to_temp(audioFile, user=user)
-    else:
-        message = "File already exists"
+        message: str = "Default message"
+        saved: bool = False
+
+        # Check if the file already exists in the temporary directory
+        if fileName not in await get_list_of_audio_in_temp(user=user):
+            saved, message = await save_audio_to_temp(audioFile, user=user)
+        else:
+            message = "File already exists"
+    # print("awooga")
+    # await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
+    # print("joemamatoes")
 
     return {
         "filename": fileName,
@@ -158,6 +185,7 @@ async def audio_input(request: Request, audioFile: UploadFile | None = None):
         "success": saved,
         "message": message,
     }
+
 
 @router.post("/multiAudioInputs")
 async def audio_input(request: Request, audioFiles: list[UploadFile]):
@@ -170,15 +198,15 @@ async def audio_input(request: Request, audioFiles: list[UploadFile]):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in in order to upload files!"
+            detail="Please log in in order to upload files!",
         )
 
     if not audioFiles:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No input audio file given in the request."
+            detail="No input audio file given in the request.",
         )
-    
+
     print(f"Received {len(audioFiles)} files")
 
     results = []
@@ -186,7 +214,7 @@ async def audio_input(request: Request, audioFiles: list[UploadFile]):
     for audioFile in audioFiles:
         result = await save_audio_file(user, audioFile)
         results.append(result)
-    
+
     return results
 
 
@@ -198,9 +226,11 @@ async def download_file(request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Please log in order to upload or download files!",
         )
-    files = await get_list_of_audio_in_tortoise_out()
+    files = await get_list_of_audio_in_tortoise_out(user=user)
     for file in files:
-        return FileResponse(path=file)
+        print(f"Sending to user {user} with file: {file}")
+        audio_name = file.split("/")[-1]
+        return FileResponse(path=file, filename=audio_name, media_type="audio/mpeg")
     else:
         raise HTTPException(status_code=404, detail="File not found")
 
@@ -209,6 +239,9 @@ async def download_file(request: Request):
 async def get_audio_list():
     audioList = await get_list_of_audio_in_temp()
     print(audioList)
+    ##print("awooga")
+    ##await start_tortoise()
+    ##print("done")
     return audioList
 
 
@@ -239,3 +272,21 @@ async def get_audio_file(request: Request, audio_name: str):
             return FileResponse(path=file)
     else:
         raise HTTPException(status_code=404, detail="File not found")
+
+
+@router.post("/toTortoise")
+async def sendToTortoise(request: Request):
+
+    user = request.cookies.get("loggedInSession", None)
+    message = "not logged in"
+    if user:
+        try:
+            body_str = await request.body()  # Get the request body as bytes
+            inputStr = body_str.decode()
+
+            path = f"tortoise_generations/{user}"
+            await start_tortoise(inputStr, user, path, "ultra_fast")
+            message = "start_tortoise called"
+        except FileNotFoundError as e:
+            message = "directory not found"
+    return message

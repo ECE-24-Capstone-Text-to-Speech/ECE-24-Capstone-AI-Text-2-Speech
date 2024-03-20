@@ -1,0 +1,21 @@
+.VoiceRecorder {
+  width: 300px;
+  margin-bottom: 1em;
+  margin-bottom: 1em;
+}
+
+.VoiceRecorder .VR-Buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.VoiceRecorder .Wavestream #visualizer {
+  position: inherit !important;
+  background-color: #544caf !important;
+  height: 2.5em !important;
+  width: calc(300px - 2em) !important;
+  border-radius: 300px;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-top: 1em;
+}

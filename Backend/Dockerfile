@@ -1,31 +1,52 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+# Use an official CUDA base image, FOR NVIDIA 
+#FROM nvidia/cuda:12.1.0-base-ubuntu22.04
 
 
-#idk test: suha
-RUN apt-get update && apt-get install -y libmagic1
+##FOR NON_NVIDIA comment out lines 2 and 28-29, then uncomment lines 8 and 32-33
+##NVIDIA keep lines 2 and 27-28 uncommented, make sure lines 
+##Use this for NON-NVIDIA PEEPS, comment out the above and uncoment the below line.
+FROM python:3.11-slim
+
 
 # Set the working directory to /app
 WORKDIR /server
 
-VOLUME /server
+# Update package lists and install necessary dependencies
+# Set environment variable for noninteractive installation
+# Update package lists and install necessary dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3-pip \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
-# # Copy the current directory contents into the container at /app
-# COPY . /server
-
-# # Install any needed packages specified in requirements.txt
-# RUN pip install -r requirements.txt
-
-
+    # Install Python 3.11 from source
 # Copy only the package.json and package-lock.json files first.
+
+# Install Python packages -- NVIDIA BASED
+#RUN pip3 install --upgrade pip && \
+#    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+##Install Python Packages -- NON-NVIDIA BASED 
+RUN pip3 install --upgrade pip && \
+    pip3 install torch torchvision torchaudio
+
+
+
 # This helps to cache the installation of your project's dependencies.
 COPY requirements.txt ./
 
-# Run npm install to install project dependencies.
-RUN pip install -r requirements.txt
 
-# Copy the rest of the application code
+
+# Install Python dependencies
+RUN pip install -r requirements.txt fastapi uvicorn
+
+# Copy application files
 COPY . .
+
+##VOLUME /server
+
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
