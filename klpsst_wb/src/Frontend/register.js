@@ -76,10 +76,13 @@ const KLPSST_Register = ({}) => {
     formData.append("password", password); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch("http://localhost:80/users/register", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        process.env.REACT_APP_SERVER_ADDRESS + "/users/register",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         // Authentication successful, handle accordingly (e.g., redirect user)
