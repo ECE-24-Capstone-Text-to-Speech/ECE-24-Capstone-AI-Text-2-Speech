@@ -92,7 +92,7 @@ const KLPSST_Page = () => {
       // console.log("Attempting to download audio file.")
       let filename = "generatedAudio.mp3";
       // Adjust the URL to match the endpoint for downloading files
-      fetch(`http://localhost:80/files/download`, {
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + `/files/download`, {
         credentials: "include",
         method: "GET",
       })
@@ -156,7 +156,7 @@ const KLPSST_Page = () => {
     formData.append("audioFiles", file2); // Use 'audioFile' as the key for the second file
 
     try {
-      fetch("http://localhost:80/files/audioInput", {
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/audioInput", {
         credentials: "include",
         method: "POST",
         body: formData,
@@ -180,7 +180,7 @@ const KLPSST_Page = () => {
             alert(successMessage);
           }
         );
-      // const response = fetch("http://localhost:80/files/audioInput", {
+      // const response = fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/audioInput", {
       //   credentials: "include",
       //   method: "POST",
       //   body: formData,
@@ -216,7 +216,7 @@ const KLPSST_Page = () => {
     console.log(localStorage.getItem("loggedIn"));
 
     try {
-      fetch("http://localhost:80/files/toTortoise", {
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/toTortoise", {
         credentials: "include",
         method: "POST",
         body: inputValue,
@@ -237,10 +237,13 @@ const KLPSST_Page = () => {
 
     if (localStorage.getItem("loggedIn") === "true") {
       try {
-        const response = await fetch("http://localhost:80/users/logout", {
-          method: "POST",
-          credentials: "include",
-        });
+        const response = await fetch(
+          process.env.REACT_APP_SERVER_ADDRESS + "/users/logout",
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
 
         // console.log(response);
 

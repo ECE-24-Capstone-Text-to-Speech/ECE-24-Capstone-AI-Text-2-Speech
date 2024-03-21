@@ -15,7 +15,7 @@ const AuthProvider = ({ children }) => {
   const isAuth = async () => {
     console.log("Checking log in status...");
     try {
-      fetch("http://localhost:80/users/loginStatus", {
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/loginStatus", {
         method: "GET",
         credentials: "include",
       })
