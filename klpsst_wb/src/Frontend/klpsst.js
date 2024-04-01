@@ -232,12 +232,12 @@ const KLPSST_Page = () => {
     }
   };
 
-  const logOut = (e) => {
+  const logOut = async (e) => {
     e.preventDefault();
 
     if (localStorage.getItem("loggedIn") === "true") {
       try {
-        const response = fetch("http://localhost:80/users/logout", {
+        const response = await fetch("http://localhost:80/users/logout", {
           method: "POST",
           credentials: "include",
         });
@@ -245,7 +245,7 @@ const KLPSST_Page = () => {
         // console.log(response);
 
         if (response.ok) {
-          const errorMessage = response.json();
+          const errorMessage = await response.json();
           localStorage.setItem("username", "");
           localStorage.setItem("password", "");
 
@@ -261,7 +261,7 @@ const KLPSST_Page = () => {
             alert("User successfully logged out");
           }
         } else {
-          const errorMessage = response.json();
+          const errorMessage = await response.json();
           setMessage(errorMessage.error || "Logout failed");
           alert(errorMessage);
         }
