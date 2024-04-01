@@ -14,6 +14,8 @@ server = FastAPI()
 
 origins = [
     "http://localhost:3000",
+    "https://www.klpsst.com",
+    "https://amplify.d2sckcya9qtany.amplifyapp.com",
 ]
 
 methods = ["POST", "GET", "OPTIONS", "DELETE"]
