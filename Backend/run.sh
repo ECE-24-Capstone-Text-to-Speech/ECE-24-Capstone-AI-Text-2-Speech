@@ -19,6 +19,7 @@ docker run -p 80:80 \
     -v "$current_dir/docker_data/results:/results" \
     -v "$current_dir/docker_data/.cache/huggingface:/root/.cache/huggingface" \
     -v "$current_dir/docker_data/work:/work" \
+    -v "$current_dir:/server" \
     -it tts
 
 echo "shutting down fastapi server"
