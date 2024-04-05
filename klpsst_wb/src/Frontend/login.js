@@ -18,7 +18,7 @@ const KLPSST_Login = ({}) => {
   //redirectiom code
   const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
-  const token = sessionStorage.getItem("token");
+  // const token = sessionStorage.getItem("token");
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -82,10 +82,10 @@ const KLPSST_Login = ({}) => {
         .then((data) => {
           console.log("from backend", data);
           if (data.message == "Correct password") {
-            setAuth(true);
+            sessionStorage.setItem("token", data.access_token);
             console.log("Correct");
             localStorage.setItem("loggedIn", true);
-            sessionStorage.setItem(token, data.access_token);
+            setAuth(true);
             setRedirect(true); //for redirection?
             alert("Congrats! You're logged in!");
           } else {
