@@ -71,7 +71,6 @@ const KLPSST_Login = ({}) => {
     try {
       fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/login", {
         method: "POST",
-        credentials: "include",
         body: formData,
       })
         .then((res) => {
