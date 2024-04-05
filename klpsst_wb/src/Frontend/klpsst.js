@@ -247,41 +247,68 @@ const KLPSST_Page = () => {
 
     if (localStorage.getItem("loggedIn") === "true") {
       try {
-        const response = await fetch(
-          process.env.REACT_APP_SERVER_ADDRESS + "/users/logout",
-          {
-            method: "POST",
-            credentials: "include",
-          }
-        );
-
-        // console.log(response);
-
-        if (response.ok) {
-          const errorMessage = await response.json();
-          localStorage.setItem("username", "");
-          localStorage.setItem("password", "");
-
-          console.log(errorMessage);
-          if (errorMessage == "Error: No user in session to logout") {
-            console.log("Naur");
-            alert(`Logout unsucessful`);
-          } else if (errorMessage == "User successfully logged out") {
-            setAuth(false);
-            console.log("Yer");
-            localStorage.setItem("loggedIn", false);
-            setRedirect(true); //for redirection?
-            alert("User successfully logged out");
-          }
-        } else {
-          const errorMessage = await response.json();
-          setMessage(errorMessage.error || "Logout failed");
-          alert(errorMessage);
-        }
+        fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Include token if the server needs to log or take action based on the token
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Clear the token from local storage or wherever it's stored
+            if (data == "User successfully logged out") {
+              setAuth(false);
+              localStorage.setItem("loggedIn", false);
+              setRedirect(true); //for redirection?
+              alert("User successfully logged out");
+              sessionStorage.removeItem("token");
+            } else {
+              alert("Cannot logout");
+            }
+            // Redirect to login page or update UI accordingly
+          });
       } catch (error) {
-        console.error("Error:", error);
-        setMessage("An error occurred. Please try again later.");
+        console.error("Logout Error:", error);
       }
+      //   const response = await fetch(
+      //     process.env.REACT_APP_SERVER_ADDRESS + "/users/logout",
+      //     {
+      //       method: "POST",
+      //       credentials: "include",
+
+      //     }
+      //   );
+
+      //   // console.log(response);
+
+      //   if (response.ok) {
+      //     const errorMessage = await response.json();
+      //     localStorage.setItem("username", "");
+      //     localStorage.setItem("password", "");
+
+      //     console.log(errorMessage);
+      //     if (errorMessage == "Error: No user in session to logout") {
+      //       console.log("Naur");
+      //       alert(`Logout unsucessful`);
+      //     } else if (errorMessage == "User successfully logged out") {
+      //       setAuth(false);
+      //       console.log("Yer");
+      //       localStorage.setItem("loggedIn", false);
+      //       setRedirect(true); //for redirection?
+      //       alert("User successfully logged out");
+      //     }
+      //   } else {
+      //     const errorMessage = await response.json();
+      //     setMessage(errorMessage.error || "Logout failed");
+      //     alert(errorMessage);
+      //   }
+      // } catch (error) {
+      //   console.error("Error:", error);
+      //   setMessage("An error occurred. Please try again later.");
+      // }
     } else {
       setRedirect(true);
     }
