@@ -5,7 +5,8 @@ from fastapi import APIRouter, Response, Request, responses, Form
 # from pymongo.server_api import ServerApi
 import certifi
 from typing import Annotated
-
+import jwt
+import datetime
 
 router = APIRouter()
 users = {}
@@ -66,34 +67,38 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
         # user exists
         if userPass.find_one({"username": username, "password": password}):
             # correct password
-            response.set_cookie(key="loggedInSession", value=username)
+            #response.set_cookie(key="loggedInSession", value=username)
+            payload = {
+            "sub": username  # Subject, typically the unique identifier
+            }
+            token = jwt.encode(payload, None, algorithm="none")
             message = 'Correct password'
             client.close()
-            return message
+            return {"access_token" : token, "token_type": "bearer", "message" : message}
         else:
             # incorrect password
             message = 'Incorrect password'
             client.close()
-            return message
+            return {"message" : message}
     else:
         # user doesn't exist
         message = 'User does not exist'
         client.close()
-        return message
+        return {"message" : message}
 
 
 @router.post("/users/logout", tags=["users"])
 async def logout_user(request : Request, response : Response):
-    message = "Error: No user in session to logout"
-    currUser = request.cookies.get("loggedInSession", None)
+    #message = "Error: No user in session to logout"
+    #currUser = request.cookies.get("loggedInSession", None)
 
     # if the session currently has a user, remove the user\
-    if currUser:
-        response.delete_cookie("loggedInSession")
-        message = "User successfully logged out"
+    #if currUser:
+        #response.delete_cookie("loggedInSession")
+    message = "User successfully logged out"
    
     return message
-
+'''
 @router.get("/users/loginStatus", tags=["users"])
 async def loginStatus(request: Request, Response : Response):
     message = {
@@ -106,6 +111,27 @@ async def loginStatus(request: Request, Response : Response):
                 "loggedIn" : True,
                 "username" : currUser
             }
+    return message
+'''
+@router.get("/users/loginStatus", tags=["users"])
+async def login_status(request: Request):
+    message = {
+        "loggedIn": False,
+        "username": None
+    }
+    
+    # Extract the token from the Authorization header
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        try:
+            # Decode the token
+            payload = jwt.decode(token, options={"verify_signature": False})
+            message["loggedIn"] = True
+            message["username"] = payload.get("sub")  # Assuming 'sub' contains the username
+        except (jwt.DecodeError, jwt.ExpiredSignatureError):
+            # Token is invalid or expired
+            return message
     return message
     
 

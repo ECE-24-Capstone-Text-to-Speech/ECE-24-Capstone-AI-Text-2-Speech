@@ -10,6 +10,7 @@ import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
   const { setAuth } = useAuth();
+  // const { store, sctions }
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
@@ -17,6 +18,7 @@ const KLPSST_Login = ({}) => {
   //redirectiom code
   const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
+  // const token = sessionStorage.getItem("token");
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -58,7 +60,7 @@ const KLPSST_Login = ({}) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     console.log("Login submitted with:", { username, password });
@@ -67,51 +69,75 @@ const KLPSST_Login = ({}) => {
     formData.append("password", password); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch(
-        process.env.REACT_APP_SERVER_ADDRESS + "/users/login",
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      );
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/login", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      })
+        .then((res) => {
+          //get JSOn file data from repsonse
+          return res.json();
+        })
 
-      // var mydata = JSON.parse(response.json());
+        .then((data) => {
+          console.log("from backend", data);
+          if (data.message == "Correct password") {
+            sessionStorage.setItem("token", data.access_token);
+            console.log("Correct");
+            localStorage.setItem("loggedIn", true);
+            setAuth(true);
+            setRedirect(true); //for redirection?
+            alert("Congrats! You're logged in!");
+          } else {
+            if (data.message == "User does not exist") {
+              console.log("Login unsuccessful");
+              alert(`User does not exist`);
+            }
+            if (data.message == "Incorrect password") {
+              console.log("Correct Username, Wrong password");
+              alert("Wrong Password");
+            }
+          }
+          console.log(data.message);
+          // setStore({ token: data.token })
+        });
+      // // var mydata = JSON.parse(response.json());
 
-      console.log(response);
+      // console.log(response);
 
-      if (response.ok) {
-        // Authentication successful, handle accordingly (e.g., redirect user)
-        response.headers.get("set-cookie");
-        // console.log(document.cookie());
+      // if (response.ok) {
+      //   // Authentication successful, handle accordingly (e.g., redirect user)
+      //   response.headers.get("set-cookie");
+      //   // console.log(document.cookie());
 
-        const errorMessage = await response.json();
-        localStorage.setItem("username", username);
-        localStorage.setItem("password", password);
-        // localStorage.setItem("loggedIn", loggedIn);
+      //   const errorMessage = await response.json();
+      //   localStorage.setItem("username", username);
+      //   localStorage.setItem("password", password);
+      //   // localStorage.setItem("loggedIn", loggedIn);
 
-        console.log(errorMessage);
-        if (errorMessage == "User does not exist") {
-          console.log("Login unsuccessful");
+      //   console.log(errorMessage);
+      //   if (errorMessage == "User does not exist") {
+      //     console.log("Login unsuccessful");
 
-          alert(`User does not exist`);
-        } else if (errorMessage == "Correct password") {
-          setAuth(true);
-          console.log("Correct");
-          localStorage.setItem("loggedIn", true);
-          setRedirect(true); //for redirection?
-          alert("Congrats! You're logged in!");
-        } else if (errorMessage == "Incorrect password") {
-          console.log("Correct Username");
-          alert("Wrong Password");
-        }
-      } else {
-        // Authentication failed, handle accordingly (e.g., show error message)
-        //   console.error("Login failed");
-        const errorMessage = await response.json();
-        setMessage(errorMessage.error || "Login failed, try again");
-        alert(errorMessage);
-      }
+      //     alert(`User does not exist`);
+      //   } else if (errorMessage == "Correct password") {
+      //     setAuth(true);
+      //     console.log("Correct");
+      //     localStorage.setItem("loggedIn", true);
+      //     sessionStorage.setItem(token, data_access_token)
+      //     setRedirect(true); //for redirection?
+      //     alert("Congrats! You're logged in!");
+      //   } else if (errorMessage == "Incorrect password") {
+      //     console.log("Correct Username");
+      //     alert("Wrong Password");
+      //   }
+      // } else {
+      //   // Authentication failed, handle accordingly (e.g., show error message)
+      //   //   console.error("Login failed");
+      //   const errorMessage = await response.json();
+      //   setMessage(errorMessage.error || "Login failed, try again");
+      //   alert(errorMessage);
+      // }
     } catch (error) {
       console.error("Error:", error);
       setMessage("An error occurred. Please try again later.");

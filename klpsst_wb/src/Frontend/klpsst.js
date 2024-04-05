@@ -92,9 +92,13 @@ const KLPSST_Page = () => {
       // console.log("Attempting to download audio file.")
       let filename = "generatedAudio.mp3";
       // Adjust the URL to match the endpoint for downloading files
+      const token = sessionStorage.getItem("token");
       fetch(process.env.REACT_APP_SERVER_ADDRESS + `/files/download`, {
-        credentials: "include",
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
       })
         .then((res) => {
           // console.log("Fetch successful, decoding packet...")
@@ -156,10 +160,13 @@ const KLPSST_Page = () => {
     formData.append("audioFiles", file2); // Use 'audioFile' as the key for the second file
 
     try {
+      const token = sessionStorage.getItem("token");
       fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/audioInput", {
-        credentials: "include",
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((response) => {
           // if error present then fullfill promise else reject promise
@@ -216,10 +223,13 @@ const KLPSST_Page = () => {
     console.log(localStorage.getItem("loggedIn"));
 
     try {
+      const token = sessionStorage.getItem("token");
       fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/toTortoise", {
-        credentials: "include",
         method: "POST",
         body: inputValue,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((response) => response.json())
         .then((message) => {

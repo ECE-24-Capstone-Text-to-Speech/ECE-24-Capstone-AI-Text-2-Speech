@@ -13,7 +13,9 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.tortoise import start_tortoise
 from internal.tortoise import start_tortoise_example
-from internal.cookies import getCurrUser
+
+# from internal.cookies import getCurrUser
+from internal.tokenAuth import getCurrUser
 from internal.getFile import (
     get_list_of_audio_in_temp,
     get_list_of_audio_in_tortoise_out,
@@ -277,7 +279,7 @@ async def get_audio_file(request: Request, audio_name: str):
 @router.post("/toTortoise")
 async def sendToTortoise(request: Request):
 
-    user = request.cookies.get("loggedInSession", None)
+    user = getCurrUser(request)
     message = "not logged in"
     if user:
         try:
