@@ -15,9 +15,13 @@ const AuthProvider = ({ children }) => {
   const isAuth = async () => {
     console.log("Checking log in status...");
     try {
+      const token = sessionStorage.getItem("token");
+      console.log(token);
       fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/loginStatus", {
         method: "GET",
-        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((res) => {
           return res.json();
