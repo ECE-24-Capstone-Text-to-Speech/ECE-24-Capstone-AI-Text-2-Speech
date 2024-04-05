@@ -79,12 +79,12 @@ async def login(username: Annotated[str, Form()], password: Annotated[str, Form(
             # incorrect password
             message = 'Incorrect password'
             client.close()
-            return message
+            return {"message" : message}
     else:
         # user doesn't exist
         message = 'User does not exist'
         client.close()
-        return message
+        return {"message" : message}
 
 
 @router.post("/users/logout", tags=["users"])

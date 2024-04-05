@@ -20,7 +20,6 @@ const KLPSST_Login = ({}) => {
   const [redirect, setRedirect] = useState(false);
   const token = sessionStorage.getItem("token");
 
-
   // Define dark mode theme
   const darkTheme = createTheme({
     palette: {
@@ -53,7 +52,6 @@ const KLPSST_Login = ({}) => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -62,7 +60,7 @@ const KLPSST_Login = ({}) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     console.log("Login submitted with:", { username, password });
@@ -71,21 +69,38 @@ const KLPSST_Login = ({}) => {
     formData.append("password", password); // Use 'audioFile' as the key for the second file
 
     try {
-      const response = await fetch(
-        process.env.REACT_APP_SERVER_ADDRESS + "/users/login",
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      )
-
-      .then(data => {
-        console.log("from backend", data);
-        sessionStorage.setItem("token", data.token);
-        // setStore({ token: data.token })
-
+      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/login", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
       })
+        .then((res) => {
+          //get JSOn file data from repsonse
+          return res.json();
+        })
+
+        .then((data) => {
+          console.log("from backend", data);
+          if (data.message == "Correct password") {
+            setAuth(true);
+            console.log("Correct");
+            localStorage.setItem("loggedIn", true);
+            sessionStorage.setItem(token, data.access_token);
+            setRedirect(true); //for redirection?
+            alert("Congrats! You're logged in!");
+          } else {
+            if (data.message == "User does not exist") {
+              console.log("Login unsuccessful");
+              alert(`User does not exist`);
+            }
+            if (data.message == "Incorrect password") {
+              console.log("Correct Username, Wrong password");
+              alert("Wrong Password");
+            }
+          }
+          console.log(data.message);
+          // setStore({ token: data.token })
+        });
       // // var mydata = JSON.parse(response.json());
 
       // console.log(response);
