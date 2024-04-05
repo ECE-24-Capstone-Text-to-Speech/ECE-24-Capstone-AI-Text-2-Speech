@@ -16,7 +16,6 @@ const AuthProvider = ({ children }) => {
     console.log("Checking log in status...");
     try {
       const token = sessionStorage.getItem("token");
-      console.log(token);
       fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/loginStatus", {
         method: "GET",
         headers: {
