@@ -10,6 +10,7 @@ import { useAuth } from "../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
   const { setAuth } = useAuth();
+  // const { store, sctions }
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
@@ -17,6 +18,8 @@ const KLPSST_Login = ({}) => {
   //redirectiom code
   const navigate = useNavigate();
   const [redirect, setRedirect] = useState(false);
+  const token = sessionStorage.getItem("token");
+
 
   // Define dark mode theme
   const darkTheme = createTheme({
@@ -50,6 +53,7 @@ const KLPSST_Login = ({}) => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -74,44 +78,51 @@ const KLPSST_Login = ({}) => {
           credentials: "include",
           body: formData,
         }
-      );
+      )
 
-      // var mydata = JSON.parse(response.json());
+      .then(data => {
+        console.log("from backend", data);
+        sessionStorage.setItem("token", data.token);
+        // setStore({ token: data.token })
 
-      console.log(response);
+      })
+      // // var mydata = JSON.parse(response.json());
 
-      if (response.ok) {
-        // Authentication successful, handle accordingly (e.g., redirect user)
-        response.headers.get("set-cookie");
-        // console.log(document.cookie());
+      // console.log(response);
 
-        const errorMessage = await response.json();
-        localStorage.setItem("username", username);
-        localStorage.setItem("password", password);
-        // localStorage.setItem("loggedIn", loggedIn);
+      // if (response.ok) {
+      //   // Authentication successful, handle accordingly (e.g., redirect user)
+      //   response.headers.get("set-cookie");
+      //   // console.log(document.cookie());
 
-        console.log(errorMessage);
-        if (errorMessage == "User does not exist") {
-          console.log("Login unsuccessful");
+      //   const errorMessage = await response.json();
+      //   localStorage.setItem("username", username);
+      //   localStorage.setItem("password", password);
+      //   // localStorage.setItem("loggedIn", loggedIn);
 
-          alert(`User does not exist`);
-        } else if (errorMessage == "Correct password") {
-          setAuth(true);
-          console.log("Correct");
-          localStorage.setItem("loggedIn", true);
-          setRedirect(true); //for redirection?
-          alert("Congrats! You're logged in!");
-        } else if (errorMessage == "Incorrect password") {
-          console.log("Correct Username");
-          alert("Wrong Password");
-        }
-      } else {
-        // Authentication failed, handle accordingly (e.g., show error message)
-        //   console.error("Login failed");
-        const errorMessage = await response.json();
-        setMessage(errorMessage.error || "Login failed, try again");
-        alert(errorMessage);
-      }
+      //   console.log(errorMessage);
+      //   if (errorMessage == "User does not exist") {
+      //     console.log("Login unsuccessful");
+
+      //     alert(`User does not exist`);
+      //   } else if (errorMessage == "Correct password") {
+      //     setAuth(true);
+      //     console.log("Correct");
+      //     localStorage.setItem("loggedIn", true);
+      //     sessionStorage.setItem(token, data_access_token)
+      //     setRedirect(true); //for redirection?
+      //     alert("Congrats! You're logged in!");
+      //   } else if (errorMessage == "Incorrect password") {
+      //     console.log("Correct Username");
+      //     alert("Wrong Password");
+      //   }
+      // } else {
+      //   // Authentication failed, handle accordingly (e.g., show error message)
+      //   //   console.error("Login failed");
+      //   const errorMessage = await response.json();
+      //   setMessage(errorMessage.error || "Login failed, try again");
+      //   alert(errorMessage);
+      // }
     } catch (error) {
       console.error("Error:", error);
       setMessage("An error occurred. Please try again later.");
