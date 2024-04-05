@@ -98,6 +98,7 @@ const KLPSST_Page = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: "no-store",
       })
         .then((res) => {
           // console.log("Fetch successful, decoding packet...")
