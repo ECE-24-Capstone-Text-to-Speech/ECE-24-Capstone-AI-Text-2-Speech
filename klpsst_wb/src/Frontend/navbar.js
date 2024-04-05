@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./navbar.css";
 import { Link, useLocation } from "react-router-dom";
 
@@ -9,6 +9,21 @@ const KLPSST_Bar = () => {
   const pages = ["Home", "Login", "Register"];
   // const [currUser, setCurrUser] = useState(null); // default no one logged in
   const { user } = useAuth();
+
+  useEffect(() => {
+    try {
+      fetch(process.env.REACT_APP_SERVER_ADDRESS, {
+        method: "GET",
+      })
+        .then((res) => res.json())
+        .then((data) =>
+          console.log("!!! PINGING SERVER !!!\n" + JSON.stringify(data))
+        );
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Backend server is not active. Message developers about it!");
+    }
+  }, ["__INIT__"]);
 
   return (
     <div id="top-navbar">
