@@ -13,8 +13,6 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.tortoise import start_tortoise
 from internal.tortoise import start_tortoise_example
-
-# from internal.cookies import getCurrUser
 from internal.tokenAuth import getCurrUser
 from internal.getFile import (
     get_list_of_audio_in_temp,
@@ -23,11 +21,10 @@ from internal.getFile import (
 from internal.saveFile import save_audio_to_temp
 from typing import List
 
-# from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
 
-MAX_FILE_SIZE = 3_000_000  # 3 MB
+MAX_FILE_SIZE = 10_000_000  # 10 MB
 
 
 router = APIRouter(
@@ -36,8 +33,6 @@ router = APIRouter(
     # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "files path needs functions name appended"}},
 )
-
-# router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
 
 
 async def save_audio_file(user: str, audioFile: UploadFile):
@@ -150,17 +145,17 @@ async def audio_input(
         file_extension = audioFile.filename.split(".")[-1].lower()
 
         # Check if the file extension is one of the allowed formats
-        allowed_formats = {"mp3", "wav"}
+        allowed_formats = {"wav"}
         if file_extension not in allowed_formats:
             raise HTTPException(
-                status_code=415,
-                detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail=f"File format not supported. The only supported format is WAV. File extension provided is: {file_extension}",
             )
 
         # Check file size
         if audioFile.size > MAX_FILE_SIZE:
             raise HTTPException(
-                status_code=413,
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
             )
 
@@ -234,7 +229,9 @@ async def download_file(request: Request):
         audio_name = file.split("/")[-1]
         return FileResponse(path=file, filename=audio_name, media_type="audio/mpeg")
     else:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
 
 @router.get("/audios")
