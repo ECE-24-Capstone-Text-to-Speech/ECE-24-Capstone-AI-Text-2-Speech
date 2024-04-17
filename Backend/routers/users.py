@@ -23,7 +23,7 @@ import certifi
 router = APIRouter(
     prefix="/users",
     tags=["files"],
-    responses={404: {"description": "files path needs functions name appended"}},
+    responses={404: {"description": "users path needs functions name appended"}},
 )
 
 

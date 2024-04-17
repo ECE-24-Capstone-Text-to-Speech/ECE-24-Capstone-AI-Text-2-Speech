@@ -18,7 +18,7 @@ from internal.getFile import (
     get_list_of_audio_in_temp,
     get_list_of_audio_in_tortoise_out,
 )
-from internal.saveFile import save_audio_to_temp
+from internal.saveFile import create_user_folders, save_audio_to_temp
 from typing import List
 
 
@@ -172,9 +172,6 @@ async def audio_input(
             saved, message = await save_audio_to_temp(audioFile, user=user)
         else:
             message = "File already exists"
-    # print("awooga")
-    # await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
-    # print("joemamatoes")
 
     return {
         "filename": fileName,
@@ -235,12 +232,15 @@ async def download_file(request: Request):
 
 
 @router.get("/audios")
-async def get_audio_list():
-    audioList = await get_list_of_audio_in_temp()
+async def get_audio_list(request: Request):
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not logged in"
+        )
+    await create_user_folders(user)
+    audioList = await get_list_of_audio_in_temp(user=user)
     print(audioList)
-    ##print("awooga")
-    ##await start_tortoise()
-    ##print("done")
     return audioList
 
 
@@ -265,12 +265,19 @@ async def get_audio_file(request: Request, audio_name: str):
     #         status_code=status.HTTP_401_UNAUTHORIZED,
     #         detail="Please log in order to upload or download files!",
     #     )
-    files = await get_list_of_audio_in_temp(fullPath=True)
+    user = getCurrUser()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not logged in"
+        )
+    files = await get_list_of_audio_in_temp(fullPath=True, user=user)
     for file in files:
         if audio_name == file.split("/")[-1]:
             return FileResponse(path=file)
     else:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
 
 @router.post("/toTortoise")
