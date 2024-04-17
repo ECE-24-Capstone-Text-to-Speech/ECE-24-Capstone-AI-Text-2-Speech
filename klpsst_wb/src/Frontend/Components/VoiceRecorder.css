@@ -9,6 +9,12 @@
   justify-content: space-around;
 }
 
+.VoiceRecorder .RecordPreview .AudioPlayer {
+  position: inherit;
+  height: 2.5em;
+  margin-top: 1em;
+}
+
 .VoiceRecorder .Wavestream #visualizer {
   position: inherit !important;
   background-color: #544caf !important;

@@ -7,6 +7,7 @@ import "./VoiceRecorder.css";
 const VoiceRecorder = (props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0); // New state for elapsed time
   const recorder = useRef(null);
   const stream = useRef(null);
 
@@ -18,6 +19,9 @@ const VoiceRecorder = (props) => {
       stream.current = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
+
+      // clear cache
+      setAudioBlob(null);
 
       // Start recording
       const audioContext = new (window.AudioContext ||
@@ -31,6 +35,7 @@ const VoiceRecorder = (props) => {
       await recorder.current.init(stream.current);
       await recorder.current.start();
       console.log("recording started");
+      setElapsedTime(0);
       setIsRecording(true);
     } catch (err) {
       console.error("Failed to start recording:", err);
@@ -67,6 +72,25 @@ const VoiceRecorder = (props) => {
     Recorder.download(audioBlob, "my-audio-file"); // downloads a .wav file
   };
 
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => {
+        setElapsedTime((prevTime) => prevTime + 0.01);
+      }, 10); // Update elapsed time every 10ms
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
+
+  const formatTime = (seconds) => {
+    // Function to format time in seconds with 3 decimal places
+    return `${seconds.toFixed(2)} seconds${
+      isRecording ? "" : ` | ${Math.round(audioBlob?.size / 1024)} KB`
+    }`;
+  };
+
   return (
     <div className="VoiceRecorder">
       <p>Recorder:</p>
@@ -83,9 +107,19 @@ const VoiceRecorder = (props) => {
           </button>
         )}
       </div>
-
+      <div className="RecordPreview">
+        {audioBlob && (
+          <audio controls className="AudioPlayer">
+            <source src={URL.createObjectURL(audioBlob)} type="audio/wav" />
+            Your browser does not support the audio element.
+          </audio>
+        )}
+      </div>
       <div className="Wavestream">
         {isRecording && <WaveStream {...analyserData} />}
+      </div>
+      <div className="Timer" style={{ textAlign: "center" }}>
+        {formatTime(elapsedTime)}
       </div>
     </div>
   );
