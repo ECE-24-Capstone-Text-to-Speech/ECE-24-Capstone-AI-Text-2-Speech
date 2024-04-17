@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "./navbar.css";
 import { Link, useLocation } from "react-router-dom";
 
-import { useAuth } from "../Hooks/AuthProvider";
+import { useAuth } from "../../Hooks/AuthProvider";
 
 const KLPSST_Bar = () => {
   const page = useLocation();

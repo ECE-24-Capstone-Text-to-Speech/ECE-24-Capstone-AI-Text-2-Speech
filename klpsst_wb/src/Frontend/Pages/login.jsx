@@ -4,9 +4,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import "./login.css";
 import { useNavigate, Navigate } from "react-router-dom";
-import KLPSSTLOGO from "./logo_image.png";
-import { render } from "@testing-library/react";
-import { useAuth } from "../Hooks/AuthProvider";
+import { useAuth } from "../../Hooks/AuthProvider";
 
 const KLPSST_Login = ({}) => {
   const { setAuth } = useAuth();
@@ -100,43 +98,6 @@ const KLPSST_Login = ({}) => {
           console.log(data.message);
           // setStore({ token: data.token })
         });
-      // // var mydata = JSON.parse(response.json());
-
-      // console.log(response);
-
-      // if (response.ok) {
-      //   // Authentication successful, handle accordingly (e.g., redirect user)
-      //   response.headers.get("set-cookie");
-      //   // console.log(document.cookie());
-
-      //   const errorMessage = await response.json();
-      //   localStorage.setItem("username", username);
-      //   localStorage.setItem("password", password);
-      //   // localStorage.setItem("loggedIn", loggedIn);
-
-      //   console.log(errorMessage);
-      //   if (errorMessage == "User does not exist") {
-      //     console.log("Login unsuccessful");
-
-      //     alert(`User does not exist`);
-      //   } else if (errorMessage == "Correct password") {
-      //     setAuth(true);
-      //     console.log("Correct");
-      //     localStorage.setItem("loggedIn", true);
-      //     sessionStorage.setItem(token, data_access_token)
-      //     setRedirect(true); //for redirection?
-      //     alert("Congrats! You're logged in!");
-      //   } else if (errorMessage == "Incorrect password") {
-      //     console.log("Correct Username");
-      //     alert("Wrong Password");
-      //   }
-      // } else {
-      //   // Authentication failed, handle accordingly (e.g., show error message)
-      //   //   console.error("Login failed");
-      //   const errorMessage = await response.json();
-      //   setMessage(errorMessage.error || "Login failed, try again");
-      //   alert(errorMessage);
-      // }
     } catch (error) {
       console.error("Error:", error);
       setMessage("An error occurred. Please try again later.");
