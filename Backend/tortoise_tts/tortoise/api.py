@@ -241,7 +241,7 @@ class TextToSpeech:
 
     def __init__(
         self,
-        autoregressive_batch_size=8,
+        autoregressive_batch_size=None,
         models_dir=MODELS_DIR,
         enable_redaction=True,
         kv_cache=False,

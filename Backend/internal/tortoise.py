@@ -45,7 +45,9 @@ print()
 print()
 
 # the tts base model to start off from
-tts = TextToSpeech(use_deepspeed=True, kv_cache=True)
+tts = TextToSpeech(
+    autoregressive_batch_size=8, use_deepspeed=True, kv_cache=True, half=True
+)
 
 ##from tortoise_tts.calltortoise import generate_voice_tortoise
 
