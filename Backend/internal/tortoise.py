@@ -15,9 +15,9 @@ import subprocess
 print()
 print()
 print("=====================================")
-command = "sudo find / -name nvcc"
-subprocess.run(command.split())
 command = "echo $CUDA_HOME"
+subprocess.run(command.split())
+command = "find / -name nvcc"
 subprocess.run(command.split())
 command = "nvcc --version"
 subprocess.run(command.split())
