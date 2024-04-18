@@ -13,7 +13,7 @@ echo "starting fastapi backend service"
 
 current_dir=$(pwd)
 
-docker run -p 80:80 \
+docker run --gpus all -p 80:80 \
     -e "TORTOISE_MODELS_DIR=/models" \
     -v "$current_dir/docker_data/models:/models" \
     -v "$current_dir/docker_data/results:/results" \

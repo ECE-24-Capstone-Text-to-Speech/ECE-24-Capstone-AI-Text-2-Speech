@@ -1,11 +1,11 @@
 # Use an official CUDA base image, FOR NVIDIA 
-#FROM nvidia/cuda:12.1.0-base-ubuntu22.04
+FROM nvidia/cuda:12.1.0-base-ubuntu22.04
 
 
 ##FOR NON_NVIDIA comment out lines 2 and 28-29, then uncomment lines 8 and 32-33
 ##NVIDIA keep lines 2 and 27-28 uncommented, make sure lines 
 ##Use this for NON-NVIDIA PEEPS, comment out the above and uncoment the below line.
-FROM python:3.11-slim
+# FROM python:3.11-slim
 
 
 # Set the working directory to /app
@@ -25,12 +25,12 @@ RUN apt-get update && \
 # Copy only the package.json and package-lock.json files first.
 
 # Install Python packages -- NVIDIA BASED
-#RUN pip3 install --upgrade pip && \
-#    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --upgrade pip && \
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 ##Install Python Packages -- NON-NVIDIA BASED 
-RUN pip3 install --upgrade pip && \
-    pip3 install torch torchvision torchaudio
+# RUN pip3 install --upgrade pip && \
+#     pip3 install torch torchvision torchaudio
 
 
 
