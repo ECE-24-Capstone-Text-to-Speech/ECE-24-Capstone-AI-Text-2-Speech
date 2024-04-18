@@ -1,5 +1,5 @@
-# Use an official CUDA base image, FOR NVIDIA 
-FROM nvidia/cuda:12.1.0-base-ubuntu22.04
+# Use an official CUDA devel image, FOR NVIDIA 
+FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
 
 
 ##FOR NON_NVIDIA comment out lines 2 and 28-29, then uncomment lines 8 and 32-33
