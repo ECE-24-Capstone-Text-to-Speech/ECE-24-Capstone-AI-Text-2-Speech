@@ -18,7 +18,7 @@ print("=====================================")
 sys.stdout.flush()
 print("torch.cuda.is_available() =", torch.cuda.is_available())
 print("$HOME = " + os.environ["HOME"])
-print("running:", "find / -name nvidia")
+print("running:", "find / -name cuda")
 sys.stdout.flush()
 command = "find / -name nvidia"
 subprocess.run(command.split())
