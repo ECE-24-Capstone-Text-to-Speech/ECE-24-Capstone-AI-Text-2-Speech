@@ -16,7 +16,8 @@ print()
 print()
 print("=====================================")
 sys.stdout.flush()
-print("$CUDA_HOME = " + os.environ["CUDA_HOME"])
+print("torch.cuda.is_available() =", torch.cuda.is_available())
+print("$HOME = " + os.environ["HOME"])
 print("running:", "find / -name nvidia")
 sys.stdout.flush()
 command = "find / -name nvidia"
@@ -25,9 +26,9 @@ print("running:", "find / -name nvcc")
 sys.stdout.flush()
 command = "find / -name nvcc"
 subprocess.run(command.split())
-print("running:", "nvcc --version")
+print("running:", "nvidia-smi")
 sys.stdout.flush()
-command = "nvcc --version"
+command = "nvidia-smi"
 subprocess.run(command.split())
 print("=====================================")
 print()
