@@ -4,6 +4,8 @@ import WaveStream from "react-wave-stream";
 import PropTypes from "prop-types";
 import "./VoiceRecorder.css";
 
+const RECORD_MAX_SIZE_KB = 10_000;
+
 const VoiceRecorder = (props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
@@ -84,11 +86,25 @@ const VoiceRecorder = (props) => {
     return () => clearInterval(timer);
   }, [isRecording]);
 
-  const formatTime = (seconds) => {
-    // Function to format time in seconds with 3 decimal places
-    return `${seconds.toFixed(2)} seconds${
-      isRecording ? "" : ` | ${Math.round(audioBlob?.size / 1024)} KB`
-    }`;
+  const formatTime = () => {
+    // time in seconds with 3 decimal places
+    return <span>{`${elapsedTime.toFixed(2)} seconds`}</span>;
+  };
+
+  const formatSize = () => {
+    // size of recording when done
+    let sizeKB = Math.round(audioBlob?.size / 1024);
+    let okSize = sizeKB < RECORD_MAX_SIZE_KB && !isNaN(sizeKB);
+    let style = {
+      color: okSize ? "inherit" : "red", // Set color to red if size exceeds 10000KB
+      fontWeight: okSize ? "inherit" : "bold",
+    };
+
+    return (
+      <span style={style}>{`${
+        isRecording ? "Recording..." : `${sizeKB.toLocaleString()} KB`
+      }`}</span>
+    );
   };
 
   return (
@@ -118,8 +134,8 @@ const VoiceRecorder = (props) => {
       <div className="Wavestream">
         {isRecording && <WaveStream {...analyserData} />}
       </div>
-      <div className="Timer" style={{ textAlign: "center" }}>
-        {formatTime(elapsedTime)}
+      <div className="Info" style={{ textAlign: "center" }}>
+        {formatTime()} | {formatSize()}
       </div>
     </div>
   );
