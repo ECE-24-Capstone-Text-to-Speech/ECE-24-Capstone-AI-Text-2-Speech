@@ -20,7 +20,7 @@ print("torch.cuda.is_available() =", torch.cuda.is_available())
 print("$HOME = " + os.environ["HOME"])
 print("running:", "find / -name cuda")
 sys.stdout.flush()
-command = "find / -name nvidia"
+command = "find / -name cuda"
 subprocess.run(command.split())
 print("running:", "find / -name nvcc")
 sys.stdout.flush()
