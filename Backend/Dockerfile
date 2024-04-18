@@ -15,13 +15,16 @@ WORKDIR /server
 # Set environment variable for noninteractive installation
 # Update package lists and install necessary dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-pip && \
+    apt-get install -y python3-pip && \
     apt-get install -y python3-dev && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-    # Install Python 3.11 from source
+# Install GCC 8 for C++17 support
+RUN apt-get install -y g++-8
+
+# Install Python 3.11 from source
 # Copy only the package.json and package-lock.json files first.
 
 # Install Python packages -- NVIDIA BASED
