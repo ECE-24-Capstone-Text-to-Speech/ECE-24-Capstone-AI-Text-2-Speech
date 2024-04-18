@@ -10,15 +10,23 @@ from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voice
 import torchaudio
 import IPython
 
-import subprocess
+import subprocess, sys
 
 print()
 print()
 print("=====================================")
-command = "echo $CUDA_HOME"
+sys.stdout.flush()
+print("$CUDA_HOME = " + os.environ["CUDA_HOME"])
+print("running:", "find / -name nvidia")
+sys.stdout.flush()
+command = "find / -name nvidia"
 subprocess.run(command.split())
+print("running:", "find / -name nvcc")
+sys.stdout.flush()
 command = "find / -name nvcc"
 subprocess.run(command.split())
+print("running:", "nvcc --version")
+sys.stdout.flush()
 command = "nvcc --version"
 subprocess.run(command.split())
 print("=====================================")
