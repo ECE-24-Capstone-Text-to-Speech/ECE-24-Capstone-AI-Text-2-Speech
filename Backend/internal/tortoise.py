@@ -17,22 +17,17 @@ print()
 print("=====================================")
 sys.stdout.flush()
 print("torch.cuda.is_available() =", torch.cuda.is_available())
-print("$HOME = " + os.environ["HOME"])
+print("running:", "gcc --version")
+sys.stdout.flush()
+command = "gcc --version"
+subprocess.run(command.split())
+print("running:", "g++ --version")
+sys.stdout.flush()
+command = "g++ --version"
+subprocess.run(command.split())
 print("running:", "find / -name cuda")
 sys.stdout.flush()
 command = "find / -name cuda"
-subprocess.run(command.split())
-print("running:", "ls /usr/local/cuda")
-sys.stdout.flush()
-command = "ls /usr/local/cuda"
-subprocess.run(command.split())
-print("running:", "ls /usr/local/cuda/bin")
-sys.stdout.flush()
-command = "ls /usr/local/cuda/bin"
-subprocess.run(command.split())
-print("running:", "ls /usr/local/cuda/bin/nvcc")
-sys.stdout.flush()
-command = "ls /usr/local/cuda/bin/nvcc"
 subprocess.run(command.split())
 print("running:", "find / -name nvcc")
 sys.stdout.flush()

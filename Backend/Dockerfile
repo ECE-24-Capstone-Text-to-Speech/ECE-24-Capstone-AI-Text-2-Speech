@@ -1,6 +1,5 @@
 # Use an official CUDA devel image, FOR NVIDIA 
-FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
-
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 ##FOR NON_NVIDIA comment out lines 2 and 28-29, then uncomment lines 8 and 32-33
 ##NVIDIA keep lines 2 and 27-28 uncommented, make sure lines 
