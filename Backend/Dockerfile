@@ -21,8 +21,8 @@ RUN apt-get update && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Install GCC 8 for C++17 support
-RUN apt-get install -y g++-8
+# Install G++? for C++17 support
+RUN apt-get install -y g++
 
 # Install Python 3.11 from source
 # Copy only the package.json and package-lock.json files first.
