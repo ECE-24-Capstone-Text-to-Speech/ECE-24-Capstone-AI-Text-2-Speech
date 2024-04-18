@@ -12,11 +12,14 @@ import IPython
 
 import subprocess, sys
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 print()
 print()
 print("=====================================")
 sys.stdout.flush()
 print("torch.cuda.is_available() =", torch.cuda.is_available())
+print("PYTORCH_CUDA_ALLOC_CONF =", os.environ["PYTORCH_CUDA_ALLOC_CONF"])
 print("running:", "gcc --version")
 sys.stdout.flush()
 command = "gcc --version"
@@ -95,6 +98,8 @@ async def start_tortoise(
     start the tortoise processing model
     @speed: the preset for tortoise
     """
+    command = "nvidia-smi"
+    subprocess.run(command.split())
     print("work")
 
     # Save the uploatts = TextToSpeech(use_deepspeed=True, kv_cache=True)
