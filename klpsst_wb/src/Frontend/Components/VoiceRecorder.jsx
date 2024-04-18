@@ -134,9 +134,11 @@ const VoiceRecorder = (props) => {
       <div className="Wavestream">
         {isRecording && <WaveStream {...analyserData} />}
       </div>
-      <div className="Info" style={{ textAlign: "center" }}>
-        {formatTime()} | {formatSize()}
-      </div>
+      {(audioBlob || isRecording) && (
+        <div className="Info" style={{ textAlign: "center" }}>
+          {formatTime()} | {formatSize()}
+        </div>
+      )}
     </div>
   );
 };
