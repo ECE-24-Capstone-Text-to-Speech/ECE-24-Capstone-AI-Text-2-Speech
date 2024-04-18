@@ -4,8 +4,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import "./register.css";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
-import KLPSSTLOGO from "./logo_image.png";
-import { render } from "@testing-library/react";
 
 const KLPSST_Register = ({}) => {
   const storedTheme = localStorage.getItem("theme");

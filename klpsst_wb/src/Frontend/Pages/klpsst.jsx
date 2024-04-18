@@ -2,17 +2,11 @@ import React, { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-// import styled from "styled-components";
 import "./klpsst.css";
 import { useNavigate, Navigate } from "react-router-dom";
-import KLPSSTLOGO from "./logo_image.png";
-import KLPSST_Login from "./login";
-import KLPSST_Bar from "./navbar";
-// import { routeManager } from "../../routeManager";
-import { render } from "@testing-library/react";
-//const backendURL;
-import { useAuth } from "../Hooks/AuthProvider";
-import VoiceRecorder from "./Components/VoiceRecorder";
+import KLPSSTLOGO from "../../Assets/logo_image.png";
+import { useAuth } from "../../Hooks/AuthProvider";
+import VoiceRecorder from "../Components/VoiceRecorder";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -187,23 +181,6 @@ const KLPSST_Page = () => {
             alert(successMessage);
           }
         );
-      // const response = fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/audioInput", {
-      //   credentials: "include",
-      //   method: "POST",
-      //   body: formData,
-      // });
-
-      // // const responseData =   response.json();
-      // // console.log(responseData);
-
-      // if (response.ok) {
-      //   // File uploaded successfully, handle success
-      //   alert("Files uploaded successfully.");
-      // } else {
-      //   // Handle server-side validation errors or other issues
-      //   const errorData =   response.json();
-      //   alert(`Error: ${errorData.detail}`);
-      // }
     } catch (error) {
       // Handle network errors
       console.error("Error uploading files:", error);
@@ -214,8 +191,6 @@ const KLPSST_Page = () => {
   const sendTextToTortoise = (inputValue) => {
     // Create a FormData object to append files
     // const inputValue = new str();
-    // formData.append("audioFile", file1); // Use 'audioFile' as the key for the first file
-    // formData.append("audioFile", file2); // Use 'audioFile' as the key for the second file
     // formData.append("strValue", inputValue);
 
     console.log(localStorage.getItem("username"));
@@ -273,42 +248,6 @@ const KLPSST_Page = () => {
       } catch (error) {
         console.error("Logout Error:", error);
       }
-      //   const response = await fetch(
-      //     process.env.REACT_APP_SERVER_ADDRESS + "/users/logout",
-      //     {
-      //       method: "POST",
-      //       credentials: "include",
-
-      //     }
-      //   );
-
-      //   // console.log(response);
-
-      //   if (response.ok) {
-      //     const errorMessage = await response.json();
-      //     localStorage.setItem("username", "");
-      //     localStorage.setItem("password", "");
-
-      //     console.log(errorMessage);
-      //     if (errorMessage == "Error: No user in session to logout") {
-      //       console.log("Naur");
-      //       alert(`Logout unsucessful`);
-      //     } else if (errorMessage == "User successfully logged out") {
-      //       setAuth(false);
-      //       console.log("Yer");
-      //       localStorage.setItem("loggedIn", false);
-      //       setRedirect(true); //for redirection?
-      //       alert("User successfully logged out");
-      //     }
-      //   } else {
-      //     const errorMessage = await response.json();
-      //     setMessage(errorMessage.error || "Logout failed");
-      //     alert(errorMessage);
-      //   }
-      // } catch (error) {
-      //   console.error("Error:", error);
-      //   setMessage("An error occurred. Please try again later.");
-      // }
     } else {
       setRedirect(true);
     }
