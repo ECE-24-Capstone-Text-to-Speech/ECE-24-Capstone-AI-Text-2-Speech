@@ -10,6 +10,21 @@ from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voice
 import torchaudio
 import IPython
 
+import subprocess
+
+print()
+print()
+print("=====================================")
+command = "ls -l"
+subprocess.run(command.split())
+command = "echo $CUDA_HOME"
+subprocess.run(command.split())
+command = "nvcc --version"
+subprocess.run(command.split())
+print("=====================================")
+print()
+print()
+
 # the tts base model to start off from
 tts = TextToSpeech(use_deepspeed=True, kv_cache=True)
 
