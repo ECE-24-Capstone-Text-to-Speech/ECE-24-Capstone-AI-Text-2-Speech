@@ -7,6 +7,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import KLPSSTLOGO from "../../Assets/logo_image.png";
 import { useAuth } from "../../Hooks/AuthProvider";
 import VoiceRecorder from "../Components/VoiceRecorder";
+import FileManager from "../Components/FileManager";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -294,6 +295,7 @@ const KLPSST_Page = () => {
         <button onClick={handleText}>Send Text</button>
 
         <VoiceRecorder />
+        <FileManager />
 
         <label htmlFor="fileInput1">Upload File 1:</label>
         <input type="file" id="fileInput" onChange={handleFile1Change} />
