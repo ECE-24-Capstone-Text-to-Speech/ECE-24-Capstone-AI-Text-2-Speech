@@ -18,7 +18,7 @@ origins = [
     "https://amplify.d2sckcya9qtany.amplifyapp.com",
 ]
 
-methods = ["POST", "GET", "OPTIONS", "DELETE"]
+methods = ["PUT", "POST", "GET", "OPTIONS", "DELETE"]
 
 headers = ["Content-Disposition"]
 

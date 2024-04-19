@@ -86,8 +86,15 @@ async def get_list_of_audio_in_tortoise_out(user: str = None) -> list[str]:
 
 
 async def __printAllFilesInTemp():
-    user = "folder3"
+    user = None
     print(await get_list_of_audio_in_temp(fullPath=False, user=user))
+
+
+async def delete_audio_in_temp(user: str, audio_name: str):
+    baseFolder = "temp"
+    targetPath = f"{baseFolder}/{user}/{audio_name}"
+    os.remove(targetPath)
+    pass
 
 
 if __name__ == "__main__":

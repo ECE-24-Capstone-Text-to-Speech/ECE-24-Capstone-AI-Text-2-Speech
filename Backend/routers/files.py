@@ -15,6 +15,7 @@ from internal.tortoise import start_tortoise
 from internal.tortoise import start_tortoise_example
 from internal.tokenAuth import getCurrUser
 from internal.getFile import (
+    delete_audio_in_temp,
     get_list_of_audio_in_temp,
     get_list_of_audio_in_tortoise_out,
 )
@@ -130,7 +131,7 @@ async def audio_input(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in order to upload or download files!",
+            detail="Please log in order to upload file!",
         )
 
     if audioFiles is None or len(audioFiles) == 0:
@@ -218,7 +219,7 @@ async def download_file(request: Request):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in order to upload or download files!",
+            detail="Please log in order to download files!",
         )
     files = await get_list_of_audio_in_tortoise_out(user=user)
     for file in files:
@@ -258,23 +259,38 @@ async def get_audio_list(request: Request):
     response_class=FileResponse,
 )
 async def get_audio_file(request: Request, audio_name: str):
-    # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
-    # user = getCurrUser(request)
-    # if not user:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Please log in order to upload or download files!",
-    #     )
-    user = getCurrUser()
+    user = getCurrUser(request)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not logged in"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to access files!",
         )
     files = await get_list_of_audio_in_temp(fullPath=True, user=user)
     for file in files:
         if audio_name == file.split("/")[-1]:
             return FileResponse(path=file)
     else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
+
+
+@router.delete("/delete/audios")
+async def delete_audio_file(request: Request, name: str | None = None):
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to upload or download files!",
+        )
+    if not name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        await delete_audio_in_temp(user=user, audio_name=name)
+        return {"message": f"Successfully deleted {name}"}
+    except:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
         )
