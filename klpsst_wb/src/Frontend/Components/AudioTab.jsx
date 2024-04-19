@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import "./AudioTab.css";
 
 const AudioTab = ({ key, fileName, onDelete }) => {
   const [audioSrc, setAudioSrc] = useState(null);
   const [audioSize, setAudioSize] = useState(-1);
-  const [showDeleteButton, setShowDeleteButton] = useState(false);
+  const [showDeleteButton, setShowDeleteButton] = useState(true);
 
   useEffect(() => {
     // Fetch audio file from API
@@ -53,20 +54,27 @@ const AudioTab = ({ key, fileName, onDelete }) => {
 
   const deleteAudio = () => {
     const token = sessionStorage.getItem("token");
-    fetch(process.env.REACT_APP_SERVER_ADDRESS + `/files/delete/audios`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    fetch(
+      process.env.REACT_APP_SERVER_ADDRESS +
+        `/files/delete/audios` +
+        "?" +
+        new URLSearchParams({ name: fileName }),
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to fetch audio");
+          throw new Error("Failed to delete audio");
         }
-        return response.blob();
+        return response.json();
       })
-      .then(() => {
+      .then((data) => {
         // delete successful
+        console.log(data.message);
         onDelete(fileName);
       })
       .catch((error) => {
@@ -78,20 +86,24 @@ const AudioTab = ({ key, fileName, onDelete }) => {
   const deleteThisFile = () => {
     // Add delete logic here
     console.log("Delete button clicked");
-    // deleteAudio();
-    onDelete(fileName);
+    deleteAudio();
+    // onDelete(fileName);
   };
 
   return (
     <li
       className="AudioTab"
       key={key}
-      onMouseEnter={() => setShowDeleteButton(true)}
-      onMouseLeave={() => setShowDeleteButton(false)}
+      // onMouseEnter={() => setShowDeleteButton(true)}
+      // onMouseLeave={() => setShowDeleteButton(false)}
     >
       {showDeleteButton && (
-        <button className="DeleteButton" onClick={deleteThisFile}>
-          Delete
+        <button
+          className="DeleteButton"
+          onClick={deleteThisFile}
+          title={`Delete ${fileName} forever`}
+        >
+          <DeleteForeverIcon />
         </button>
       )}
       <div className="FileInfo">
