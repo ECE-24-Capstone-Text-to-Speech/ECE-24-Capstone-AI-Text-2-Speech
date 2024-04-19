@@ -1,2 +1,6 @@
 local
 __pycache__
+
+# files should not be uploaded to github either
+temp/*
+tortoise_generations/*

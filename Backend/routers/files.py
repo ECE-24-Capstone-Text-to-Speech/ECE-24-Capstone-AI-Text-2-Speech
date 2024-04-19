@@ -13,21 +13,19 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from internal.tortoise import start_tortoise
 from internal.tortoise import start_tortoise_example
-
-# from internal.cookies import getCurrUser
 from internal.tokenAuth import getCurrUser
 from internal.getFile import (
+    delete_audio_in_temp,
     get_list_of_audio_in_temp,
     get_list_of_audio_in_tortoise_out,
 )
-from internal.saveFile import save_audio_to_temp
+from internal.saveFile import create_user_folders, save_audio_to_temp
 from typing import List
 
-# from models.AudioFile import AudioUploadFile
 
 from dependencies import get_token_header
 
-MAX_FILE_SIZE = 3_000_000  # 3 MB
+MAX_FILE_SIZE = 10_000_000  # 10 MB
 
 
 router = APIRouter(
@@ -36,8 +34,6 @@ router = APIRouter(
     # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "files path needs functions name appended"}},
 )
-
-# router.mount("/files", StaticFiles(directory="temp"), name="audioFiles")
 
 
 async def save_audio_file(user: str, audioFile: UploadFile):
@@ -135,7 +131,7 @@ async def audio_input(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in order to upload or download files!",
+            detail="Please log in order to upload file!",
         )
 
     if audioFiles is None or len(audioFiles) == 0:
@@ -150,17 +146,17 @@ async def audio_input(
         file_extension = audioFile.filename.split(".")[-1].lower()
 
         # Check if the file extension is one of the allowed formats
-        allowed_formats = {"mp3", "wav"}
+        allowed_formats = {"wav"}
         if file_extension not in allowed_formats:
             raise HTTPException(
-                status_code=415,
-                detail=f"File format not supported. Supported formats are MP3 and WAV. File extension provided is: {file_extension}",
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail=f"File format not supported. The only supported format is WAV. File extension provided is: {file_extension}",
             )
 
         # Check file size
         if audioFile.size > MAX_FILE_SIZE:
             raise HTTPException(
-                status_code=413,
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 detail=f"File size = {audioFile.size:,} bytes, exceeds the limit of {MAX_FILE_SIZE:,} bytes by {(audioFile.size-MAX_FILE_SIZE):,} bytes.",
             )
 
@@ -177,9 +173,6 @@ async def audio_input(
             saved, message = await save_audio_to_temp(audioFile, user=user)
         else:
             message = "File already exists"
-    # print("awooga")
-    # await start_tortoise_example() ##how do i pass in input to start_tortoise? is this fine for now, work on optimize in future
-    # print("joemamatoes")
 
     return {
         "filename": fileName,
@@ -226,7 +219,7 @@ async def download_file(request: Request):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please log in order to upload or download files!",
+            detail="Please log in order to download files!",
         )
     files = await get_list_of_audio_in_tortoise_out(user=user)
     for file in files:
@@ -234,16 +227,21 @@ async def download_file(request: Request):
         audio_name = file.split("/")[-1]
         return FileResponse(path=file, filename=audio_name, media_type="audio/mpeg")
     else:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
 
 @router.get("/audios")
-async def get_audio_list():
-    audioList = await get_list_of_audio_in_temp()
+async def get_audio_list(request: Request):
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Not logged in"
+        )
+    await create_user_folders(user)
+    audioList = await get_list_of_audio_in_temp(user=user)
     print(audioList)
-    ##print("awooga")
-    ##await start_tortoise()
-    ##print("done")
     return audioList
 
 
@@ -261,19 +259,41 @@ async def get_audio_list():
     response_class=FileResponse,
 )
 async def get_audio_file(request: Request, audio_name: str):
-    # audio_bytes: str|None = await fetch_audio_from_temp(audio_name)
-    # user = getCurrUser(request)
-    # if not user:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Please log in order to upload or download files!",
-    #     )
-    files = await get_list_of_audio_in_temp(fullPath=True)
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to access files!",
+        )
+    files = await get_list_of_audio_in_temp(fullPath=True, user=user)
     for file in files:
         if audio_name == file.split("/")[-1]:
             return FileResponse(path=file)
     else:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
+
+
+@router.delete("/delete/audios")
+async def delete_audio_file(request: Request, name: str | None = None):
+    user = getCurrUser(request)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please log in order to upload or download files!",
+        )
+    if not name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        await delete_audio_in_temp(user=user, audio_name=name)
+        return {"message": f"Successfully deleted {name}"}
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
 
 
 @router.post("/toTortoise")

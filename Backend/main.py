@@ -2,7 +2,7 @@ from fastapi import Depends, FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from internal import admin
-from routers import items, files, users
+from routers import files, users
 from dependencies import get_query_token, get_token_header
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,7 +18,7 @@ origins = [
     "https://amplify.d2sckcya9qtany.amplifyapp.com",
 ]
 
-methods = ["POST", "GET", "OPTIONS", "DELETE"]
+methods = ["PUT", "POST", "GET", "OPTIONS", "DELETE"]
 
 headers = ["Content-Disposition"]
 
@@ -32,7 +32,6 @@ server.add_middleware(
     expose_headers=headers,
 )
 
-server.include_router(items.router)
 server.include_router(files.router)
 server.include_router(users.router)
 server.include_router(

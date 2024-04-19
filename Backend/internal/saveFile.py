@@ -4,21 +4,23 @@ from fastapi import UploadFile
 FILE_SIZE_LIMIT = 30_000_000  # 30 Megabytes
 
 
-async def create_user_folders(*folderPathes: str):
+async def create_folders(*folderPathes: str):
     for folderPath in folderPathes:
         os.makedirs(name=folderPath, exist_ok=True)
 
 
-async def save_audio_to_temp(
-    audioFile: UploadFile, user: str = None
-) -> tuple[bool, str]:
+async def create_user_folders(user: str) -> tuple[str, str]:
+    targetFolder = f"temp/{user}/"
+    outputFolder = (
+        f"tortoise_generations/{user}/"  # creates output folder too for later use
+    )
+    await create_folders(targetFolder, outputFolder)
+    return targetFolder, outputFolder
+
+
+async def save_audio_to_temp(audioFile: UploadFile, user: str) -> tuple[bool, str]:
     print("Saving audio file")
-    targetFolder = "temp/"
-    outputFolder = "tortoise_generations/"  # creates output folder too for later use
-    if user:
-        targetFolder += user + "/"
-        outputFolder += user + "/"
-    await create_user_folders(targetFolder, outputFolder)
+    targetFolder, outputFolder = await create_user_folders(user)
     targetPath = os.path.join(targetFolder, audioFile.filename)
     try:
         with open(targetPath, "wb") as targetFile:

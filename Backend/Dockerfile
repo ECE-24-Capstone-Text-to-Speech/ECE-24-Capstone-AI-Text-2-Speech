@@ -1,6 +1,5 @@
-# Use an official CUDA base image, FOR NVIDIA 
-FROM nvidia/cuda:12.1.0-base-ubuntu22.04
-
+# Use an official CUDA devel image, FOR NVIDIA 
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 ##FOR NON_NVIDIA comment out lines 2 and 28-29, then uncomment lines 8 and 32-33
 ##NVIDIA keep lines 2 and 27-28 uncommented, make sure lines 
@@ -15,13 +14,16 @@ WORKDIR /server
 # Set environment variable for noninteractive installation
 # Update package lists and install necessary dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3-pip \
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get install -y python3-pip && \
+    apt-get install -y python3-dev && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
 
-    # Install Python 3.11 from source
+# Install G++? for C++17 support
+RUN apt-get install -y g++
+
+# Install Python 3.11 from source
 # Copy only the package.json and package-lock.json files first.
 
 # Install Python packages -- NVIDIA BASED

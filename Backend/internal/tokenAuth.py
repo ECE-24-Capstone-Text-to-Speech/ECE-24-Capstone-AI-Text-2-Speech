@@ -2,7 +2,7 @@ from fastapi import Request
 import jwt
 
 
-def getCurrUser(request: Request):
+def getCurrUser(request: Request) -> str | None:
     # Extract the token from the Authorization header
     auth_header = request.headers.get("Authorization", None)
     username = None
@@ -11,8 +11,8 @@ def getCurrUser(request: Request):
         try:
             # Decode the token
             payload = jwt.decode(token, options={"verify_signature": False})
-            username = payload.get("sub")  # Assuming 'sub' contains the username
-            print("current user: " + str(username))
+            username = str(payload.get("sub"))  # Assuming 'sub' contains the username
+            print("current user: " + username)
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             # Token is invalid or expired
             print("Error while decoding JWt token to username")
