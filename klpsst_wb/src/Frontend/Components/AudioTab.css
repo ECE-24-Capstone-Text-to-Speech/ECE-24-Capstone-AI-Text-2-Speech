@@ -3,7 +3,8 @@
 }
 
 .AudioFilesManager .AudioTab .FileInfo {
-  margin: 1ch;
+  /* margin: 1ch; */
+  margin-bottom: 1ch;
 }
 
 .AudioFilesManager .AudioTab .FileInfo .AudioFile {
@@ -25,10 +26,10 @@
   position: absolute;
   background-color: rgba(255, 0, 0, 0.5) !important;
   border-radius: 100px !important;
-  width: 5ch;
-  height: 5ch;
-  top: 5px;
-  left: -2.5ch;
+  width: 4ch;
+  height: 4ch;
+  top: 0.75ch;
+  right: 0.75ch;
   z-index: 1;
   background: none;
   border: none;

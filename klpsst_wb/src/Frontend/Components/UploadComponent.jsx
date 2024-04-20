@@ -5,7 +5,7 @@ import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import "./UploadComponent.css";
 
-const UploadComponent = (props) => {
+const UploadComponent = ({ onUpload }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const { user } = useAuth();
@@ -96,6 +96,7 @@ const UploadComponent = (props) => {
       })
         .then((response) => {
           // if error present then fullfill promise else reject promise
+          onUpload();
           if (response.ok) {
             return Promise.reject("Files uploaded successfully.");
           } else {
@@ -106,16 +107,18 @@ const UploadComponent = (props) => {
           (errorData) => {
             // promise fullfill (error present) function
             // Handle server-side validation errors or other issues
+            setUploading(false);
             alert(`Error: ${errorData.detail}`);
           },
           (successMessage) => {
             // promise reject (no error) function
+            setUploading(false);
             alert(successMessage);
-            setUploading(false); // Set uploading state to false
           }
         );
     } catch (error) {
       // Handle network errors
+      setUploading(false);
       console.error("Error uploading files:", error);
       alert("In order to upload, please log in!");
     }
@@ -125,7 +128,7 @@ const UploadComponent = (props) => {
     event.preventDefault();
     setUploading(true); // Set uploading state to true
 
-    alert("Upload pressed");
+    // alert("Upload pressed");
     console.log("Uploading");
 
     sendFilesToBackend();
@@ -170,13 +173,18 @@ const UploadComponent = (props) => {
       </div>
 
       {audioFiles.map((file, index) => (
-        <div key={file.name}>
-          {file.name}
-          <audio controls>
+        <div key={file.name} className="AudioPreview">
+          <div style={{ marginBottom: "1ch" }}>{file.name}</div>
+          <audio controls className="AudioPlayer">
             <source src={URL.createObjectURL(file)} type={file.type} />
             Your browser does not support the audio tag.
           </audio>
-          <button onClick={() => removeAudioFile(index)}>Remove</button>
+          <button
+            className="DeleteButton"
+            onClick={() => removeAudioFile(index)}
+          >
+            Remove
+          </button>
         </div>
       ))}
       <button
@@ -192,6 +200,6 @@ const UploadComponent = (props) => {
   );
 };
 
-UploadComponent.propTypes = {};
+UploadComponent.propTypes = { onUpload: PropTypes.func.isRequired };
 
 export default UploadComponent;

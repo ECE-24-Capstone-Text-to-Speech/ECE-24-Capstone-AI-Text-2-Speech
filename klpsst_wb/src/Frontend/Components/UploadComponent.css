@@ -27,6 +27,36 @@
   border: 2px dashed #544caf;
 }
 
+.UploadComponent .AudioPreview {
+  border: 2px solid #544caf;
+  border-radius: 1ch;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.UploadComponent .AudioPreview .AudioPlayer {
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.UploadComponent .AudioPreview .DeleteButton {
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.5) !important;
+  border-radius: 100px !important;
+  /* width: 4ch;
+  height: 4ch; */
+  top: 0.75ch;
+  right: 0.75ch;
+  z-index: 1;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .UploadComponent .UploadButton {
   display: flex;
   flex-direction: row;

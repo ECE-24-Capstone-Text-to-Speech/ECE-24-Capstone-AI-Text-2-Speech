@@ -89,9 +89,9 @@ const FileManager = (props) => {
         <span>{folded ? "▹" : "▾"}</span>
         <span> My samples</span>
       </div>
-      <div className="FileManagerContent">
-        {!folded &&
-          (files.length ? (
+      {!folded && (
+        <div className="FileManagerContent">
+          {files.length ? (
             <ul className="AllFiles">
               {files.map((fileName) => (
                 <AudioTab
@@ -111,6 +111,7 @@ const FileManager = (props) => {
                 fontWeight: "bold",
                 borderRadius: "1ch",
                 padding: "1ch",
+                display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -122,6 +123,7 @@ const FileManager = (props) => {
             <div
               style={{
                 backgroundColor: "rgba(255, 255, 120, 0.5)",
+                display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 fontWeight: "bold",
@@ -132,9 +134,10 @@ const FileManager = (props) => {
               <ReportOutlinedIcon style={{ marginRight: "7px" }} />
               No files found, please record and upload some wav files
             </div>
-          ))}
-        {!folded && <UploadComponent />}
-      </div>
+          )}
+          <UploadComponent onUpload={() => setGetAudioList(true)} />
+        </div>
+      )}
     </div>
   );
 };
