@@ -6,6 +6,10 @@
   margin-bottom: 16px;
 }
 
+.AudioFilesManager .FileManagerContent {
+  padding: 10px;
+}
+
 .AudioFilesManager .FileListInfo {
   padding: 10px;
   /* padding-bottom: ; */

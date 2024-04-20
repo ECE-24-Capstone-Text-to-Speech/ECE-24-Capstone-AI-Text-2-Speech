@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import AudioTab from "./AudioTab";
 import "./FileManager.css";
 import UploadComponent from "./UploadComponent";
+import ReportOutlinedIcon from "@mui/icons-material/ReportOutlined";
+import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 
 const FileManager = (props) => {
   const [files, setFiles] = useState([]);
@@ -87,29 +89,52 @@ const FileManager = (props) => {
         <span>{folded ? "▹" : "▾"}</span>
         <span> My samples</span>
       </div>
-      {!folded &&
-        (files.length ? (
-          <ul className="AllFiles">
-            {files.map((fileName) => (
-              <AudioTab
-                key={fileName}
-                fileName={fileName}
-                onDelete={deleteTab}
-              />
-            ))}
-          </ul>
-        ) : loadingList ? (
-          <div style={{ cursor: "progress" }}>Loading list...</div>
-        ) : errorMsg ? (
-          <div>{errorMsg}</div>
-        ) : (
-          <div>
-            No files found
-            <br />
-            Please record and upload some wav files
-          </div>
-        ))}
-      {!folded && <UploadComponent />}
+      <div className="FileManagerContent">
+        {!folded &&
+          (files.length ? (
+            <ul className="AllFiles">
+              {files.map((fileName) => (
+                <AudioTab
+                  key={fileName}
+                  fileName={fileName}
+                  onDelete={deleteTab}
+                />
+              ))}
+            </ul>
+          ) : loadingList ? (
+            <div style={{ cursor: "progress" }}>Loading list...</div>
+          ) : errorMsg ? (
+            <div
+              style={{
+                backgroundColor: "rgba(255, 0, 0, 0.333)",
+                color: "white",
+                fontWeight: "bold",
+                borderRadius: "1ch",
+                padding: "1ch",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <DangerousOutlinedIcon style={{ marginRight: "7px" }} />
+              {errorMsg}
+            </div>
+          ) : (
+            <div
+              style={{
+                backgroundColor: "rgba(255, 255, 120, 0.5)",
+                flexDirection: "row",
+                alignItems: "center",
+                fontWeight: "bold",
+                borderRadius: "1ch",
+                padding: "1ch",
+              }}
+            >
+              <ReportOutlinedIcon style={{ marginRight: "7px" }} />
+              No files found, please record and upload some wav files
+            </div>
+          ))}
+        {!folded && <UploadComponent />}
+      </div>
     </div>
   );
 };

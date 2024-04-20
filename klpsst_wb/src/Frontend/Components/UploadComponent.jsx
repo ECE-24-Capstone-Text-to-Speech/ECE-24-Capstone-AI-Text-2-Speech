@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useAuth } from "../../Hooks/AuthProvider";
-import AudioFileIcon from "@mui/icons-material/AudioFile";
+import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import "./UploadComponent.css";
 
@@ -143,8 +143,14 @@ const UploadComponent = (props) => {
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
           >
-            <AudioFileIcon
-              style={{ height: "5ch", width: "5ch", color: "#544caf" }}
+            <AudioFileOutlinedIcon
+              style={{
+                height: "5ch",
+                width: "5ch",
+                color: "#544caf",
+                filter:
+                  "drop-shadow(0.75px 0.75px 0px white) drop-shadow(1.5px 1.5px 0px white)",
+              }}
             />
             <h3 style={{ margin: "0.5ch" }}>Drag a file here, or</h3>
             <span style={{ color: "#544caf", fontWeight: "bold" }}>
@@ -173,17 +179,15 @@ const UploadComponent = (props) => {
           <button onClick={() => removeAudioFile(index)}>Remove</button>
         </div>
       ))}
-      <b>
-        <button
-          className="UploadButton"
-          onClick={handleUpload}
-          disabled={uploading || !user}
-          style={uploading || !user ? { backgroundColor: "#47474ad4" } : {}}
-        >
-          <FileUploadIcon />
-          <span>Upload</span>
-        </button>
-      </b>
+      <button
+        className="UploadButton"
+        onClick={handleUpload}
+        disabled={uploading || !user}
+        style={uploading || !user ? { backgroundColor: "#47474ad4" } : {}}
+      >
+        <FileUploadIcon />
+        <span>Upload</span>
+      </button>
     </div>
   );
 };
