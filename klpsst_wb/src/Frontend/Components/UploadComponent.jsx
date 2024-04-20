@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useAuth } from "../../Hooks/AuthProvider";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+
 import "./UploadComponent.css";
 
 const UploadComponent = ({ onUpload }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [greenHighlight, setGreenHighlight] = useState(false);
+  const [redHighlight, setRedHighlight] = useState(null);
+  const [showContent, setShowContent] = useState(false);
   const { user } = useAuth();
 
   // Function to handle file drop
@@ -136,66 +144,101 @@ const UploadComponent = ({ onUpload }) => {
 
   return (
     <div className="UploadComponent">
-      <div className="FileDropBox">
-        <label
-          htmlFor="file-input2"
-          style={{ cursor: "pointer", marginBottom: "0" }}
-        >
-          <div
-            className="DropBoxInfo"
-            onDrop={handleDrop}
-            onDragOver={(e) => e.preventDefault()}
-          >
-            <AudioFileOutlinedIcon
-              style={{
-                height: "5ch",
-                width: "5ch",
-                color: "#544caf",
-                filter:
-                  "drop-shadow(0.75px 0.75px 0px white) drop-shadow(1.5px 1.5px 0px white)",
-              }}
-            />
-            <h3 style={{ margin: "0.5ch" }}>Drag a file here, or</h3>
-            <span style={{ color: "#544caf", fontWeight: "bold" }}>
-              Choose a file to upload
-            </span>
-            <span>File type permitted: WAV</span>
-            <input
-              id="file-input2"
-              type="file"
-              accept="audio/wav"
-              style={{ display: "none" }}
-              onChange={handleFileInputChange}
-              multiple
-            />
+      {!showContent && (
+        <button className="AddFilesButton" onClick={() => setShowContent(true)}>
+          <UploadFileIcon />
+          <span>Add samples</span>
+        </button>
+      )}
+      {showContent && (
+        <>
+          <div className="FileDropBox">
+            <label
+              htmlFor="file-input2"
+              style={{ cursor: "pointer", marginBottom: "0" }}
+            >
+              <div
+                className="DropBoxInfo"
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                <AudioFileOutlinedIcon
+                  style={{
+                    height: "5ch",
+                    width: "5ch",
+                    color: "#544caf",
+                    filter:
+                      "drop-shadow(0.75px 0.75px 0px white) drop-shadow(1.5px 1.5px 0px white)",
+                  }}
+                />
+                <h3 style={{ margin: "0.5ch" }}>Drag a file here, or</h3>
+                <span style={{ color: "#544caf", fontWeight: "bold" }}>
+                  Choose a file to upload
+                </span>
+                <span>File type permitted: WAV</span>
+                <input
+                  id="file-input2"
+                  type="file"
+                  accept="audio/wav"
+                  style={{ display: "none" }}
+                  onChange={handleFileInputChange}
+                  multiple
+                />
+              </div>
+            </label>
           </div>
-        </label>
-      </div>
+          <ul className="PreviewList">
+            {audioFiles.map((file, index) => (
+              <li
+                key={file.name}
+                className="AudioPreview"
+                style={{
+                  border: greenHighlight
+                    ? "2px solid rgb(0,255,0,0.33)"
+                    : redHighlight === file.name
+                    ? "2px solid rgb(255,0,0,0.33)"
+                    : "",
+                  backgroundColor: greenHighlight
+                    ? "rgb(0,255,0,0.25)"
+                    : redHighlight === file.name
+                    ? "rgb(255,0,0,0.25"
+                    : "",
+                }}
+              >
+                <button
+                  className="DeleteButton"
+                  title={`Remove ${file.name} from upload list`}
+                  onClick={() => removeAudioFile(index)}
+                  onMouseEnter={() => setRedHighlight(file.name)}
+                  onMouseLeave={() => setRedHighlight(null)}
+                >
+                  <span>Remove</span>
+                  <RemoveCircleOutlineIcon />
+                </button>
+                <div style={{ marginBottom: "1ch", paddingLeft: "1ch" }}>
+                  {file.name}
+                </div>
+                <audio controls className="AudioPlayer">
+                  <source src={URL.createObjectURL(file)} type={file.type} />
+                  Your browser does not support the audio tag.
+                </audio>
+              </li>
+            ))}
+          </ul>
 
-      {audioFiles.map((file, index) => (
-        <div key={file.name} className="AudioPreview">
-          <div style={{ marginBottom: "1ch" }}>{file.name}</div>
-          <audio controls className="AudioPlayer">
-            <source src={URL.createObjectURL(file)} type={file.type} />
-            Your browser does not support the audio tag.
-          </audio>
           <button
-            className="DeleteButton"
-            onClick={() => removeAudioFile(index)}
+            className="UploadButton"
+            disabled={uploading || !user}
+            style={uploading || !user ? { backgroundColor: "#47474ad4" } : {}}
+            onClick={handleUpload}
+            onMouseEnter={() => setGreenHighlight(true)}
+            onMouseLeave={() => setGreenHighlight(false)}
           >
-            Remove
+            <FileUploadOutlinedIcon />
+            <span>Upload</span>
           </button>
-        </div>
-      ))}
-      <button
-        className="UploadButton"
-        onClick={handleUpload}
-        disabled={uploading || !user}
-        style={uploading || !user ? { backgroundColor: "#47474ad4" } : {}}
-      >
-        <FileUploadIcon />
-        <span>Upload</span>
-      </button>
+        </>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ const AudioTab = ({ key, fileName, onDelete }) => {
   const [audioSrc, setAudioSrc] = useState(null);
   const [audioSize, setAudioSize] = useState(-1);
   const [showDeleteButton, setShowDeleteButton] = useState(true);
+  const [redHighlight, setRedHighlight] = useState(false);
 
   useEffect(() => {
     // Fetch audio file from API
@@ -94,15 +95,32 @@ const AudioTab = ({ key, fileName, onDelete }) => {
     <li
       className="AudioTab"
       key={key}
-      // onMouseEnter={() => setShowDeleteButton(true)}
-      // onMouseLeave={() => setShowDeleteButton(false)}
+      // onMouseEnter={() => {
+      //   setShowDeleteButton(true);
+      // }}
+      // onMouseLeave={() => {
+      //   setShowDeleteButton(false);
+      // }}
+      style={{
+        border: redHighlight
+          ? "2px solid rgba(255,0,0,0.33)"
+          : "2px solid rgba(255,255,255,0.0)",
+        backgroundColor: redHighlight ? "rgba(255,0,0,0.25)" : "",
+      }}
     >
       {showDeleteButton && (
         <button
           className="DeleteButton"
-          onClick={deleteThisFile}
           title={`Delete ${fileName} forever`}
+          onClick={deleteThisFile}
+          onMouseEnter={() => {
+            setRedHighlight(true);
+          }}
+          onMouseLeave={() => {
+            setRedHighlight(false);
+          }}
         >
+          <span>Delete</span>
           <DeleteForeverIcon />
         </button>
       )}

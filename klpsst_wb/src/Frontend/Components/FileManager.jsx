@@ -84,11 +84,21 @@ const FileManager = (props) => {
           setErrorMsg(null);
           setFolded(!folded);
         }}
-        style={{ borderBottom: folded ? "none" : "1.5px solid gray" }}
+        // style={{ borderBottom: folded ? "none" : "1.5px solid gray" }}
       >
         <span>{folded ? "▹" : "▾"}</span>
         <span> My samples</span>
       </div>
+      {!folded && (
+        <div
+          className="DivideLine"
+          style={{
+            marginLeft: "10px",
+            marginRight: "10px",
+            borderTop: "1.5px solid grey",
+          }}
+        />
+      )}
       {!folded && (
         <div className="FileManagerContent">
           {files.length ? (
@@ -135,6 +145,12 @@ const FileManager = (props) => {
               No files found, please record and upload some wav files
             </div>
           )}
+          <div
+            className="DivideLine"
+            style={{
+              borderTop: "1.5px solid grey",
+            }}
+          />
           <UploadComponent onUpload={() => setGetAudioList(true)} />
         </div>
       )}

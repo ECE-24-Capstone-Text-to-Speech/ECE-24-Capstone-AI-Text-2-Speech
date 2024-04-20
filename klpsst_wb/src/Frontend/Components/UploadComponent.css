@@ -4,6 +4,19 @@
   align-items: center;
 }
 
+.UploadComponent .AddFilesButton {
+  margin-top: 10px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.UploadComponent .AddFilesButton span {
+  margin-left: 1ch;
+}
+
 .UploadComponent .FileDropBox {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -27,26 +40,28 @@
   border: 2px dashed #544caf;
 }
 
-.UploadComponent .AudioPreview {
-  border: 2px solid #544caf;
-  border-radius: 1ch;
+.UploadComponent .PreviewList {
   width: -webkit-fill-available;
   width: -moz-available;
+}
+
+.UploadComponent .PreviewList .AudioPreview {
+  /* border: 2px solid #544caf; */
+  border: 2px dotted gray;
+  border-radius: 1ch;
+  transition: all 0.15s;
+  background-color: rgba(128, 128, 128, 0.2);
   margin-bottom: 10px;
   padding: 10px;
+  position: relative;
 }
 
-.UploadComponent .AudioPreview .AudioPlayer {
-  width: -webkit-fill-available;
-  width: -moz-available;
-}
-
-.UploadComponent .AudioPreview .DeleteButton {
+.UploadComponent .PreviewList .AudioPreview .DeleteButton {
   position: absolute;
   background-color: rgba(255, 0, 0, 0.5) !important;
   border-radius: 100px !important;
-  /* width: 4ch;
-  height: 4ch; */
+  width: 4ch;
+  height: 4ch;
   top: 0.75ch;
   right: 0.75ch;
   z-index: 1;
@@ -55,6 +70,38 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+.UploadComponent .PreviewList .AudioPreview .DeleteButton:hover {
+  width: 12ch;
+}
+
+.UploadComponent .PreviewList .AudioPreview .DeleteButton span {
+  opacity: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.5s;
+}
+
+.UploadComponent .PreviewList .AudioPreview .DeleteButton:hover span {
+  opacity: 1; /* Make text visible on hover */
+  /* padding-right: 1ch; */
+}
+
+.UploadComponent .PreviewList .AudioPreview .DeleteButton svg {
+  margin-right: 0ch;
+  transition: margin-right 0.3s;
+}
+
+.UploadComponent .PreviewList .AudioPreview .DeleteButton:hover svg {
+  margin-right: -0.5ch;
+}
+
+.UploadComponent .PreviewList .AudioPreview .AudioPlayer {
+  width: -webkit-fill-available;
+  width: -moz-available;
 }
 
 .UploadComponent .UploadButton {
