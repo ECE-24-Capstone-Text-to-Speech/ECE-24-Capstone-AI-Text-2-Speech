@@ -1,0 +1,20 @@
+.DownloadComponent .DownloadButton {
+  margin-top: 10px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.DownloadComponent .DownloadIcon {
+  height: 3ch;
+  width: 3ch;
+}
+
+.DownloadComponent .DownloadButton span {
+  font-weight: bold;
+  margin: 1ch;
+  margin-top: 0;
+}
