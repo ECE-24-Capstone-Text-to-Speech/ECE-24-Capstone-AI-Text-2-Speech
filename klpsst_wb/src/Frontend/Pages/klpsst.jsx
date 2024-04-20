@@ -8,6 +8,7 @@ import KLPSSTLOGO from "../../Assets/logo_image.png";
 import { useAuth } from "../../Hooks/AuthProvider";
 import VoiceRecorder from "../Components/VoiceRecorder";
 import FileManager from "../Components/FileManager";
+// import UploadComponent from "../Components/UploadComponent";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -297,21 +298,21 @@ const KLPSST_Page = () => {
         <VoiceRecorder />
         <FileManager />
 
-        <label htmlFor="fileInput1">Upload File 1:</label>
+        {/* <label htmlFor="fileInput1">Upload File 1:</label>
         <input type="file" id="fileInput" onChange={handleFile1Change} />
         <br />
 
         <label htmlFor="fileInput1">Upload File 2:</label>
         <input type="file" id="fileInput1" onChange={handleFile2Change} />
-        <br />
+        <br /> */}
         {user ? (
           <b>
-            <input
+            {/* <input
               type={`submit${uploading ? "-disabled" : ""}`}
               value="Upload"
               onClick={handleUpload}
               disabled={uploading}
-            />
+            /> */}
             <button
               type={`download${downloading ? "-disabled" : ""}`}
               onClick={handleDownload}
@@ -323,7 +324,7 @@ const KLPSST_Page = () => {
           </b>
         ) : (
           <b>
-            <input type="submit-disabled" disabled value="Upload" />
+            {/* <input type="submit-disabled" disabled value="Upload" /> */}
             <button
               type="download-disabled"
               disabled

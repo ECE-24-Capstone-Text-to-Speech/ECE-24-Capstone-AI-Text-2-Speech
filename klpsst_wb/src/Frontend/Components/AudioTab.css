@@ -15,6 +15,7 @@
 }
 
 .AudioFilesManager .AudioTab .FileInfo .AudioFile:hover {
+  color: white;
   box-shadow: 0px 0px 5px #544caf;
   background-color: #544caf;
   border-radius: 100px;

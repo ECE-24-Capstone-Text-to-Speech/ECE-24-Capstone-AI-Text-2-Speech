@@ -1,0 +1,34 @@
+.UploadComponent {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+}
+
+.UploadComponent .FileDropBox {
+  margin: 10px;
+}
+
+.UploadComponent .FileDropBox .DropBoxInfo {
+  padding-top: 2ch;
+  padding-bottom: 2ch;
+  border: 2px dashed gray;
+  transition: border 0.2s;
+  border-radius: 1ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.UploadComponent .FileDropBox .DropBoxInfo:hover {
+  border: 2px dashed #544caf;
+}
+
+.UploadComponent .UploadButton {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: 15px !important;
+  font-weight: bold;
+}
