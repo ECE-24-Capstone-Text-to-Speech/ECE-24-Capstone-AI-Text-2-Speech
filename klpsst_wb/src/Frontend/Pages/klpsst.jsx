@@ -232,9 +232,8 @@ const KLPSST_Page = () => {
         <p>You typed: {inputValue}</p>
         <button onClick={handleText}>Send Text</button>
 
-        <VoiceRecorder />
-        <FileManager />
         <DownloadComponent />
+        <FileManager />
       </div>
     </ThemeProvider>
   );

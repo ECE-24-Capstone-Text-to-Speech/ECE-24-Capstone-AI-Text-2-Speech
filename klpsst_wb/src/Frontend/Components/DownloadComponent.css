@@ -1,5 +1,6 @@
 .DownloadComponent .DownloadButton {
   margin-top: 10px;
+  margin-bottom: 10px;
   width: -webkit-fill-available;
   width: -moz-available;
   display: flex;

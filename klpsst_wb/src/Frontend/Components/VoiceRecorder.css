@@ -1,27 +1,41 @@
 .VoiceRecorder {
-  width: 300px;
-  margin-bottom: 1em;
-  margin-bottom: 1em;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  margin-top: 10px;
 }
 
 .VoiceRecorder .VR-Buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.VoiceRecorder .VR-Buttons button {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .VoiceRecorder .RecordPreview .AudioPlayer {
-  position: inherit;
+  width: -webkit-fill-available;
+  width: -moz-available;
   height: 2.5em;
-  margin-top: 1em;
+  margin-top: 10px;
 }
 
 .VoiceRecorder .Wavestream #visualizer {
   position: inherit !important;
   background-color: #544caf !important;
   height: 2.5em !important;
-  width: calc(300px - 2em) !important;
+  /* width: calc(300px - 2em) !important; */
+  width: -webkit-fill-available !important;
+  width: -moz-available !important;
   border-radius: 300px;
   padding-left: 1em;
   padding-right: 1em;
-  margin-top: 1em;
+  margin-top: 10px;
 }

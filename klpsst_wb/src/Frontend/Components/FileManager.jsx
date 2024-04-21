@@ -124,6 +124,7 @@ const FileManager = (props) => {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                marginBottom: "10px",
               }}
             >
               <DangerousOutlinedIcon style={{ marginRight: "7px" }} />
@@ -139,6 +140,7 @@ const FileManager = (props) => {
                 fontWeight: "bold",
                 borderRadius: "1ch",
                 padding: "1ch",
+                marginBottom: "10px",
               }}
             >
               <ReportOutlinedIcon style={{ marginRight: "7px" }} />

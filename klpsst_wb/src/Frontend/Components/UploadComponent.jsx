@@ -13,6 +13,7 @@ import PopupModal from "./PopupModal";
 
 import UploadInstruction from "../../Markdown/UploadInstruction.md";
 import MarkdownComponent from "./MarkdownComponent";
+import VoiceRecorder from "./VoiceRecorder";
 
 const UploadComponent = ({ onUpload }) => {
   const [audioFiles, setAudioFiles] = useState([]);
@@ -29,6 +30,10 @@ const UploadComponent = ({ onUpload }) => {
     console.log("Is uploading possible? " + uploadPossible);
     setAllowUpload(uploadPossible);
   }, [uploading, user, audioFiles.length]);
+
+  const addAudioFile = (file) => {
+    setAudioFiles((prevFiles) => [...prevFiles, file]);
+  };
 
   // Function to handle file drop
   const handleDrop = (e) => {
@@ -165,6 +170,7 @@ const UploadComponent = ({ onUpload }) => {
       )}
       {showContent && (
         <>
+          <VoiceRecorder onAdd={addAudioFile} />
           <div className="FileDropBox">
             <label
               htmlFor="file-input2"
@@ -200,6 +206,7 @@ const UploadComponent = ({ onUpload }) => {
               </div>
             </label>
           </div>
+
           <ul className="PreviewList">
             {audioFiles.map((file, index) => (
               <li
@@ -231,7 +238,7 @@ const UploadComponent = ({ onUpload }) => {
                 <div style={{ marginBottom: "1ch", paddingLeft: "1ch" }}>
                   {file.name}
                 </div>
-                <audio controls className="AudioPlayer">
+                <audio controls className="AudioPlayer" title={file.name}>
                   <source src={URL.createObjectURL(file)} type={file.type} />
                   Your browser does not support the audio tag.
                 </audio>
