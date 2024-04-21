@@ -11,6 +11,9 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import "./UploadComponent.css";
 import PopupModal from "./PopupModal";
 
+import UploadInstruction from "../../Markdown/UploadInstruction.md";
+import MarkdownComponent from "./MarkdownComponent";
+
 const UploadComponent = ({ onUpload }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -242,11 +245,13 @@ const UploadComponent = ({ onUpload }) => {
             >
               <HelpCenterOutlinedIcon />
               <span>Instruction</span>
-              <PopupModal
-                open={openInstruction}
-                onClose={() => setOpenInstruction(false)}
-              />
             </button>
+            <PopupModal
+              open={openInstruction}
+              onClose={() => setOpenInstruction(false)}
+            >
+              <MarkdownComponent path={UploadInstruction} />
+            </PopupModal>
             <button
               className="UploadButton"
               disabled={!allowUpload}

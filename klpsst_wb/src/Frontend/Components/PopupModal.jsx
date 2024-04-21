@@ -1,46 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  // bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-const PopupModal = ({ open, onClose, onConfirm, onCancel, children }) => {
+const PopupModal = ({
+  open,
+  title,
+  onClose,
+  onConfirm,
+  onCancel,
+  children,
+}) => {
   return (
-    <Modal
+    <Dialog
       open={open}
       onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
       slotProps={{
         backdrop: {
-          onClick: onClose, // Close the modal when backdrop is clicked
-          style: { backdropFilter: "blur(8px)" },
+          style: { backdropFilter: "blur(1px)" },
         },
       }}
     >
-      <Box sx={style}>{children}</Box>
-    </Modal>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>
+        {onCancel && (
+          <Button onClick={onCancel} variant="contained">
+            Cancel
+          </Button>
+        )}
+        {onConfirm && (
+          <Button onClick={onConfirm} autoFocus variant="contained">
+            OK
+          </Button>
+        )}
+        {!onConfirm && !onCancel && (
+          <Button onClick={onClose} variant="contained">
+            Close
+          </Button>
+        )}
+      </DialogActions>
+    </Dialog>
   );
 };
 
 PopupModal.propTypes = {
   open: PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  //   information: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
 };
 
 export default PopupModal;
