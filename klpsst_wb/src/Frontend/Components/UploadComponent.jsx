@@ -37,6 +37,7 @@ const UploadComponent = ({ onUpload }) => {
 
   // Function to handle file drop
   const handleDrop = (e) => {
+    console.log("Drag area received drops");
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
     // Filter only .wav audio files

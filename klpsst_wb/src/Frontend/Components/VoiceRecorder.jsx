@@ -18,6 +18,9 @@ const VoiceRecorder = ({ onAdd }) => {
   const recorder = useRef(null);
   const stream = useRef(null);
 
+  const [audioURL, setAudioURL] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
+
   const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
 
   const startRecord = async () => {
@@ -84,34 +87,7 @@ const VoiceRecorder = ({ onAdd }) => {
       return;
     }
     console.log("Moving this audio blob to upload list");
-
-    // Create a URL for the blob
-    const blobURL = URL.createObjectURL(audioBlob);
-
-    const currTime = new Date();
-    let Year = currTime.getFullYear();
-    let Month = currTime.getMonth() + 1;
-    let Day = currTime.getDate();
-    let Hour = currTime.getHours();
-    let Minute = currTime.getMinutes();
-    let Second = currTime.getSeconds();
-    let Milisecond = currTime.getMilliseconds();
-
-    const fileName = `me_${Year}-${Month}-${Day}_${Hour}:${Minute}:${Second}.wav`;
-
-    // Fetch the blob content
-    fetch(blobURL)
-      .then((response) => response.blob())
-      .then((wavBlob) => {
-        // Create a File object from the blob with the desired filename and MIME type
-        const wavFile = new File([wavBlob], fileName, {
-          type: "audio/wav",
-        });
-        onAdd(wavFile);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    onAdd(audioFile);
   };
 
   useEffect(() => {
@@ -125,6 +101,42 @@ const VoiceRecorder = ({ onAdd }) => {
     }
     return () => clearInterval(timer);
   }, [isRecording]);
+
+  useEffect(() => {
+    if (audioBlob) {
+      console.log("Converting audio blob to audio file...");
+      // Create a URL for the blob
+      const blobURL = URL.createObjectURL(audioBlob);
+      setAudioURL(blobURL);
+
+      const currTime = new Date();
+      let Year = currTime.getFullYear();
+      let Month = currTime.getMonth() + 1;
+      let Day = currTime.getDate();
+      let Hour = currTime.getHours();
+      let Minute = currTime.getMinutes();
+      let Second = currTime.getSeconds();
+      let Milisecond = currTime.getMilliseconds();
+
+      const fileName = `me_${Year}-${Month}-${Day}_${Hour}:${Minute}:${Second}.wav`;
+
+      // Fetch the blob content
+      fetch(blobURL)
+        .then((response) => response.blob())
+        .then((wavBlob) => {
+          // Create a File object from the blob with the desired filename and MIME type
+          const wavFile = new File([wavBlob], fileName, {
+            type: "audio/wav",
+          });
+          setAudioFile(wavFile);
+          console.log("Done");
+          console.log(wavFile);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [audioBlob]);
 
   const formatTime = () => {
     // time in seconds with 3 decimal places
@@ -145,6 +157,22 @@ const VoiceRecorder = ({ onAdd }) => {
         isRecording ? "Recording..." : `${sizeKB.toLocaleString()} KB`
       }`}</span>
     );
+  };
+
+  const handleDrag = (e, widgetData) => {
+    console.log("Started dragging widget");
+    e.dataTransfer.setData("widgetType", widgetData);
+  };
+
+  const handleDrop = (e) => {
+    const widgetType = e.dataTransfer.getData("widgetType");
+    console.log("Dropped widget ");
+    console.log(widgetType);
+    // moveToUploadList();
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -179,11 +207,16 @@ const VoiceRecorder = ({ onAdd }) => {
           </button>
         )}
       </div>
-      <div className="RecordPreview">
-        {audioBlob && <div>{audioBlob.name}</div>}
+      <div
+        className="RecordPreview"
+        draggable
+        onDragStart={(e) => handleDrag(e, [audioFile])}
+        onDragOver={(e) => handleDragOver(e)}
+        onDrop={(e) => handleDrop(e)}
+      >
         {audioBlob && (
           <audio controls className="AudioPlayer">
-            <source src={URL.createObjectURL(audioBlob)} type="audio/wav" />
+            <source src={audioURL} type="audio/wav" />
             Your browser does not support the audio element.
           </audio>
         )}
