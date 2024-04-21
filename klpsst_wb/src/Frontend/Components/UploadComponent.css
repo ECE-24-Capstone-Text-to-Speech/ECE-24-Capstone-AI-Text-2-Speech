@@ -104,10 +104,34 @@
   width: -moz-available;
 }
 
-.UploadComponent .UploadButton {
+.UploadComponent .ButtonGroup {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.UploadComponent .ButtonGroup .InstructionButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   padding-right: 15px !important;
   font-weight: bold;
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.UploadComponent .ButtonGroup .UploadButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-right: 15px !important;
+  font-weight: bold;
+  width: -webkit-fill-available;
+  width: -moz-available;
 }

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useAuth } from "../../Hooks/AuthProvider";
+
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
-
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-
+import HelpCenterOutlinedIcon from "@mui/icons-material/HelpCenterOutlined";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 
 import "./UploadComponent.css";
+import PopupModal from "./PopupModal";
 
 const UploadComponent = ({ onUpload }) => {
   const [audioFiles, setAudioFiles] = useState([]);
@@ -16,7 +17,15 @@ const UploadComponent = ({ onUpload }) => {
   const [greenHighlight, setGreenHighlight] = useState(false);
   const [redHighlight, setRedHighlight] = useState(null);
   const [showContent, setShowContent] = useState(false);
+  const [allowUpload, setAllowUpload] = useState(false);
+  const [openInstruction, setOpenInstruction] = useState(false);
   const { user } = useAuth();
+
+  useEffect(() => {
+    let uploadPossible = !uploading && user && audioFiles.length;
+    console.log("Is uploading possible? " + uploadPossible);
+    setAllowUpload(uploadPossible);
+  }, [uploading, user, audioFiles.length]);
 
   // Function to handle file drop
   const handleDrop = (e) => {
@@ -82,6 +91,7 @@ const UploadComponent = ({ onUpload }) => {
     let newFiles = audioFiles.filter((_, i) => i !== index);
     console.log(newFiles);
     setAudioFiles(newFiles);
+    setRedHighlight(null);
   };
 
   const sendFilesToBackend = () => {
@@ -225,18 +235,30 @@ const UploadComponent = ({ onUpload }) => {
               </li>
             ))}
           </ul>
-
-          <button
-            className="UploadButton"
-            disabled={uploading || !user}
-            style={uploading || !user ? { backgroundColor: "#47474ad4" } : {}}
-            onClick={handleUpload}
-            onMouseEnter={() => setGreenHighlight(true)}
-            onMouseLeave={() => setGreenHighlight(false)}
-          >
-            <FileUploadOutlinedIcon />
-            <span>Upload</span>
-          </button>
+          <div className="ButtonGroup">
+            <button
+              className="InstructionButton"
+              onClick={() => setOpenInstruction(true)}
+            >
+              <HelpCenterOutlinedIcon />
+              <span>Instruction</span>
+              <PopupModal
+                open={openInstruction}
+                onClose={() => setOpenInstruction(false)}
+              />
+            </button>
+            <button
+              className="UploadButton"
+              disabled={!allowUpload}
+              style={!allowUpload ? { backgroundColor: "#47474ad4" } : {}}
+              onClick={handleUpload}
+              onMouseEnter={() => setGreenHighlight(true)}
+              onMouseLeave={() => setGreenHighlight(false)}
+            >
+              <FileUploadOutlinedIcon />
+              <span>Upload</span>
+            </button>
+          </div>
         </>
       )}
     </div>
