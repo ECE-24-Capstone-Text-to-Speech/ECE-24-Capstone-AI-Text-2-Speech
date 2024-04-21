@@ -78,7 +78,7 @@ const VoiceRecorder = ({ onAdd }) => {
   };
 
   const moveToUploadList = () => {
-    if (!audioBlob) {
+    if (!audioFile) {
       alert("No audios record found!");
       return;
     }
@@ -135,8 +135,16 @@ const VoiceRecorder = ({ onAdd }) => {
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      console.log("audio blob cleared");
+      setAudioURL(null);
+      setAudioFile(null);
     }
   }, [audioBlob]);
+
+  useEffect(() => {
+    console.log("New blob url: " + audioURL);
+  }, [audioURL]);
 
   const formatTime = () => {
     // time in seconds with 3 decimal places
@@ -145,7 +153,7 @@ const VoiceRecorder = ({ onAdd }) => {
 
   const formatSize = () => {
     // size of recording when done
-    let sizeKB = Math.round(audioBlob?.size / 1024);
+    let sizeKB = Math.round(audioFile?.size / 1024);
     let okSize = sizeKB < RECORD_MAX_SIZE_KB && !isNaN(sizeKB);
     let style = {
       color: okSize ? "inherit" : "red", // Set color to red if size exceeds 10000KB
@@ -183,7 +191,7 @@ const VoiceRecorder = ({ onAdd }) => {
             <StopCircleOutlinedIcon />
             <span>Stop record</span>
           </button>
-        ) : audioBlob ? (
+        ) : audioFile ? (
           <button onClick={startRecord}>
             <RestartAltIcon />
             <span>Record again</span>
@@ -200,8 +208,8 @@ const VoiceRecorder = ({ onAdd }) => {
             Save
           </button>
         )} */}
-        {audioBlob && (
-          <button onClick={moveToUploadList} disabled={!audioBlob}>
+        {audioFile && (
+          <button onClick={moveToUploadList} disabled={!audioFile}>
             <AddIcon />
             <span>Add</span>
           </button>
@@ -214,7 +222,7 @@ const VoiceRecorder = ({ onAdd }) => {
         onDragOver={(e) => handleDragOver(e)}
         onDrop={(e) => handleDrop(e)}
       >
-        {audioBlob && (
+        {audioURL && (
           <audio controls className="AudioPlayer">
             <source src={audioURL} type="audio/wav" />
             Your browser does not support the audio element.
@@ -224,7 +232,7 @@ const VoiceRecorder = ({ onAdd }) => {
       <div className="Wavestream">
         {isRecording && <WaveStream {...analyserData} />}
       </div>
-      {(audioBlob || isRecording) && (
+      {(audioFile || isRecording) && (
         <div className="Info" style={{ textAlign: "center" }}>
           {formatTime()} | {formatSize()}
         </div>

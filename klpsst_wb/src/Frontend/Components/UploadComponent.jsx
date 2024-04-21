@@ -25,6 +25,8 @@ const UploadComponent = ({ onUpload }) => {
   const [openInstruction, setOpenInstruction] = useState(false);
   const { user } = useAuth();
 
+  const [dragging, setDragging] = useState(false);
+
   useEffect(() => {
     let uploadPossible = !uploading && user && audioFiles.length;
     console.log("Is uploading possible? " + uploadPossible);
@@ -38,6 +40,7 @@ const UploadComponent = ({ onUpload }) => {
   // Function to handle file drop
   const handleDrop = (e) => {
     console.log("Drag area received drops");
+    setDragging(false);
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
     // Filter only .wav audio files
@@ -181,6 +184,20 @@ const UploadComponent = ({ onUpload }) => {
                 className="DropBoxInfo"
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
+                onDragEnter={(e) => {
+                  setDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  setDragging(false);
+                }}
+                style={
+                  dragging
+                    ? {
+                        border: "2px solid green",
+                        backgroundColor: "rgba(0,255,0,0.1)",
+                      }
+                    : {}
+                }
               >
                 <AudioFileOutlinedIcon
                   style={{

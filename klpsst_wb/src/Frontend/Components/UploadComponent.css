@@ -40,6 +40,10 @@
   border: 2px dashed #544caf;
 }
 
+.UploadComponent .FileDropBox .DropBoxInfo * {
+  pointer-events: none;
+}
+
 .UploadComponent .PreviewList {
   width: -webkit-fill-available;
   width: -moz-available;
