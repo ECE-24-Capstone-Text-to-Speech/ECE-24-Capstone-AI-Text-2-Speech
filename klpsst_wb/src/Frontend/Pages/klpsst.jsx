@@ -8,6 +8,8 @@ import KLPSSTLOGO from "../../Assets/logo_image.png";
 import { useAuth } from "../../Hooks/AuthProvider";
 import VoiceRecorder from "../Components/VoiceRecorder";
 import FileManager from "../Components/FileManager";
+import DownloadComponent from "../Components/DownloadComponent";
+// import UploadComponent from "../Components/UploadComponent";
 
 const KLPSST_Page = () => {
   const { setAuth } = useAuth();
@@ -15,11 +17,8 @@ const KLPSST_Page = () => {
 
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
-  const [uploading, setUploading] = useState(false);
-  const [downloading, setDownloading] = useState(false);
   const [file1, setFile1] = useState("");
   const [file2, setFile2] = useState("");
-  const [message, setMessage] = useState("");
 
   //redirection code
   const navigate = useNavigate();
@@ -61,79 +60,59 @@ const KLPSST_Page = () => {
     setInputValue(event.target.value);
   };
 
-  const handleFile1Change = (event) => {
-    setFile1(event.target.files[0]);
-  };
-
-  const handleFile2Change = (event) => {
-    setFile2(event.target.files[0]);
-  };
-
-  const handleUpload = (event) => {
-    event.preventDefault();
-    setUploading(true); // Set uploading state to true
-
-    alert("Upload pressed");
-    console.log("Uploading");
-
-    sendFilesToBackend(file1, file2);
-    setUploading(false); // Set uploading state to false
-    // sendTextToTortoise(inputValue);
-  };
-
-  const handleDownload = (event) => {
-    try {
-      setDownloading(true); // Set downloading state to true
-      // console.log("Attempting to download audio file.")
-      let filename = "generatedAudio.mp3";
-      // Adjust the URL to match the endpoint for downloading files
-      const token = sessionStorage.getItem("token");
-      fetch(process.env.REACT_APP_SERVER_ADDRESS + `/files/download`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-      })
-        .then((res) => {
-          // console.log("Fetch successful, decoding packet...")
-          setDownloading(false); // Set downloading state to false after download is complete
-          if (!res.ok) {
-            // Handle server-side errors or other issues
-            return Promise.reject("Download failed:" + res.statusText);
-          } else {
-            const disposition = res.headers.get("Content-Disposition");
-            filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
-            if (filename.toLowerCase().startsWith("utf-8''"))
-              filename = decodeURIComponent(filename.replace(/utf-8''/i, ""));
-            else filename = filename.replace(/['"]/g, "");
-            console.log("received file " + filename);
-            return res.blob();
-          }
-        })
-        .then(
-          (blob) => {
-            // File downloaded successfully, handle success
-            // console.log("Decoded audio file, saving mode")
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-          },
-          (failMessage) => {
-            console.error(failMessage);
-            alert(failMessage);
-          }
-        );
-    } catch (error) {
-      // Handle network errors
-      console.error("Error while downloading file:", error);
-      setDownloading(false); // Set downloading state to false after download is complete
-    }
-  };
+  // const handleDownload = (event) => {
+  //   try {
+  //     setDownloading(true); // Set downloading state to true
+  //     // console.log("Attempting to download audio file.")
+  //     let filename = "generatedAudio.mp3";
+  //     // Adjust the URL to match the endpoint for downloading files
+  //     const token = sessionStorage.getItem("token");
+  //     fetch(process.env.REACT_APP_SERVER_ADDRESS + `/files/download`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       cache: "no-store",
+  //     })
+  //       .then((res) => {
+  //         // console.log("Fetch successful, decoding packet...")
+  //         setDownloading(false); // Set downloading state to false after download is complete
+  //         if (!res.ok) {
+  //           // Handle server-side errors or other issues
+  //           return Promise.reject("Download failed:" + res.statusText);
+  //         } else {
+  //           const disposition = res.headers.get("Content-Disposition");
+  //           filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
+  //           if (filename.toLowerCase().startsWith("utf-8''"))
+  //             filename = decodeURIComponent(filename.replace(/utf-8''/i, ""));
+  //           else filename = filename.replace(/['"]/g, "");
+  //           console.log("received file " + filename);
+  //           return res.blob();
+  //         }
+  //       })
+  //       .then(
+  //         (blob) => {
+  //           // File downloaded successfully, handle success
+  //           // console.log("Decoded audio file, saving mode")
+  //           const url = window.URL.createObjectURL(blob);
+  //           const link = document.createElement("a");
+  //           link.href = url;
+  //           link.setAttribute("download", filename);
+  //           document.body.appendChild(link);
+  //           link.click();
+  //           link.remove();
+  //         },
+  //         (failMessage) => {
+  //           console.error(failMessage);
+  //           alert(failMessage);
+  //         }
+  //       );
+  //   } catch (error) {
+  //     // Handle network errors
+  //     console.error("Error while downloading file:", error);
+  //     setDownloading(false); // Set downloading state to false after download is complete
+  //   }
+  // };
 
   const handleText = (event) => {
     event.preventDefault();
@@ -146,47 +125,6 @@ const KLPSST_Page = () => {
 
     //setUploading(false); // Set uploading state to false
     // sendTextToTortoise(inputValue);
-  };
-
-  const sendFilesToBackend = (file1, file2) => {
-    // Create a FormData object to append files
-    const formData = new FormData();
-    formData.append("audioFiles", file1); // Use 'audioFile' as the key for the first file
-    formData.append("audioFiles", file2); // Use 'audioFile' as the key for the second file
-
-    try {
-      const token = sessionStorage.getItem("token");
-      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/audioInput", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => {
-          // if error present then fullfill promise else reject promise
-          if (response.ok) {
-            return Promise.reject("Files uploaded successfully.");
-          } else {
-            return response.json();
-          }
-        })
-        .then(
-          (errorData) => {
-            // promise fullfill (error present) function
-            // Handle server-side validation errors or other issues
-            alert(`Error: ${errorData.detail}`);
-          },
-          (successMessage) => {
-            // promise reject (no error) function
-            alert(successMessage);
-          }
-        );
-    } catch (error) {
-      // Handle network errors
-      console.error("Error uploading files:", error);
-      alert("In order to upload, please log in!");
-    }
   };
 
   const sendTextToTortoise = (inputValue) => {
@@ -294,50 +232,8 @@ const KLPSST_Page = () => {
         <p>You typed: {inputValue}</p>
         <button onClick={handleText}>Send Text</button>
 
-        <VoiceRecorder />
+        <DownloadComponent />
         <FileManager />
-
-        <label htmlFor="fileInput1">Upload File 1:</label>
-        <input type="file" id="fileInput" onChange={handleFile1Change} />
-        <br />
-
-        <label htmlFor="fileInput1">Upload File 2:</label>
-        <input type="file" id="fileInput1" onChange={handleFile2Change} />
-        <br />
-        {user ? (
-          <b>
-            <input
-              type={`submit${uploading ? "-disabled" : ""}`}
-              value="Upload"
-              onClick={handleUpload}
-              disabled={uploading}
-            />
-            <button
-              type={`download${downloading ? "-disabled" : ""}`}
-              onClick={handleDownload}
-              className={`download-button${downloading ? "-disabled" : ""}`}
-              disabled={downloading}
-            >
-              Download
-            </button>
-          </b>
-        ) : (
-          <b>
-            <input type="submit-disabled" disabled value="Upload" />
-            <button
-              type="download-disabled"
-              disabled
-              className="download-button-disabled"
-            >
-              Download
-            </button>
-          </b>
-        )}
-        {/* <button type="download"  onClick={handleDownload} className="download-button" >
-            Download
-          </button> */}
-        <h3>Please submit 2 .wav files, each about 6 seconds long</h3>
-        <p id="fileName"></p>
       </div>
     </ThemeProvider>
   );

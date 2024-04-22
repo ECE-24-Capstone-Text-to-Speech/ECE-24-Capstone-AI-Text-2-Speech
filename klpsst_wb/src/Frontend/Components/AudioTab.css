@@ -3,7 +3,8 @@
 }
 
 .AudioFilesManager .AudioTab .FileInfo {
-  margin: 1ch;
+  /* margin: 1ch; */
+  margin-bottom: 1ch;
 }
 
 .AudioFilesManager .AudioTab .FileInfo .AudioFile {
@@ -15,6 +16,7 @@
 }
 
 .AudioFilesManager .AudioTab .FileInfo .AudioFile:hover {
+  color: white;
   box-shadow: 0px 0px 5px #544caf;
   background-color: #544caf;
   border-radius: 100px;
@@ -24,16 +26,42 @@
   position: absolute;
   background-color: rgba(255, 0, 0, 0.5) !important;
   border-radius: 100px !important;
-  width: 5ch;
-  height: 5ch;
-  top: 5px;
-  left: -2.5ch;
+  width: 4ch;
+  height: 4ch;
+  top: 0.75ch;
+  right: 0.75ch;
   z-index: 1;
   background: none;
   border: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+.AudioFilesManager .AudioTab .DeleteButton:hover {
+  width: 10.5ch;
+}
+
+.AudioFilesManager .AudioTab .DeleteButton span {
+  opacity: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.5s;
+}
+
+.AudioFilesManager .AudioTab .DeleteButton:hover span {
+  opacity: 1; /* Make text visible on hover */
+}
+
+.AudioFilesManager .AudioTab .DeleteButton svg {
+  margin-right: 0ch;
+  transition: margin-right 0.3s;
+}
+
+.AudioFilesManager .AudioTab .DeleteButton:hover svg {
+  margin-right: -0.5ch;
 }
 
 .AudioFilesManager .AudioTab .AudioPlayer {

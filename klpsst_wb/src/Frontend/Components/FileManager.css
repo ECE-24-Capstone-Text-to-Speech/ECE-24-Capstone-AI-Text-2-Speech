@@ -1,25 +1,40 @@
 .AudioFilesManager {
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  /* border: 1.5px solid gray; */
+  box-shadow: 0px 0px 6px gray;
+  border-radius: 1ch;
   /* padding: 10px; */
   width: 300px;
+  margin-top: 16px;
   margin-bottom: 16px;
+}
+
+.AudioFilesManager .FileManagerContent {
+  padding: 10px;
 }
 
 .AudioFilesManager .FileListInfo {
   padding: 10px;
   /* padding-bottom: ; */
   font-weight: bold;
+  cursor: pointer;
 }
 
 .AudioFilesManager ul {
   list-style: none;
-  margin-left: 0;
+  margin: 0;
   padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .AudioFilesManager li {
-  padding-left: 16px;
-  padding-right: 16px;
-  /* text-indent: -2ch; */
+  padding: 10px;
+  transition: all 0.15s;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 1ch;
+  margin-bottom: 10px;
+  width: -webkit-fill-available;
+  width: -moz-available;
 }

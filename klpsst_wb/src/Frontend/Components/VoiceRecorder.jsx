@@ -4,14 +4,22 @@ import WaveStream from "react-wave-stream";
 import PropTypes from "prop-types";
 import "./VoiceRecorder.css";
 
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import AddIcon from "@mui/icons-material/Add";
+import StopCircleOutlinedIcon from "@mui/icons-material/StopCircleOutlined";
+
 const RECORD_MAX_SIZE_KB = 10_000;
 
-const VoiceRecorder = (props) => {
+const VoiceRecorder = ({ onAdd }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0); // New state for elapsed time
   const recorder = useRef(null);
   const stream = useRef(null);
+
+  const [audioURL, setAudioURL] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
 
   const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
 
@@ -30,7 +38,6 @@ const VoiceRecorder = (props) => {
         window.webkitAudioContext)();
       recorder.current = new Recorder(audioContext, {
         onAnalysed: (data) => {
-          // console.log(data);
           setAnalyserData(data);
         },
       });
@@ -49,20 +56,16 @@ const VoiceRecorder = (props) => {
       // Stop recording
       console.log("STOPPING RECORD");
       recorder.current.stop().then(({ blob, _buffer }) => {
-        console.log("Saving audio blob");
         setAudioBlob(blob);
+        console.log(blob);
         // buffer is an AudioBuffer
-        console.log("turning mic off");
         const tracks = stream.current.getTracks();
         // When all tracks have been stopped the stream will
         // no longer be active and release any permissioned input
         tracks.forEach((track) => {
-          console.log("stopping track: " + track);
           track.stop();
         });
-        console.log("Mic should be off now");
       });
-      console.log("Recorder stopped, ready to be downloaded...");
       setIsRecording(false);
     } catch (err) {
       console.error("Failed to stop recording:", err);
@@ -72,6 +75,19 @@ const VoiceRecorder = (props) => {
   const downloadRecord = () => {
     console.log("Downloading recent recording");
     Recorder.download(audioBlob, "my-audio-file"); // downloads a .wav file
+  };
+
+  const moveToUploadList = () => {
+    if (!audioFile) {
+      alert("No audios record found!");
+      return;
+    }
+    if (!onAdd) {
+      alert("Can't add this file!");
+      return;
+    }
+    console.log("Moving this audio blob to upload list");
+    onAdd(audioFile);
   };
 
   useEffect(() => {
@@ -86,6 +102,50 @@ const VoiceRecorder = (props) => {
     return () => clearInterval(timer);
   }, [isRecording]);
 
+  useEffect(() => {
+    if (audioBlob) {
+      console.log("Converting audio blob to audio file...");
+      // Create a URL for the blob
+      const blobURL = URL.createObjectURL(audioBlob);
+      setAudioURL(blobURL);
+
+      const currTime = new Date();
+      let Year = currTime.getFullYear();
+      let Month = currTime.getMonth() + 1;
+      let Day = currTime.getDate();
+      let Hour = currTime.getHours();
+      let Minute = currTime.getMinutes();
+      let Second = currTime.getSeconds();
+      let Milisecond = currTime.getMilliseconds();
+
+      const fileName = `me_${Year}-${Month}-${Day}_${Hour}:${Minute}:${Second}.wav`;
+
+      // Fetch the blob content
+      fetch(blobURL)
+        .then((response) => response.blob())
+        .then((wavBlob) => {
+          // Create a File object from the blob with the desired filename and MIME type
+          const wavFile = new File([wavBlob], fileName, {
+            type: "audio/wav",
+          });
+          setAudioFile(wavFile);
+          console.log("Done");
+          console.log(wavFile);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("audio blob cleared");
+      setAudioURL(null);
+      setAudioFile(null);
+    }
+  }, [audioBlob]);
+
+  useEffect(() => {
+    console.log("New blob url: " + audioURL);
+  }, [audioURL]);
+
   const formatTime = () => {
     // time in seconds with 3 decimal places
     return <span>{`${elapsedTime.toFixed(2)} seconds`}</span>;
@@ -93,7 +153,7 @@ const VoiceRecorder = (props) => {
 
   const formatSize = () => {
     // size of recording when done
-    let sizeKB = Math.round(audioBlob?.size / 1024);
+    let sizeKB = Math.round(audioFile?.size / 1024);
     let okSize = sizeKB < RECORD_MAX_SIZE_KB && !isNaN(sizeKB);
     let style = {
       color: okSize ? "inherit" : "red", // Set color to red if size exceeds 10000KB
@@ -107,26 +167,64 @@ const VoiceRecorder = (props) => {
     );
   };
 
+  const handleDrag = (e, widgetData) => {
+    console.log("Started dragging widget");
+    e.dataTransfer.setData("widgetType", widgetData);
+  };
+
+  const handleDrop = (e) => {
+    const widgetType = e.dataTransfer.getData("widgetType");
+    console.log("Dropped widget ");
+    console.log(widgetType);
+    // moveToUploadList();
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="VoiceRecorder">
-      <p>Recorder:</p>
       <div className="VR-Buttons">
         {isRecording ? (
-          <button onClick={stopRecord}>Stop record</button>
+          <button onClick={stopRecord}>
+            <StopCircleOutlinedIcon />
+            <span>Stop record</span>
+          </button>
+        ) : audioFile ? (
+          <button onClick={startRecord}>
+            <RestartAltIcon />
+            <span>Record again</span>
+          </button>
         ) : (
-          <button onClick={startRecord}>Start record</button>
+          <button className="RecordTabButton" onClick={startRecord}>
+            <KeyboardVoiceIcon />
+            <span>Record my own (Start recording)</span>
+          </button>
         )}
 
-        {audioBlob && (
+        {/* {audioBlob && (
           <button onClick={downloadRecord} disabled={!audioBlob}>
-            Download Recording
+            Save
+          </button>
+        )} */}
+        {audioFile && (
+          <button onClick={moveToUploadList} disabled={!audioFile}>
+            <AddIcon />
+            <span>Add</span>
           </button>
         )}
       </div>
-      <div className="RecordPreview">
-        {audioBlob && (
+      <div
+        className="RecordPreview"
+        draggable
+        onDragStart={(e) => handleDrag(e, [audioFile])}
+        onDragOver={(e) => handleDragOver(e)}
+        onDrop={(e) => handleDrop(e)}
+      >
+        {audioURL && (
           <audio controls className="AudioPlayer">
-            <source src={URL.createObjectURL(audioBlob)} type="audio/wav" />
+            <source src={audioURL} type="audio/wav" />
             Your browser does not support the audio element.
           </audio>
         )}
@@ -134,7 +232,7 @@ const VoiceRecorder = (props) => {
       <div className="Wavestream">
         {isRecording && <WaveStream {...analyserData} />}
       </div>
-      {(audioBlob || isRecording) && (
+      {(audioFile || isRecording) && (
         <div className="Info" style={{ textAlign: "center" }}>
           {formatTime()} | {formatSize()}
         </div>
@@ -143,6 +241,6 @@ const VoiceRecorder = (props) => {
   );
 };
 
-VoiceRecorder.propTypes = {};
+VoiceRecorder.propTypes = { onAdd: PropTypes.func.isRequired };
 
 export default VoiceRecorder;
