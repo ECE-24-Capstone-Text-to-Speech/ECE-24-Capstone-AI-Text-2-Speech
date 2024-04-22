@@ -7,7 +7,10 @@ import "./DownloadComponent.css";
 const DownloadComponent = (props) => {
   const { user } = useAuth();
   const [downloading, setDownloading] = useState(false);
-  const handleDownload = (event) => {
+  const [audioSrc, setAudioSrc] = useState(null);
+  const [audioName, setAudioName] = useState(null);
+
+  const handleDownload = () => {
     try {
       setDownloading(true); // Set downloading state to true
       // console.log("Attempting to download audio file.")
@@ -34,6 +37,7 @@ const DownloadComponent = (props) => {
               filename = decodeURIComponent(filename.replace(/utf-8''/i, ""));
             else filename = filename.replace(/['"]/g, "");
             console.log("received file " + filename);
+            setAudioName(filename);
             return res.blob();
           }
         })
@@ -41,13 +45,15 @@ const DownloadComponent = (props) => {
           (blob) => {
             // File downloaded successfully, handle success
             // console.log("Decoded audio file, saving mode")
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+            // const url = window.URL.createObjectURL(blob);
+            // const link = document.createElement("a");
+            // link.href = url;
+            // link.setAttribute("download", filename);
+            // document.body.appendChild(link);
+            // link.click();
+            // link.remove();
+            const audioUrl = URL.createObjectURL(blob);
+            setAudioSrc(audioUrl);
           },
           (failMessage) => {
             console.error(failMessage);
@@ -60,6 +66,7 @@ const DownloadComponent = (props) => {
       setDownloading(false); // Set downloading state to false after download is complete
     }
   };
+
   return (
     <div className="DownloadComponent">
       <button
@@ -71,6 +78,13 @@ const DownloadComponent = (props) => {
         <FileDownloadOutlinedIcon className="DownloadIcon" />
         <span>Check result</span>
       </button>
+      {audioName && <span>{audioName}</span>}
+      {audioSrc && (
+        <audio controls className="AudioPlayer" title={audioName}>
+          <source src={audioSrc} type="audio/wav" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
     </div>
   );
 };
