@@ -13,6 +13,8 @@ const DownloadComponent = (props) => {
   const handleDownload = () => {
     try {
       setDownloading(true); // Set downloading state to true
+      setAudioSrc(null);
+      setAudioName(null);
       // console.log("Attempting to download audio file.")
       let filename = "generatedAudio.mp3";
       // Adjust the URL to match the endpoint for downloading files
@@ -67,6 +69,17 @@ const DownloadComponent = (props) => {
     }
   };
 
+  const download = (e) => {
+    e.preventDefault();
+    console.log("Right click");
+    const link = document.createElement("a");
+    link.href = audioSrc;
+    link.setAttribute("download", audioName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
   return (
     <div className="DownloadComponent">
       <button
@@ -78,7 +91,21 @@ const DownloadComponent = (props) => {
         <FileDownloadOutlinedIcon className="DownloadIcon" />
         <span>Check result</span>
       </button>
-      {audioName && <span>{audioName}</span>}
+      {audioName && (
+        <div
+          className="AudioName"
+          onClick={download}
+          style={{
+            paddingBottom: "4px",
+            paddingRight: "1ch",
+            paddingLeft: "1ch",
+            marginBottom: "10px",
+            fontWeight: "bold",
+          }}
+        >
+          {audioName}
+        </div>
+      )}
       {audioSrc && (
         <audio controls className="AudioPlayer" title={audioName}>
           <source src={audioSrc} type="audio/wav" />

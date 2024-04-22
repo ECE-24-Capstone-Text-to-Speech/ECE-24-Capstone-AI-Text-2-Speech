@@ -77,6 +77,13 @@ const UploadComponent = ({ onUpload }) => {
       });
   };
 
+  const renameFile = (originalFile, newName) => {
+    return new File([originalFile], newName, {
+      type: originalFile.type,
+      lastModified: originalFile.lastModified,
+    });
+  };
+
   // Function to handle file drop
   const handleDrop = (e) => {
     setDragging(false);
@@ -138,6 +145,15 @@ const UploadComponent = ({ onUpload }) => {
     let newFiles = audioFiles.filter((_, i) => i !== index);
     setAudioFiles(newFiles);
     setRedHighlight(null);
+  };
+
+  const replaceAudioFile = (index, newFile) => {
+    setAudioFiles((prevAudioFiles) => {
+      console.log("changing name");
+      const updatedFiles = [...prevAudioFiles];
+      updatedFiles[index] = newFile;
+      return updatedFiles;
+    });
   };
 
   const sendFilesToBackend = () => {
@@ -289,6 +305,14 @@ const UploadComponent = ({ onUpload }) => {
                 <div style={{ marginBottom: "1ch", paddingLeft: "1ch" }}>
                   {file.name}
                 </div>
+                <button
+                  onClick={() => {
+                    let newFile = renameFile(file, "newFileName.wav");
+                    replaceAudioFile(index, newFile);
+                  }}
+                >
+                  Rename
+                </button>
                 <audio controls className="AudioPlayer" title={file.name}>
                   <source src={URL.createObjectURL(file)} type={file.type} />
                   Your browser does not support the audio tag.
