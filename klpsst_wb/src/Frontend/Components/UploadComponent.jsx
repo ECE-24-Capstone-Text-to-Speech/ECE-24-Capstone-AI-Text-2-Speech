@@ -29,7 +29,6 @@ const UploadComponent = ({ onUpload }) => {
 
   useEffect(() => {
     let uploadPossible = !uploading && user && audioFiles.length;
-    console.log("Is uploading possible? " + uploadPossible);
     setAllowUpload(uploadPossible);
   }, [uploading, user, audioFiles.length]);
 
@@ -37,12 +36,7 @@ const UploadComponent = ({ onUpload }) => {
     setAudioFiles((prevFiles) => [...prevFiles, file]);
   };
 
-  // Function to handle file drop
-  const handleDrop = (e) => {
-    console.log("Drag area received drops");
-    setDragging(false);
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
+  const addAudioFiles = (files) => {
     // Filter only .wav audio files
     const wavFilesToAdd = files.filter((file) => file.type === "audio/wav");
 
@@ -66,6 +60,49 @@ const UploadComponent = ({ onUpload }) => {
 
     // Add unique files to the state
     setAudioFiles((prevFiles) => [...prevFiles, ...uniqueWavFiles]);
+  };
+
+  const addUrlFile = (url, filename) => {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((wavBlob) => {
+        // Create a File object from the blob with the desired filename and MIME type
+        const wavFile = new File([wavBlob], filename, {
+          type: "audio/wav",
+        });
+        addAudioFiles([wavFile]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Function to handle file drop
+  const handleDrop = (e) => {
+    setDragging(false);
+    e.preventDefault();
+
+    const url = e.dataTransfer.getData("RecordingURL");
+    const filename = e.dataTransfer.getData("RecordingName");
+    if (url && filename) {
+      addUrlFile(url, filename);
+      return;
+    }
+
+    var files = [];
+
+    if (e.dataTransfer.items) {
+      for (const item of e.dataTransfer.items) {
+        if (item.kind === "file") {
+          let file = item.getAsFile();
+          files.push(file);
+        }
+      }
+    } else {
+      files = Array.from(e.dataTransfer.files);
+    }
+
+    addAudioFiles(files);
   };
 
   // Function to handle file input change
@@ -98,10 +135,7 @@ const UploadComponent = ({ onUpload }) => {
 
   // Function to remove an audio file
   const removeAudioFile = (index) => {
-    console.log(audioFiles);
-    console.log("removing file with index=" + index);
     let newFiles = audioFiles.filter((_, i) => i !== index);
-    console.log(newFiles);
     setAudioFiles(newFiles);
     setRedHighlight(null);
   };
@@ -111,7 +145,6 @@ const UploadComponent = ({ onUpload }) => {
     const formData = new FormData();
     audioFiles.forEach((file, i) => {
       // Use 'audioFile' as the key for the first file
-      console.log("adding file " + i + ": " + file.name);
       formData.append("audioFiles", file);
     });
 
