@@ -1,9 +1,11 @@
 /* klpsst.css */
 
 #homepage {
-  width: 100%;
-  /* height: 150vh; */
-  padding: 10ch;
+  /* width: 100%; */
+  min-height: 100%;
+  /* padding: 10ch; */
+  padding-top: 10ch;
+  padding-bottom: 10ch;
   display: flex;
   flex-direction: column;
   align-items: center;

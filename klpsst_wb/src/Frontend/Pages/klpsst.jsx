@@ -9,6 +9,7 @@ import { useAuth } from "../../Hooks/AuthProvider";
 import VoiceRecorder from "../Components/VoiceRecorder";
 import FileManager from "../Components/FileManager";
 import DownloadComponent from "../Components/DownloadComponent";
+import Disclaimer from "../Components/Disclaimer";
 // import UploadComponent from "../Components/UploadComponent";
 
 const KLPSST_Page = () => {
@@ -234,6 +235,8 @@ const KLPSST_Page = () => {
 
         <DownloadComponent />
         <FileManager />
+
+        <Disclaimer />
       </div>
     </ThemeProvider>
   );
