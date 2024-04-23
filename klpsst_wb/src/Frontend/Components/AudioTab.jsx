@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import "./AudioTab.css";
+import PopupModal from "./PopupModal";
 
 const AudioTab = ({ key, fileName, onDelete }) => {
   const [audioSrc, setAudioSrc] = useState(null);
   const [audioSize, setAudioSize] = useState(-1);
   const [showDeleteButton, setShowDeleteButton] = useState(true);
   const [redHighlight, setRedHighlight] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
 
   useEffect(() => {
     // Fetch audio file from API
@@ -112,7 +114,9 @@ const AudioTab = ({ key, fileName, onDelete }) => {
         <button
           className="DeleteButton"
           title={`Delete ${fileName} forever`}
-          onClick={deleteThisFile}
+          onClick={() => {
+            setDeleteDialog(true);
+          }}
           onMouseEnter={() => {
             setRedHighlight(true);
           }}
@@ -124,6 +128,22 @@ const AudioTab = ({ key, fileName, onDelete }) => {
           <DeleteForeverIcon />
         </button>
       )}
+      <PopupModal
+        open={deleteDialog}
+        title={`Delete ${fileName} FOREVER?`}
+        onClose={() => {
+          setDeleteDialog(false);
+        }}
+        onCancel={() => {
+          setDeleteDialog(false);
+        }}
+        onConfirm={() => {
+          setDeleteDialog(false);
+          deleteThisFile();
+        }}
+      >
+        This can not be undone
+      </PopupModal>
       <div className="FileInfo">
         {/* <span>{fileName}</span> */}
         <a

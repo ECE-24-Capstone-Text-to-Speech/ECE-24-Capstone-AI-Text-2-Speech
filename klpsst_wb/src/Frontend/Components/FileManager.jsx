@@ -5,6 +5,11 @@ import "./FileManager.css";
 import UploadComponent from "./UploadComponent";
 import ReportOutlinedIcon from "@mui/icons-material/ReportOutlined";
 import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+
+import UploadGuide from "../../Markdown/UploadGuide.md";
+import PopupModal from "./PopupModal";
+import MarkdownComponent from "./MarkdownComponent";
 
 const FileManager = (props) => {
   const [files, setFiles] = useState([]);
@@ -12,6 +17,7 @@ const FileManager = (props) => {
   const [getAudioList, setGetAudioList] = useState(false);
   const [loadingList, setLoadingList] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [openGuide, setOpenGuide] = useState(false);
 
   useEffect(() => {
     // setFiles(fake_files);
@@ -88,7 +94,29 @@ const FileManager = (props) => {
       >
         <span>{folded ? "▹" : "▾"}</span>
         <span> My samples</span>
+        <div style={{ flex: 1 }}></div>
+        {!folded && (
+          <div
+            className="Guide"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenGuide(true);
+            }}
+          >
+            <ArticleOutlinedIcon />
+            <span>Guide</span>
+          </div>
+        )}
       </div>
+      <PopupModal
+        open={openGuide}
+        onClose={(e) => {
+          e.stopPropagation();
+          setOpenGuide(false);
+        }}
+      >
+        <MarkdownComponent path={UploadGuide} />
+      </PopupModal>
       {!folded && (
         <div
           className="DivideLine"

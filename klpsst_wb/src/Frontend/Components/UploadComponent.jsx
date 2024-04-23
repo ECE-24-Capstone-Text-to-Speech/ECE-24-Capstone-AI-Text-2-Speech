@@ -29,7 +29,6 @@ const UploadComponent = ({ onUpload }) => {
 
   useEffect(() => {
     let uploadPossible = !uploading && user && audioFiles.length;
-    console.log("Is uploading possible? " + uploadPossible);
     setAllowUpload(uploadPossible);
   }, [uploading, user, audioFiles.length]);
 
@@ -37,12 +36,7 @@ const UploadComponent = ({ onUpload }) => {
     setAudioFiles((prevFiles) => [...prevFiles, file]);
   };
 
-  // Function to handle file drop
-  const handleDrop = (e) => {
-    console.log("Drag area received drops");
-    setDragging(false);
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
+  const addAudioFiles = (files) => {
     // Filter only .wav audio files
     const wavFilesToAdd = files.filter((file) => file.type === "audio/wav");
 
@@ -66,6 +60,61 @@ const UploadComponent = ({ onUpload }) => {
 
     // Add unique files to the state
     setAudioFiles((prevFiles) => [...prevFiles, ...uniqueWavFiles]);
+  };
+
+  const addUrlFile = (url, filename) => {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((wavBlob) => {
+        // Create a File object from the blob with the desired filename and MIME type
+        const wavFile = new File([wavBlob], filename, {
+          type: "audio/wav",
+        });
+        addAudioFiles([wavFile]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const renameFile = (originalFile, newName) => {
+    return new File([originalFile], newName, {
+      type: originalFile.type,
+      lastModified: originalFile.lastModified,
+    });
+  };
+
+  const handleRename = (index, file, newName) => {
+    let newFile = renameFile(file, newName);
+    replaceAudioFile(index, newFile);
+  };
+
+  // Function to handle file drop
+  const handleDrop = (e) => {
+    setDragging(false);
+    e.preventDefault();
+
+    const url = e.dataTransfer.getData("RecordingURL");
+    const filename = e.dataTransfer.getData("RecordingName");
+    if (url && filename) {
+      addUrlFile(url, filename);
+      return;
+    }
+
+    var files = [];
+
+    if (e.dataTransfer.items) {
+      for (const item of e.dataTransfer.items) {
+        if (item.kind === "file") {
+          let file = item.getAsFile();
+          files.push(file);
+        }
+      }
+    } else {
+      files = Array.from(e.dataTransfer.files);
+    }
+
+    addAudioFiles(files);
   };
 
   // Function to handle file input change
@@ -98,12 +147,17 @@ const UploadComponent = ({ onUpload }) => {
 
   // Function to remove an audio file
   const removeAudioFile = (index) => {
-    console.log(audioFiles);
-    console.log("removing file with index=" + index);
     let newFiles = audioFiles.filter((_, i) => i !== index);
-    console.log(newFiles);
     setAudioFiles(newFiles);
     setRedHighlight(null);
+  };
+
+  const replaceAudioFile = (index, newFile) => {
+    setAudioFiles((prevAudioFiles) => {
+      const updatedFiles = [...prevAudioFiles];
+      updatedFiles[index] = newFile;
+      return updatedFiles;
+    });
   };
 
   const sendFilesToBackend = () => {
@@ -111,7 +165,6 @@ const UploadComponent = ({ onUpload }) => {
     const formData = new FormData();
     audioFiles.forEach((file, i) => {
       // Use 'audioFile' as the key for the first file
-      console.log("adding file " + i + ": " + file.name);
       formData.append("audioFiles", file);
     });
 
@@ -253,9 +306,12 @@ const UploadComponent = ({ onUpload }) => {
                   <span>Remove</span>
                   <RemoveCircleOutlineIcon />
                 </button>
-                <div style={{ marginBottom: "1ch", paddingLeft: "1ch" }}>
-                  {file.name}
-                </div>
+                <FileNameEditor
+                  filename={file.name}
+                  onRename={(newName) => {
+                    handleRename(index, file, newName);
+                  }}
+                />
                 <audio controls className="AudioPlayer" title={file.name}>
                   <source src={URL.createObjectURL(file)} type={file.type} />
                   Your browser does not support the audio tag.
@@ -298,3 +354,73 @@ const UploadComponent = ({ onUpload }) => {
 UploadComponent.propTypes = { onUpload: PropTypes.func.isRequired };
 
 export default UploadComponent;
+
+const FileNameEditor = ({ filename, onRename }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [extension, setExtension] = useState("");
+
+  // Split the file name into name and extension
+  const lastDotIndex = filename.lastIndexOf(".");
+  const name = filename.slice(0, lastDotIndex);
+  const ext = filename.slice(lastDotIndex + 1);
+
+  const handleClick = () => {
+    setIsEditing(true);
+    setNewName(name);
+    setExtension(ext);
+  };
+
+  const handleChange = (event) => {
+    setNewName(event.target.value);
+  };
+
+  const confirmRename = () => {
+    let nextName = newName;
+    if (nextName.length === 0) {
+      nextName = name;
+      setNewName(nextName);
+    }
+    setIsEditing(false);
+    onRename(`${nextName}.${extension}`);
+  };
+
+  const handleBlur = () => {
+    // Call onRename function with the new name and extension when blurred
+    // confirmRename();
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // Call onRename function with the new name and extension when Enter key is pressed
+      confirmRename();
+    }
+  };
+
+  return (
+    <div
+      style={{ marginBottom: "1ch", paddingLeft: "1ch", paddingRight: "4ch" }}
+    >
+      {isEditing ? (
+        <input
+          type="text"
+          value={newName}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoFocus
+          style={{
+            padding: 0,
+            paddingLeft: "1ch",
+            paddingRight: "1ch",
+            margin: 0,
+            borderRadius: "1ch",
+            width: "-webkit-fill-available",
+          }}
+        />
+      ) : (
+        <div onClick={handleClick}>{filename}</div>
+      )}
+    </div>
+  );
+};

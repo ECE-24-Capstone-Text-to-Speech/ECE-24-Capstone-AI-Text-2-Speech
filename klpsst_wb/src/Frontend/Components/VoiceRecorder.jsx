@@ -19,6 +19,7 @@ const VoiceRecorder = ({ onAdd }) => {
   const stream = useRef(null);
 
   const [audioURL, setAudioURL] = useState(null);
+  const [audioName, setAudioName] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
 
   const [analyserData, setAnalyserData] = useState({ data: [], lineTo: 0 });
@@ -119,6 +120,7 @@ const VoiceRecorder = ({ onAdd }) => {
       let Milisecond = currTime.getMilliseconds();
 
       const fileName = `me_${Year}-${Month}-${Day}_${Hour}:${Minute}:${Second}.wav`;
+      setAudioName(fileName);
 
       // Fetch the blob content
       fetch(blobURL)
@@ -138,6 +140,7 @@ const VoiceRecorder = ({ onAdd }) => {
     } else {
       console.log("audio blob cleared");
       setAudioURL(null);
+      setAudioName(null);
       setAudioFile(null);
     }
   }, [audioBlob]);
@@ -167,20 +170,14 @@ const VoiceRecorder = ({ onAdd }) => {
     );
   };
 
-  const handleDrag = (e, widgetData) => {
-    console.log("Started dragging widget");
-    e.dataTransfer.setData("widgetType", widgetData);
-  };
-
-  const handleDrop = (e) => {
-    const widgetType = e.dataTransfer.getData("widgetType");
-    console.log("Dropped widget ");
-    console.log(widgetType);
-    // moveToUploadList();
+  const handleDrag = (e) => {
+    e.dataTransfer.setData("RecordingURL", audioURL);
+    e.dataTransfer.setData("RecordingName", audioName);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   };
 
   return (
@@ -220,7 +217,6 @@ const VoiceRecorder = ({ onAdd }) => {
         draggable
         onDragStart={(e) => handleDrag(e, [audioFile])}
         onDragOver={(e) => handleDragOver(e)}
-        onDrop={(e) => handleDrop(e)}
       >
         {audioURL && (
           <audio controls className="AudioPlayer">

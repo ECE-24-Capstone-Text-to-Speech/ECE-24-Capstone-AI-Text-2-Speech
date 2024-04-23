@@ -1,21 +1,33 @@
+.DownloadComponent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .DownloadComponent .DownloadButton {
   margin-top: 10px;
   margin-bottom: 10px;
-  width: -webkit-fill-available;
-  width: -moz-available;
+  width: 300px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
+.DownloadComponent .AudioName:hover {
+  color: white;
+  background-color: #544caf;
+  border-radius: 100px;
+}
+
 .DownloadComponent .DownloadIcon {
-  height: 3ch;
-  width: 3ch;
+  /* height: 3ch;
+  width: 3ch; */
 }
 
 .DownloadComponent .DownloadButton span {
   font-weight: bold;
-  margin: 1ch;
-  margin-top: 0;
+  /* margin: 1ch;
+  margin-top: 0; */
 }

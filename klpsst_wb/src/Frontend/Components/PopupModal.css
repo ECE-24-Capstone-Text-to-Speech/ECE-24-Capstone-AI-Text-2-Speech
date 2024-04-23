@@ -1,0 +1,8 @@
+.Modal button {
+  background-color: #544caf;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 1ch;
+  cursor: pointer;
+}
