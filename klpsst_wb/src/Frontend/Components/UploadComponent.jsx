@@ -84,6 +84,11 @@ const UploadComponent = ({ onUpload }) => {
     });
   };
 
+  const handleRename = (index, file, newName) => {
+    let newFile = renameFile(file, newName);
+    replaceAudioFile(index, newFile);
+  };
+
   // Function to handle file drop
   const handleDrop = (e) => {
     setDragging(false);
@@ -149,7 +154,6 @@ const UploadComponent = ({ onUpload }) => {
 
   const replaceAudioFile = (index, newFile) => {
     setAudioFiles((prevAudioFiles) => {
-      console.log("changing name");
       const updatedFiles = [...prevAudioFiles];
       updatedFiles[index] = newFile;
       return updatedFiles;
@@ -302,17 +306,12 @@ const UploadComponent = ({ onUpload }) => {
                   <span>Remove</span>
                   <RemoveCircleOutlineIcon />
                 </button>
-                <div style={{ marginBottom: "1ch", paddingLeft: "1ch" }}>
-                  {file.name}
-                </div>
-                <button
-                  onClick={() => {
-                    let newFile = renameFile(file, "newFileName.wav");
-                    replaceAudioFile(index, newFile);
+                <FileNameEditor
+                  filename={file.name}
+                  onRename={(newName) => {
+                    handleRename(index, file, newName);
                   }}
-                >
-                  Rename
-                </button>
+                />
                 <audio controls className="AudioPlayer" title={file.name}>
                   <source src={URL.createObjectURL(file)} type={file.type} />
                   Your browser does not support the audio tag.
@@ -355,3 +354,73 @@ const UploadComponent = ({ onUpload }) => {
 UploadComponent.propTypes = { onUpload: PropTypes.func.isRequired };
 
 export default UploadComponent;
+
+const FileNameEditor = ({ filename, onRename }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [extension, setExtension] = useState("");
+
+  // Split the file name into name and extension
+  const lastDotIndex = filename.lastIndexOf(".");
+  const name = filename.slice(0, lastDotIndex);
+  const ext = filename.slice(lastDotIndex + 1);
+
+  const handleClick = () => {
+    setIsEditing(true);
+    setNewName(name);
+    setExtension(ext);
+  };
+
+  const handleChange = (event) => {
+    setNewName(event.target.value);
+  };
+
+  const confirmRename = () => {
+    let nextName = newName;
+    if (nextName.length === 0) {
+      nextName = name;
+      setNewName(nextName);
+    }
+    setIsEditing(false);
+    onRename(`${nextName}.${extension}`);
+  };
+
+  const handleBlur = () => {
+    // Call onRename function with the new name and extension when blurred
+    // confirmRename();
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // Call onRename function with the new name and extension when Enter key is pressed
+      confirmRename();
+    }
+  };
+
+  return (
+    <div
+      style={{ marginBottom: "1ch", paddingLeft: "1ch", paddingRight: "4ch" }}
+    >
+      {isEditing ? (
+        <input
+          type="text"
+          value={newName}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoFocus
+          style={{
+            padding: 0,
+            paddingLeft: "1ch",
+            paddingRight: "1ch",
+            margin: 0,
+            borderRadius: "1ch",
+            width: "-webkit-fill-available",
+          }}
+        />
+      ) : (
+        <div onClick={handleClick}>{filename}</div>
+      )}
+    </div>
+  );
+};

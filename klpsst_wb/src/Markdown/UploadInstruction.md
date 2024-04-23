@@ -1,16 +1,24 @@
 # Upload Instruction
 
-Please submit at least 2 wav audio files, each around 6 seconds long.
+Record your own voice or add from your device.
 
-## What to submit?
+## How to submit?
 
-- Speak at normal speaking speed
-- Use diverse word set with different tone
-- Keep pauses to minimum level
-- **English only**
+Add files to the upload list, then press the `Upload` button to upload them to the server.
 
-## Recommendation
+Once the files show up under `My samples`, they can be used for the TTS model.
 
-- 2 to 3 files
-- Keep **<= 5** files, too much samples slows down audio generation speed
-- Less than 8 seconds per clip
+### Record on here
+
+1. Record a voice clip
+2. Drag the audio player into the `drag-and-drop` area or press `Add` button.
+
+### Source from device
+
+1. Make sure your target file is _WAV_ file. (You **CANNOT** just change file extension. It **MUST** be encoded as _WAV_, or the program will not run!)
+2. Drag the file from your file explorer into the `drag-and-drop` area or click the area and select it.
+3. You can drag or select multiple files at once!
+
+## File name change
+
+If an file is in the upload list, press its name and you should be able to modify the file name.

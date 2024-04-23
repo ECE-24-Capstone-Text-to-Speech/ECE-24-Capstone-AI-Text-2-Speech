@@ -6,8 +6,8 @@ import { useAuth } from "../../Hooks/AuthProvider";
 
 const KLPSST_Bar = () => {
   const page = useLocation();
-  const logged_in_pages = ["Home", "Register"];
-  const logged_out_pages = ["Login", "Register"];
+  const logged_in_pages = ["Home", "Register", "About"];
+  const logged_out_pages = ["Login", "Register", "About"];
   // const [currUser, setCurrUser] = useState(null); // default no one logged in
   const { user } = useAuth();
 

@@ -7,6 +7,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import "./PopupModal.css";
+
 const PopupModal = ({
   open,
   title,
@@ -17,6 +19,7 @@ const PopupModal = ({
 }) => {
   return (
     <Dialog
+      className="Modal"
       open={open}
       onClose={onClose}
       slotProps={{
@@ -28,21 +31,13 @@ const PopupModal = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        {onCancel && (
-          <Button onClick={onCancel} variant="contained">
-            Cancel
-          </Button>
-        )}
+        {onCancel && <button onClick={onCancel}>Cancel</button>}
         {onConfirm && (
-          <Button onClick={onConfirm} autoFocus variant="contained">
+          <button onClick={onConfirm} autoFocus>
             OK
-          </Button>
+          </button>
         )}
-        {!onConfirm && !onCancel && (
-          <Button onClick={onClose} variant="contained">
-            Close
-          </Button>
-        )}
+        {!onConfirm && !onCancel && <button onClick={onClose}>Close</button>}
       </DialogActions>
     </Dialog>
   );
