@@ -11,4 +11,4 @@ We are KLPSST. Our mission is to use AI to make speech generation accesible to e
 - Sachin Nair
 - Haochen Xu
 
-<!-- ![group photo](<../KLPSST%20(2).jpg>) -->
+![group photo](<../KLPSST%20(2).jpg>)
