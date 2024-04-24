@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import "./about.css";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
 import MarkdownComponent from "../Components/MarkdownComponent";
-import AboutUs from "../../Markdown/AboutUs.md";
+// import AboutUs from "../../Markdown/AboutUs.md";
 import Disclaimer from "../Components/Disclaimer";
 
 const KLPSST_About = ({}) => {
@@ -52,7 +52,7 @@ const KLPSST_About = ({}) => {
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
         </div>
-        <MarkdownComponent path={AboutUs} />
+        <MarkdownComponent name={"AboutUs"} />
         <Disclaimer />
       </div>
     </ThemeProvider>

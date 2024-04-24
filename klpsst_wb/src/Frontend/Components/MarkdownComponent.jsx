@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactMarkeDown from "react-markdown";
 
-const MarkdownComponent = ({ path }) => {
+const MarkdownComponent = ({ name }) => {
   const [content, setContent] = useState("");
   useEffect(() => {
-    fetch(path)
+    let filepath = process.env.PUBLIC_URL + "/Markdown/" + name + ".md";
+    fetch(filepath)
       .then((res) => res.text())
       .then((text) => setContent(text));
-  }, ["__INIT__"]);
+  }, [name]);
   return (
     <div>
       <ReactMarkeDown children={content} />

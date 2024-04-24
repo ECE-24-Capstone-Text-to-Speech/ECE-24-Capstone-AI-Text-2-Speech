@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import PopupModal from "./PopupModal";
 import MarkdownComponent from "./MarkdownComponent";
 
-import DisclaimerMD from "../../Markdown/Disclaimer.md";
-import PrivacyPolicyMD from "../../Markdown/PrivacyPolicy.md";
+// import DisclaimerMD from "../../Markdown/Disclaimer.md";
+// import PrivacyPolicyMD from "../../Markdown/PrivacyPolicy.md";
 
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 
@@ -34,7 +34,7 @@ const Disclaimer = (props) => {
             setOpen(false);
           }}
         >
-          <MarkdownComponent path={DisclaimerMD} />
+          <MarkdownComponent name={"Disclaimer"} />
           <PrivacyPolicy />
         </PopupModal>
       </div>
@@ -64,7 +64,7 @@ const PrivacyPolicy = (props) => {
             setOpen(false);
           }}
         >
-          <MarkdownComponent path={PrivacyPolicyMD} />
+          <MarkdownComponent name={"PrivacyPolicy"} />
         </PopupModal>
       </div>
     </div>

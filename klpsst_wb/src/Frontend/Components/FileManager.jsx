@@ -7,7 +7,7 @@ import ReportOutlinedIcon from "@mui/icons-material/ReportOutlined";
 import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 
-import UploadGuide from "../../Markdown/UploadGuide.md";
+// import UploadGuide from "../../Markdown/UploadGuide.md";
 import PopupModal from "./PopupModal";
 import MarkdownComponent from "./MarkdownComponent";
 
@@ -115,7 +115,7 @@ const FileManager = (props) => {
           setOpenGuide(false);
         }}
       >
-        <MarkdownComponent path={UploadGuide} />
+        <MarkdownComponent name={"UploadGuide"} />
       </PopupModal>
       {!folded && (
         <div
