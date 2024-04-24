@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import "./about.css";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
 import MarkdownComponent from "../Components/MarkdownComponent";
+import ImageScroller from "../Components/ImageScroller";
 // import AboutUs from "../../Markdown/AboutUs.md";
 import Disclaimer from "../Components/Disclaimer";
 
@@ -53,6 +54,7 @@ const KLPSST_About = ({}) => {
           </Button>
         </div>
         <MarkdownComponent name={"AboutUs"} />
+        <ImageScroller images={[{label: "KLPSST (1)", imgPath: "/KLPSST.jpg"}, {label: "KLPSST (2)", imgPath: "/KLPSST (2).jpg"}]} />
         <Disclaimer />
       </div>
     </ThemeProvider>

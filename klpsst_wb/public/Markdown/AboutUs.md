@@ -10,5 +10,3 @@ We are KLPSST. Our mission is to use AI to make speech generation accesible to e
 - Purva Kantawala
 - Sachin Nair
 - Haochen Xu
-
-![group photo](<../KLPSST%20(2).jpg>)
