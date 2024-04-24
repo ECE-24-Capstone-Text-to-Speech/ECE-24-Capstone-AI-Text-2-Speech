@@ -87,7 +87,7 @@ const VoiceRecorder = ({ onAdd }) => {
       alert("Can't add this file!");
       return;
     }
-    console.log("Moving this audio blob to upload list");
+    // console.log("Moving this audio blob to upload list");
     onAdd(audioFile);
   };
 

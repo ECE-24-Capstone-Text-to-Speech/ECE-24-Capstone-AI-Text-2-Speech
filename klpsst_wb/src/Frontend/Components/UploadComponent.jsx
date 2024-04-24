@@ -11,7 +11,7 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import "./UploadComponent.css";
 import PopupModal from "./PopupModal";
 
-import UploadInstruction from "../../Markdown/UploadInstruction.md";
+// import UploadInstruction from "../../Markdown/UploadInstruction.md";
 import MarkdownComponent from "./MarkdownComponent";
 import VoiceRecorder from "./VoiceRecorder";
 
@@ -31,10 +31,6 @@ const UploadComponent = ({ onUpload }) => {
     let uploadPossible = !uploading && user && audioFiles.length;
     setAllowUpload(uploadPossible);
   }, [uploading, user, audioFiles.length]);
-
-  const addAudioFile = (file) => {
-    setAudioFiles((prevFiles) => [...prevFiles, file]);
-  };
 
   const addAudioFiles = (files) => {
     // Filter only .wav audio files
@@ -227,7 +223,11 @@ const UploadComponent = ({ onUpload }) => {
       )}
       {showContent && (
         <>
-          <VoiceRecorder onAdd={addAudioFile} />
+          <VoiceRecorder
+            onAdd={(file) => {
+              addAudioFiles([file]);
+            }}
+          />
           <div className="FileDropBox">
             <label
               htmlFor="file-input2"
@@ -331,7 +331,7 @@ const UploadComponent = ({ onUpload }) => {
               open={openInstruction}
               onClose={() => setOpenInstruction(false)}
             >
-              <MarkdownComponent path={UploadInstruction} />
+              <MarkdownComponent name={"UploadInstruction"} />
             </PopupModal>
             <button
               className="UploadButton"
@@ -387,7 +387,7 @@ const FileNameEditor = ({ filename, onRename }) => {
 
   const handleBlur = () => {
     // Call onRename function with the new name and extension when blurred
-    // confirmRename();
+    confirmRename();
   };
 
   const handleKeyDown = (event) => {
