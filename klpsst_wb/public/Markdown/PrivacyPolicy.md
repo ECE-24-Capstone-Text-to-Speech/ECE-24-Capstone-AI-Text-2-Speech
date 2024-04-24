@@ -36,6 +36,6 @@ We may update this Privacy Policy from time to time to reflect changes in our pr
 
 ## Contact Us
 
-If you have any questions or concerns about our Privacy Policy or the handling of your personal information, please contact us at [p.kantawala0@gmail.com](mailto:p.kantawala0@gmail.com).
+If you have any questions or concerns about our Privacy Policy or the handling of your personal information, please contact us at [klpsst6@gmail.com](mailto:klpsst6@gmail.com).
 
 By using the KLPSST text-to-speech application with custom voice training, you acknowledge and agree to the terms of this Privacy Policy.

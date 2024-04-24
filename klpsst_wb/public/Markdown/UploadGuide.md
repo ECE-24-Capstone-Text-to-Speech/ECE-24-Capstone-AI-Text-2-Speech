@@ -1,16 +1,14 @@
 # Upload Guide
 
-Please submit at least 2 wav audio files, each around 6 seconds long.
+Please submit at least 2 (6 second) wav audio files.
 
-## Good sample
+## Recommendations
 
 - Speak at normal speaking speed
-- Use diverse word set with different tone
-- Keep pauses to minimum level
+- Use diverse words with differing tones
+- Try not to pause
 - **English only**
 
-## Recommendation
-
-- 2 to 3 files
-- Keep **<= 5** files, too much samples slows down audio generation speed
+- Upload 2 to 3 files
+- Keep **<= 5** files, too mnay samples slows down audio generation speed
 - Less than 8 seconds per clip

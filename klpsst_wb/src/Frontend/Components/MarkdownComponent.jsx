@@ -11,7 +11,7 @@ const MarkdownComponent = ({ name }) => {
       .then((text) => setContent(text));
   }, [name]);
   return (
-    <div>
+    <div style={{width: '300px'}}>
       <ReactMarkeDown children={content} />
     </div>
   );
