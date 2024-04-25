@@ -40,6 +40,7 @@ const KLPSST_Login = ({}) => {
 
   useEffect(() => {
     localStorage.setItem("theme", JSON.stringify(theme));
+    document.documentElement.style.setProperty("color-scheme", `only ${theme}`);
   }, [theme]);
 
   const toggleTheme = () => {

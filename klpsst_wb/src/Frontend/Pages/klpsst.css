@@ -14,12 +14,14 @@
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
+  color-scheme: light;
 }
 
 #homepage.dark-mode {
   background-color: #333;
   color: #fff;
   /* Add dark mode styles for other elements as needed */
+  color-scheme: light dark;
 }
 
 #homepage h1 {
@@ -51,7 +53,7 @@
   padding: 10px;
   margin-bottom: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 1ch;
   width: 300px;
   box-sizing: border-box;
 }
@@ -62,7 +64,7 @@
   text-align: center;
   padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 1ch;
   cursor: pointer;
   width: 300px;
   box-sizing: border-box;
@@ -78,7 +80,7 @@
   color: white;
   padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 1ch;
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -146,7 +148,7 @@
   text-align: center;
   padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 1ch;
   cursor: pointer;
   width: 300px;
   box-sizing: border-box;
@@ -162,7 +164,7 @@
   color: white;
   padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 1ch;
   cursor: pointer;
   width: 300px;
   box-sizing: border-box;

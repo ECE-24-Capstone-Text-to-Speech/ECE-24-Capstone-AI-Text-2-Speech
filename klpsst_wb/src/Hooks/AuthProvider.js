@@ -14,33 +14,35 @@ const AuthProvider = ({ children }) => {
 
   const isAuth = async () => {
     console.log("Checking log in status...");
-    try {
-      const token = sessionStorage.getItem("token");
-      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/loginStatus", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
+    const token = sessionStorage.getItem("token");
+    fetch(process.env.REACT_APP_SERVER_ADDRESS + "/users/loginStatus", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
       })
-        .then((res) => {
-          return res.json();
-        })
-        .then((json) => {
-          if (json.loggedIn) {
-            console.log("current user logged in: " + json.username);
-            setUser(json.username);
-            setAuth(true);
-          } else {
-            console.warn("NO USER LOGGED IN!");
-            setUser(null);
-            setAuth(false);
-          }
-        });
-    } catch (error) {
-      console.error("Error:", error);
-      setUser(null);
-      setAuth(false);
-    }
+      .then((json) => {
+        if (json.loggedIn) {
+          console.log("current user logged in: " + json.username);
+          setUser(json.username);
+          setAuth(true);
+        } else {
+          console.warn("NO USER LOGGED IN!");
+          setUser(null);
+          setAuth(false);
+          alert("Please log in first");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setUser(null);
+        setAuth(false);
+        alert("Cannot check login status, server might be off");
+      });
   };
 
   useEffect(() => {

@@ -9,6 +9,13 @@ import ImageScroller from "../Components/ImageScroller";
 // import AboutUs from "../../Markdown/AboutUs.md";
 import Disclaimer from "../Components/Disclaimer";
 
+const TEAM_PHOTOS = [
+  { label: "Group photo 1", imgPath: "/Pictures/KLPSST.jpg" },
+  { label: "Group photo 2", imgPath: "/Pictures/KLPSST (2).jpg" },
+  { label: "Group photo 3", imgPath: "/Pictures/KLPSST (3).jpg" },
+  { label: "Group photo 4", imgPath: "/Pictures/KLPSST (4).jpg" },
+];
+
 const KLPSST_About = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
@@ -35,6 +42,7 @@ const KLPSST_About = ({}) => {
 
   useEffect(() => {
     localStorage.setItem("theme", JSON.stringify(theme));
+    document.documentElement.style.setProperty("color-scheme", `only ${theme}`);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -54,7 +62,7 @@ const KLPSST_About = ({}) => {
           </Button>
         </div>
         <MarkdownComponent name={"AboutUs"} />
-        <ImageScroller images={[{label: "KLPSST (1)", imgPath: "/KLPSST.jpg"}, {label: "KLPSST (2)", imgPath: "/KLPSST (2).jpg"}]} />
+        <ImageScroller images={TEAM_PHOTOS} />
         <Disclaimer />
       </div>
     </ThemeProvider>

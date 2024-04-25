@@ -12,18 +12,28 @@ const KLPSST_Bar = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    try {
-      fetch(process.env.REACT_APP_SERVER_ADDRESS, {
-        method: "GET",
+    console.log("!!! PINGING SERVER !!!");
+
+    var okStatus = false;
+    fetch(process.env.REACT_APP_SERVER_ADDRESS, {
+      method: "GET",
+    })
+      .then((res) => {
+        okStatus = res.ok;
+        return res.json();
       })
-        .then((res) => res.json())
-        .then((data) =>
-          console.log("!!! PINGING SERVER !!!\n" + JSON.stringify(data))
-        );
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Backend server is not active. Message developers about it!");
-    }
+      .then((data) => {
+        console.log(JSON.stringify(data));
+        if (!okStatus) {
+          throw new Error("Failed to reach server");
+        }
+      })
+      .catch((error) => {
+        const SERVER_OFFLINE_MESSAGE =
+          "KLPSST service is not online, please email klpsst6@gmail.com and ask the devs to turn the server on";
+        console.log(SERVER_OFFLINE_MESSAGE);
+        alert(SERVER_OFFLINE_MESSAGE);
+      });
   }, ["__INIT__"]);
 
   const linkButton = (pageTitle) => (

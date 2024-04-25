@@ -47,10 +47,12 @@ const KLPSST_Page = () => {
 
   useEffect(() => {
     localStorage.setItem("theme", JSON.stringify(theme));
+    document.documentElement.style.setProperty("color-scheme", `only ${theme}`);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
   };
 
   // Define a state variable to store the input's value

@@ -35,6 +35,7 @@ const KLPSST_Register = ({}) => {
 
   useEffect(() => {
     localStorage.setItem("theme", JSON.stringify(theme));
+    document.documentElement.style.setProperty("color-scheme", `only ${theme}`);
   }, [theme]);
 
   const toggleTheme = () => {
