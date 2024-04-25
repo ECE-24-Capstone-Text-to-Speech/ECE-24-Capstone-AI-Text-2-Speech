@@ -26,7 +26,11 @@ const ImageScroller = ({ images }) => {
   const maxSteps = images.length;
 
   const [showImg, setShowImg] = useState(false);
-  const [zoomImg, setZoomImg] = useState({ label: null, imgPath: null });
+  const [zoomImg, setZoomImg] = useState({
+    index: null,
+    label: null,
+    imgPath: null,
+  });
 
   useEffect(() => {}, ["__INIT__"]);
 
@@ -42,16 +46,21 @@ const ImageScroller = ({ images }) => {
     setActiveStep(step);
   };
 
-  const handleClick = (index) => {
-    console.log("clicked image " + index);
+  const zoomImage = (index) => {
+    // console.log("zooming image " + index);
     let image = images[index];
-    setZoomImg(image);
+    setZoomImg({ index: index, ...image });
     setShowImg(true);
   };
 
   const handleClose = () => {
+    // console.log("Closing enlarged image view");
     setShowImg(false);
-    setZoomImg({});
+    setZoomImg({
+      index: null,
+      label: null,
+      imgPath: null,
+    });
   };
 
   return (
@@ -89,7 +98,7 @@ const ImageScroller = ({ images }) => {
             {Math.abs(activeStep - index) <= 2 ? (
               <Box
                 onClick={() => {
-                  handleClick(index);
+                  zoomImage(index);
                 }}
                 component="img"
                 sx={{
@@ -144,6 +153,14 @@ const ImageScroller = ({ images }) => {
         imgPath={zoomImg.imgPath}
         description={zoomImg.label}
         onClose={handleClose}
+        onLeft={() => {
+          let newIndex = mod(zoomImg.index - 1, maxSteps);
+          zoomImage(newIndex);
+        }}
+        onRight={() => {
+          let newIndex = mod(zoomImg.index + 1, maxSteps);
+          zoomImage(newIndex);
+        }}
       />
     </Box>
   );
@@ -160,7 +177,24 @@ ImageScroller.propTypes = {
 
 export default ImageScroller;
 
-const PopupImage = ({ show, imgPath, description, onClose }) => {
+const PopupImage = ({
+  show,
+  imgPath,
+  description,
+  onClose,
+  onLeft,
+  onRight,
+}) => {
+  const LEFT_ARROW = 37;
+  const RIGHT_ARROW = 39;
+  const handleKeyDown = (e) => {
+    // e.preventDefault();
+    if (e.keyCode === LEFT_ARROW) {
+      onLeft();
+    } else if (e.keyCode === RIGHT_ARROW) {
+      onRight();
+    }
+  };
   return (
     <Modal open={show} onClose={onClose}>
       <Zoom in={show}>
@@ -168,6 +202,7 @@ const PopupImage = ({ show, imgPath, description, onClose }) => {
           src={imgPath}
           alt={description}
           onClick={onClose}
+          onKeyDown={handleKeyDown}
           style={{
             position: "absolute",
             top: "50%",
