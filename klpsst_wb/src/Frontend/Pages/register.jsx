@@ -65,7 +65,7 @@ const KLPSST_Register = ({}) => {
 
     if (!confirm) {
       console.log("Incorrect confirm password");
-      alert(`Error: Incorrect Confrim Password`);
+      alert(`Error: Incorrect Confirm Password`);
       return;
     }
 
