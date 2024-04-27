@@ -8,41 +8,11 @@ import torch.nn.functional as F
 from tortoise_tts.tortoise.api import TextToSpeech
 from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voices
 import torchaudio
-import IPython
 
-import subprocess, sys
+from sysInfo import print_env_info, print_nv_smi_info
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-
-print()
-print()
-print("=====================================")
-sys.stdout.flush()
-print("torch.cuda.is_available() =", torch.cuda.is_available())
-print("PYTORCH_CUDA_ALLOC_CONF =", os.environ["PYTORCH_CUDA_ALLOC_CONF"])
-print("running:", "gcc --version")
-sys.stdout.flush()
-command = "gcc --version"
-subprocess.run(command.split())
-print("running:", "g++ --version")
-sys.stdout.flush()
-command = "g++ --version"
-subprocess.run(command.split())
-print("running:", "find / -name cuda")
-sys.stdout.flush()
-command = "find / -name cuda"
-subprocess.run(command.split())
-print("running:", "find / -name nvcc")
-sys.stdout.flush()
-command = "find / -name nvcc"
-subprocess.run(command.split())
-print("running:", "nvidia-smi")
-sys.stdout.flush()
-command = "nvidia-smi"
-subprocess.run(command.split())
-print("=====================================")
-print()
-print()
+print_env_info()
 
 # the tts base model to start off from
 tts = TextToSpeech(
@@ -100,9 +70,7 @@ async def start_tortoise(
     start the tortoise processing model
     @speed: the preset for tortoise
     """
-    command = "nvidia-smi"
-    subprocess.run(command.split())
-    print("work")
+    print_nv_smi_info()
 
     # Save the uploatts = TextToSpeech(use_deepspeed=True, kv_cache=True)
 
