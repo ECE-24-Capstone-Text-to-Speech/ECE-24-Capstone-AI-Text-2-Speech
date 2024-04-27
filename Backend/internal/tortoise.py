@@ -65,7 +65,7 @@ def _tortoise_execute(
 
 async def start_tortoise(
     input: str, user: str, output_folder: str, speed: str = "fast"
-):
+) -> FileResponse:
     """
     start the tortoise processing model
     @speed: the preset for tortoise
