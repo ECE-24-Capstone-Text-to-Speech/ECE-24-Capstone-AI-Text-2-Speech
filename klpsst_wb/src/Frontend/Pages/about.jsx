@@ -8,6 +8,16 @@ import MarkdownComponent from "../Components/MarkdownComponent";
 // import AboutUs from "../../Markdown/AboutUs.md";
 import Disclaimer from "../Components/Disclaimer";
 
+import { MDXProvider } from "@mdx-js/react";
+import AboutUs from "../../Markdown/AboutUs.mdx";
+
+/** @type {import('mdx/types.js').MDXComponents} */
+const components = {
+  em(properties) {
+    return <i {...properties} />;
+  },
+};
+
 const KLPSST_About = ({}) => {
   const storedTheme = localStorage.getItem("theme");
   const initialTheme = storedTheme ? JSON.parse(storedTheme) : "light";
@@ -52,7 +62,11 @@ const KLPSST_About = ({}) => {
             {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </Button>
         </div>
-        <MarkdownComponent name={"AboutUs"} />
+        {/* <MarkdownComponent name={"AboutUs"} /> */}
+        <MDXProvider components={components}>
+          <AboutUs />
+        </MDXProvider>
+
         <Disclaimer />
       </div>
     </ThemeProvider>

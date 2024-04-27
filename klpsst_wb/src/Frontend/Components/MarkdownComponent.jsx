@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactMarkeDown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 const MarkdownComponent = ({ name }) => {
   const [content, setContent] = useState("");
@@ -12,7 +13,7 @@ const MarkdownComponent = ({ name }) => {
   }, [name]);
   return (
     <div>
-      <ReactMarkeDown children={content} />
+      <ReactMarkeDown children={content} rehypePlugins={[rehypeRaw]} />
     </div>
   );
 };
