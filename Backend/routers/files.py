@@ -11,8 +11,9 @@ from typing import Union
 import os
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from internal.tortoise import start_tortoise
-from internal.tortoise import start_tortoise_example
+
+# from internal.tortoise import start_tortoise
+# from internal.tortoise import start_tortoise_example
 from internal.tokenAuth import getCurrUser
 from internal.getFile import (
     delete_audio_in_temp,
@@ -20,6 +21,7 @@ from internal.getFile import (
     get_list_of_audio_in_tortoise_out,
 )
 from internal.saveFile import create_user_folders, save_audio_to_temp
+from main import queue_system as tts_queue
 from typing import List
 
 
@@ -302,13 +304,28 @@ async def sendToTortoise(request: Request):
     user = getCurrUser(request)
     message = "not logged in"
     if user:
-        try:
-            body_str = await request.body()  # Get the request body as bytes
-            inputStr = body_str.decode()
+        # try:
+        #     body_str = await request.body()  # Get the request body as bytes
+        #     inputStr = body_str.decode()
 
-            path = f"tortoise_generations/{user}"
-            await start_tortoise(inputStr, user, path, "ultra_fast")
-            message = "start_tortoise called"
-        except FileNotFoundError as e:
-            message = "directory not found"
+        #     path = f"tortoise_generations/{user}"
+        #     await start_tortoise(inputStr, user, path, "ultra_fast")
+        #     message = "start_tortoise called"
+        # except FileNotFoundError as e:
+        #     message = "directory not found"
+        body_str = await request.body()  # Get the request body as bytes
+        inputStr = body_str.decode()
+        tts_queue.queue_job(user=user, text=inputStr, setting="ultra_fast")
+        message = "start_tortoise called"
     return message
+
+
+@router.get("/queueSize")
+async def get_queue_size(request: Request):
+    user = getCurrUser(request)
+    (queue_length, user_count, user_job_index) = tts_queue.get_queue_size(user)
+    return {
+        "queueLength": queue_length,
+        "userCount": user_count,
+        "currentIndex": user_job_index,
+    }
