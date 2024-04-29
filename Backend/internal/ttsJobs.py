@@ -1,5 +1,6 @@
 import asyncio
 from collections import deque
+import threading
 
 # from internal.tortoise import start_tortoise
 
@@ -20,20 +21,32 @@ class cJob:
         self.text = text
         self.target_folder = target_folder
         self.setting = setting
-        self.is_working = False
+        self._is_working = False
+        self.lock = threading.Lock()
 
-    async def start(self):
-        self.is_working = True
+    def start(self):
+        self.set_is_working(True)
         try:
-            file_response = await start_tortoise(
-                self.text, self.user, self.target_folder, self.setting
+            file_response = asyncio.run(
+                start_tortoise(self.text, self.user, self.target_folder, self.setting)
             )
-            self.is_working = False
+            self.set_is_working(False)
             return file_response
         except Exception as e:
-            self.is_working = False
+            self.set_is_working(False)
             print(f"!!! Failed {self.user}'s job: `{self.text}`")
             return None
+
+    def set_is_working(self, value: bool):
+        self.lock.acquire()
+        self._is_working = value
+        self.lock.release()
+
+    def get_is_working(self):
+        self.lock.acquire()
+        result = self._is_working
+        self.lock.release()
+        return result
 
 
 class ttsJobs:
@@ -54,7 +67,7 @@ class ttsJobs:
         new_job = cJob(user, text, target_folder, setting)
         self.__jobs[user] = new_job  # record this user's job in the dictionary
         self.__queue.append(new_job)  # add this job to queue
-        asyncio.create_task(self.__start())
+        self.__start_thread()
         print("\tFinished queueing")
 
     def pop_job(self):
@@ -65,7 +78,7 @@ class ttsJobs:
         if not first_job:
             return
         print(f"<<< Popped {first_job.user}'s task: {first_job.text}")
-        asyncio.create_task(self.__start())
+        self.__start_thread()
         print("\tFinished popping")
 
     def get_queue_size(self, user: str | None = None):
@@ -111,7 +124,7 @@ class ttsJobs:
         except IndexError:
             return None
 
-    async def __start(self):
+    def __start(self):
         """
         work on the first in queue.
         if already working on first job return false.
@@ -122,14 +135,20 @@ class ttsJobs:
             print("===============================================================")
             print("END OF QUEUE")
             return  # False
-        if first_job.is_working:
+        if first_job.get_is_working():
             print("===============================================================")
             print("AWAITING CURRENT TASK TO COMPLETE")
             return  # False
 
         print("===============================================================")
-        job_response = await first_job.start()
+        first_job.start()
         self.pop_job()
+
+    def __start_thread(self):
+        # print("||| Starting thread...")
+        thread = threading.Thread(target=self.__start)
+        thread.start()
+        # print("||| Thread started.")
 
 
 def tts_script():
@@ -157,6 +176,7 @@ def tts_script():
             (username, sentence) = arg
             q_sys.queue_job(username, sentence)
             print(f"### QUEUED JOB FOR {username} ###")
+            await asyncio.sleep(0.34)
         q_sys.queue_job("user4", "REPEAT")
         print_size(q_sys, "user4")
         await asyncio.sleep(3.4)
