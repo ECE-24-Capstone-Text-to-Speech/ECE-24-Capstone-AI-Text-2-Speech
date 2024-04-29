@@ -8,6 +8,7 @@ import KLPSSTLOGO from "../../Assets/logo_image.png";
 import { useAuth } from "../../Hooks/AuthProvider";
 import VoiceRecorder from "../Components/VoiceRecorder";
 import FileManager from "../Components/FileManager";
+import QueueChecker from "../Components/QueueChecker";
 import DownloadComponent from "../Components/DownloadComponent";
 import Disclaimer from "../Components/Disclaimer";
 // import UploadComponent from "../Components/UploadComponent";
@@ -61,48 +62,6 @@ const KLPSST_Page = () => {
   // Create an event handler function to update the input value
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
-  };
-
-  const handleText = (event) => {
-    event.preventDefault();
-    //setUploading(true); // Set uploading state to true
-
-    alert("Send Text pressed");
-    console.log("Sending");
-
-    sendTextToTortoise(inputValue);
-
-    //setUploading(false); // Set uploading state to false
-    // sendTextToTortoise(inputValue);
-  };
-
-  const sendTextToTortoise = (inputValue) => {
-    // Create a FormData object to append files
-    // const inputValue = new str();
-    // formData.append("strValue", inputValue);
-
-    console.log(localStorage.getItem("username"));
-    console.log(localStorage.getItem("password"));
-    console.log(localStorage.getItem("loggedIn"));
-
-    try {
-      const token = sessionStorage.getItem("token");
-      fetch(process.env.REACT_APP_SERVER_ADDRESS + "/files/toTortoise", {
-        method: "POST",
-        body: inputValue,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((message) => {
-          if (message) alert(message);
-        });
-    } catch (error) {
-      // Handle network errors
-      console.error("Error uploading Text:", error);
-      alert("In order to upload text, please log in!");
-    }
   };
 
   const logOut = async (e) => {
@@ -179,7 +138,8 @@ const KLPSST_Page = () => {
           onChange={handleInputChange}
         />
         <p>You typed: {inputValue}</p>
-        <button onClick={handleText}>Send Text</button>
+
+        <QueueChecker text={inputValue} />
 
         <DownloadComponent />
         <FileManager />
