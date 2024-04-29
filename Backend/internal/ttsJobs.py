@@ -1,15 +1,15 @@
 import asyncio
 from collections import deque
 
-from internal.tortoise import start_tortoise
+# from internal.tortoise import start_tortoise
 
 
-# async def start_tortoise(text: str, user: str, path: str, setting: str):
-#     t = 1
-#     print(f"\t{user} starting a {t} seconds {setting} job to generate `{text}`...")
-#     await asyncio.sleep(t)
-#     print(f"\tDone, {user}'s generated file is at {path}.")
-#     return {"filePath": path}
+async def start_tortoise(text: str, user: str, path: str, setting: str):
+    t = 1
+    print(f"\t{user} starting a {t} seconds {setting} job to generate `{text}`...")
+    await asyncio.sleep(t)
+    print(f"\tDone, {user}'s generated file is at {path}.")
+    return {"filePath": path}
 
 
 class cJob:
@@ -55,6 +55,7 @@ class ttsJobs:
         self.__jobs[user] = new_job  # record this user's job in the dictionary
         self.__queue.append(new_job)  # add this job to queue
         asyncio.create_task(self.__start())
+        print("\tFinished queueing")
 
     def pop_job(self):
         """
@@ -65,6 +66,7 @@ class ttsJobs:
             return
         print(f"<<< Popped {first_job.user}'s task: {first_job.text}")
         asyncio.create_task(self.__start())
+        print("\tFinished popping")
 
     def get_queue_size(self, user: str | None = None):
         """
@@ -130,7 +132,7 @@ class ttsJobs:
         self.pop_job()
 
 
-if __name__ == "__main__":
+def tts_script():
     user_count = 5
     content = []
     for i in range(user_count):
@@ -150,6 +152,7 @@ if __name__ == "__main__":
         )
 
     async def __loop_script(args: tuple[str, str], q_sys: ttsJobs):
+        print("-------------------------------------")
         for arg in args:
             (username, sentence) = arg
             q_sys.queue_job(username, sentence)
@@ -166,5 +169,10 @@ if __name__ == "__main__":
         print(f"### QUEUED JOB FOR ElonMusk ###")
         await asyncio.sleep(3)
         print("Done")
+        print("-------------------------------------")
 
     asyncio.run(__loop_script(content, q_sys))
+
+
+if __name__ == "__main__":
+    tts_script()
