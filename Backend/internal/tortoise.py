@@ -9,7 +9,7 @@ from tortoise_tts.tortoise.api import TextToSpeech
 from tortoise_tts.tortoise.utils.audio import load_audio, load_voice, load_voices
 import torchaudio
 
-from sysInfo import print_env_info, print_nv_smi_info
+from internal.sysInfo import print_env_info, print_nv_smi_info
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 print_env_info()
