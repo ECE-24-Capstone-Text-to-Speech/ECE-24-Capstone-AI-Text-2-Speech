@@ -2,15 +2,15 @@ import asyncio
 from collections import deque
 import threading
 
-# from internal.tortoise import start_tortoise
+from internal.tortoise import start_tortoise
 
 
-async def start_tortoise(text: str, user: str, path: str, setting: str):
-    t = 1
-    print(f"\t{user} starting a {t} seconds {setting} job to generate `{text}`...")
-    await asyncio.sleep(t)
-    print(f"\tDone, {user}'s generated file is at {path}.")
-    return {"filePath": path}
+# async def start_tortoise(text: str, user: str, path: str, setting: str):
+#     t = 1
+#     print(f"\t{user} starting a {t} seconds {setting} job to generate `{text}`...")
+#     await asyncio.sleep(t)
+#     print(f"\tDone, {user}'s generated file is at {path}.")
+#     return {"filePath": path}
 
 
 class cJob:

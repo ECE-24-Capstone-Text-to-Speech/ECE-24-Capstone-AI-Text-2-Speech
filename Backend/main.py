@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from internal.ttsJobs import ttsJobs, tts_script
 
-tts_script()
+# tts_script()
 
 queue_system = ttsJobs()
 
