@@ -1,7 +1,7 @@
 import asyncio
 from collections import deque
 
-from tortoise import start_tortoise
+from internal.tortoise import start_tortoise
 
 
 # async def start_tortoise(text: str, user: str, path: str, setting: str):
